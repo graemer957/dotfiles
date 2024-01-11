@@ -1,0 +1,29 @@
+# Seeded from https://github.com/jonhoo/configs/blob/master/gui/.config/alacritty/alacritty.yml
+
+# shell = "/usr/local/bin/fish"
+
+[window]
+# TODO: tiling window manager?
+# decorations = "none"
+dimensions = { columns = 160, lines = 40 }
+# given the use of tmux, this is all it ever says
+dynamic_title = false
+
+[scrolling]
+# tmux keeps the session history
+history = 0
+
+[font]
+# Previously used in macOS/iTerm2
+# normal = { family = "Roboto Mono Light for Powerline", style = "Light" }
+normal = { family = "Noto Sans Mono", style = "Regular" }
+size = 16.0
+
+[colors]
+# Base16 Gruvbox dark, hard 256 - alacritty color config
+# Dawid Kurek (dawikur@gmail.com), morhetz (https://github.com/morhetz/gruvbox)
+draw_bold_text_with_bright_colors = false
+primary = { background = '0x1d2021', foreground = '0xd5c4a1' }
+cursor = { text = '0x1d2021', cursor = '0xd5c4a1' }
+normal = { black = '0x1d2021', red = '0xfb4934', green = '0xb8bb26', yellow = '0xfabd2f', blue = '0x83a598', magenta = '0xd3869b', cyan = '0x8ec07c', white = '0xd5c4a1' }
+bright = { black = '0x665c54', red = '0xfe8019', green = '0x3c3836', yellow = '0x504945', blue = '0xbdae93', magenta = '0xebdbb2', cyan = '0xd65d0e', white = '0xfbf1c7' }
