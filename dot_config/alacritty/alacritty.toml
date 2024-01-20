@@ -6,8 +6,6 @@
 # TODO: tiling window manager?
 # decorations = "none"
 dimensions = { columns = 160, lines = 40 }
-# given the use of tmux, this is all it ever says
-dynamic_title = false
 
 [scrolling]
 # tmux keeps the session history
