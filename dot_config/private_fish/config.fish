@@ -1,5 +1,10 @@
 # Seeded from https://github.com/jonhoo/configs/blob/master/shell/.config/fish/config.fish
 
+abbr -a c cargo
+abbr -a e nvim
+abbr -a o open
+abbr -a g gitq
+
 if status is-interactive
 	if test -d ~/dev/others/base16/templates/fish-shell
 		set fish_function_path $fish_function_path ~/dev/others/base16/templates/fish-shell/functions
