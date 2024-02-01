@@ -33,3 +33,12 @@ indexed_colors = [
 	{ index = 20, color = '#bdae93' },
 	{ index = 21, color = '#ebdbb2' },
 ]
+
+[keyboard]
+bindings = [
+	# Disable keyboard arrow keys to force my use of vi keybindings
+	{ key = "ArrowLeft", action = "None" }, 
+	{ key = "ArrowDown", action = "None" }, 
+	{ key = "ArrowUp", action = "None" }, 
+	{ key = "ArrowRight", action = "None" }, 
+]
