@@ -6,7 +6,9 @@ abbr -a o open
 abbr -a g gitq
 
 if status is-interactive
-	if test -d ~/dev/others/base16/templates/fish-shell
+	# Only apply base16 theme for fish if tmux is not running, due to escape sequences not working in later versions
+	# See https://github.com/tomyun/base16-fish/issues/7#issuecomment-963376055
+	if test -d ~/dev/others/base16/templates/fish-shell && test -z "$TMUX"
 		set fish_function_path $fish_function_path ~/dev/others/base16/templates/fish-shell/functions
 		builtin source ~/dev/others/base16/templates/fish-shell/conf.d/base16.fish
 	end
