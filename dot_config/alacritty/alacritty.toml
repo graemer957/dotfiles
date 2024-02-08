@@ -1,6 +1,16 @@
 # Seeded from https://github.com/jonhoo/configs/blob/master/gui/.config/alacritty/alacritty.yml
 
-# shell = "/usr/local/bin/fish"
+[env]
+# General
+EDITOR = "nvim"
+
+# macOS specific
+HOMEBREW_PREFIX = "/usr/local"
+HOMEBREW_CELLAR = "/usr/local/Cellar"
+HOMEBREW_REPOSITORY = "/usr/local/Homebrew"
+PATH = "/usr/local/bin:/usr/local/sbin${PATH+:$PATH}"
+MANPATH = "/usr/local/share/man${MANPATH+:$MANPATH}:"
+INFOPATH = "/usr/local/share/info:${INFOPATH:-}"
 
 [window]
 # TODO: tiling window manager?
