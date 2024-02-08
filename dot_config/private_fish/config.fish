@@ -18,6 +18,9 @@ if status is-interactive
 	end
 end
 
+# Cargo
+fish_add_path $HOME/.cargo/bin
+
 # Fish git prompt
 set __fish_git_prompt_showuntrackedfiles 'yes'
 set __fish_git_prompt_showdirtystate 'yes'
