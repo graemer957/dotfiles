@@ -18,6 +18,9 @@ if status is-interactive
 	end
 end
 
+# Remove the default fish greeting
+set fish_greeting
+
 # Cargo
 fish_add_path $HOME/.cargo/bin
 
