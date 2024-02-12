@@ -65,3 +65,11 @@ function fish_prompt
 	echo -n '| '
 	set_color normal
 end
+
+{{- if eq .chezmoi.os "darwin" }}
+
+# macOS only
+
+# rbenv for Ruby
+eval "$(rbenv init -)"
+{{- end }}
