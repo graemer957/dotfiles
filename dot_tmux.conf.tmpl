@@ -47,3 +47,11 @@ set -g status-right-length 0
 
 # Apply the base16 gruvbox-dark-hard colour scheme
 source-file ~/dev/others/base16/templates/tmux/colors/base16-gruvbox-dark-hard.conf
+
+{{- if and (eq .chezmoi.os "darwin") (eq .chezmoi.arch "amd64") }}
+# Without specifying tmux launches `zsh` even though `fish` is default shell!?
+set -g default-shell /usr/local/bin/fish
+{{- else if and (eq .chezmoi.os "darwin") (eq .chezmoi.arch "arm64") }}
+# Without specifying tmux launches `zsh` even though `fish` is default shell!?
+set -g default-shell /opt/homebrew/bin/fish
+{{- end }}
