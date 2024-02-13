@@ -39,3 +39,10 @@ if not vim.loop.fs_stat(lazypath) then
 	})
 end
 vim.opt.rtp:prepend(lazypath)
+
+-- then, setup!
+require("lazy").setup({
+	-- fish
+	'khaveesh/vim-fish-syntax',
+})
+
