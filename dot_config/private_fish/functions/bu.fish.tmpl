@@ -1,0 +1,13 @@
+{{- if and (eq .chezmoi.os "darwin") (eq .chezmoi.hostname "MBH102258") -}}
+function bu
+	rsync -ahP \
+		--stats \
+		--delete \
+		--delete-excluded \
+		--ignore-errors \
+		--exclude-from=.buExcludes \
+		/Users/Graeme.Read \
+		/Volumes/MBH102258/rsync.noindex \
+		2> /Volumes/MBH102258/rsyncErrors.txt
+end
+{{- end }}
