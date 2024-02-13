@@ -20,6 +20,10 @@ vim.opt.number = true
 -- NOTE: ends up in ~/.local/state/nvim/undo/
 vim.opt.undofile = true
 
+-- enable 24-bit RGB colours
+-- see https://github.com/chriskempson/base16-vim?tab=readme-ov-file#troubleshooting
+vim.opt.termguicolors = true
+
 -------------------------------------------------------------------------------
 --
 -- plugin configuration
