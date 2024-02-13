@@ -42,6 +42,16 @@ vim.opt.rtp:prepend(lazypath)
 
 -- then, setup!
 require("lazy").setup({
+	-- main color scheme
+	{
+		"wincent/base16-nvim",
+		lazy = false, -- load at start
+		priority = 1000, -- load first
+		config = function()
+			vim.cmd([[colorscheme base16-gruvbox-dark-hard]])
+			vim.o.background = 'dark'
+		end
+	},
 	-- nice bar at the bottom
 	{
 		'itchyny/lightline.vim',
