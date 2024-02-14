@@ -1,7 +1,7 @@
 -- Seeded from https://github.com/jonhoo/configs/blob/master/editor/.config/nvim/init.lua
 
 -- always set leader first!
--- vim.keymap.set("n", "<Space>", "<Nop>", { silent = true })
+vim.keymap.set("n", "<Space>", "<Nop>", { silent = true })
 vim.g.mapleader = " "
 
 -------------------------------------------------------------------------------
