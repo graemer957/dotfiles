@@ -5,6 +5,13 @@ abbr -a e nvim
 abbr -a o open
 abbr -a g git
 
+# Thse may not be needed long term, but finding myself type them often right now!
+abbr -a cha chezmoi apply
+abbr -a chc chezmoi cd
+abbr -a chd chezmoi diff
+abbr -a che chezmoi edit
+abbr -a chu chezmoi update
+
 # Homebrew environment variables
 {{- if and (eq .chezmoi.os "darwin") (eq .chezmoi.arch "amd64") }}
 eval $(/usr/local/bin/brew shellenv)
