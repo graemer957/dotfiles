@@ -203,7 +203,12 @@ require("lazy").setup({
 				},
 			}
 
-						-- Global mappings.
+			-- Kotlin
+			-- Requires additional work before this can be enabled
+			-- Also requires `brew install kotlin-language-server`
+			-- lspconfig.kotlin_language_server.setup {}
+
+			-- Global mappings.
 			-- See `:help vim.diagnostic.*` for documentation on any of the below functions
 			vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float)
 			vim.keymap.set('n', '[d', vim.diagnostic.goto_prev)
