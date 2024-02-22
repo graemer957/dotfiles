@@ -197,6 +197,10 @@ require("lazy").setup({
 						cargo = {
 							allFeatures = true,
 						},
+						checkOnSave = {
+							allFeatures = true,
+							command = "clippy",
+						},
 						imports = {
 							group = {
 								enable = false,
