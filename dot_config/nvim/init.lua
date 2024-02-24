@@ -94,8 +94,15 @@ vim.opt.termguicolors = true
 -------------------------------------------------------------------------------
 -- quick-open
 vim.keymap.set('', '<C-p>', '<cmd>Files<cr>')
+-- search buffers
+vim.keymap.set('n', '<leader>;', '<cmd>Buffers<cr>')
 -- quick-save
 vim.keymap.set('n', '<leader>w', '<cmd>w<cr>')
+-- Jump to start and end of line using the home row keys
+vim.keymap.set('', 'H', '^')
+vim.keymap.set('', 'L', '$')
+-- <leader><leader> toggles between buffers
+vim.keymap.set('n', '<leader><leader>', '<c-^>')
 
 -------------------------------------------------------------------------------
 --
