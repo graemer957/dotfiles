@@ -86,6 +86,19 @@ function fish_prompt
 	set_color normal
 end
 
+function ls
+    exa
+end
+
+function ll
+    exa -l
+end
+
+function lll
+    exa -la
+end
+
+
 {{- if eq .chezmoi.os "darwin" }}
 
 # macOS only
