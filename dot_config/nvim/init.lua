@@ -117,6 +117,10 @@ vim.api.nvim_create_autocmd(
 		command = 'silent! lua vim.highlight.on_yank({ timeout = 500 })'
 	}
 )
+-- help filetype detection (add as needed)
+--vim.api.nvim_create_autocmd('BufRead', { pattern = '*.ext', command = 'set filetype=someft' })
+-- chezmoi uses Go templating, but they are still...
+vim.api.nvim_create_autocmd('BufRead', { pattern = '*.fish.tmpl', command = 'set filetype=fish' })
 
 -------------------------------------------------------------------------------
 --
