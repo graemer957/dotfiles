@@ -64,6 +64,10 @@ setenv FZF_DEFAULT_COMMAND 'fd --type file --follow -H'
 setenv FZF_CTRL_T_COMMAND 'fd --type file --follow -H'
 setenv FZF_DEFAULT_OPTS '--height 20%'
 
+# ripgrep, aka rg
+# see https://github.com/BurntSushi/ripgrep
+setenv RIPGREP_CONFIG_PATH ~/.config/rg/rg.conf
+
 function fish_user_key_bindings
 	if functions -q fzf_key_bindings
 		fzf_key_bindings
