@@ -121,6 +121,7 @@ vim.api.nvim_create_autocmd(
 --vim.api.nvim_create_autocmd('BufRead', { pattern = '*.ext', command = 'set filetype=someft' })
 -- chezmoi uses Go templating, but they are still...
 vim.api.nvim_create_autocmd('BufRead', { pattern = '*.fish.tmpl', command = 'set filetype=fish' })
+vim.api.nvim_create_autocmd('BufRead', { pattern = '*.toml.tmpl', command = 'set filetype=toml' })
 
 -------------------------------------------------------------------------------
 --
