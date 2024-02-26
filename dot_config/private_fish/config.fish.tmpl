@@ -12,6 +12,10 @@ abbr -a chd chezmoi diff
 abbr -a che chezmoi edit
 abbr -a chu chezmoi update
 
+abbr -a ls exa
+abbr -a ll exa -l
+abbr -a lll exa al
+
 # Homebrew environment variables
 {{- if and (eq .chezmoi.os "darwin") (eq .chezmoi.arch "amd64") }}
 eval $(/usr/local/bin/brew shellenv)
@@ -91,19 +95,6 @@ function fish_prompt
 	echo -n '| '
 	set_color normal
 end
-
-function ls
-    exa
-end
-
-function ll
-    exa -l
-end
-
-function lll
-    exa -la
-end
-
 
 {{- if eq .chezmoi.os "darwin" }}
 
