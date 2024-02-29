@@ -103,6 +103,9 @@ vim.keymap.set('', 'H', '^')
 vim.keymap.set('', 'L', '$')
 -- <leader><leader> toggles between buffers
 vim.keymap.set('n', '<leader><leader>', '<c-^>')
+-- Ctrl+h to stop searching
+vim.keymap.set('v', '<C-h>', '<cmd>nohlsearch<cr>')
+vim.keymap.set('n', '<C-h>', '<cmd>nohlsearch<cr>')
 -- no arrow keys --- force yourself to use the home row
 vim.keymap.set('n', '<up>', '<nop>')
 vim.keymap.set('n', '<down>', '<nop>')
