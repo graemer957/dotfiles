@@ -94,18 +94,24 @@ vim.opt.termguicolors = true
 -------------------------------------------------------------------------------
 -- quick-open
 vim.keymap.set('', '<C-p>', '<cmd>Files<cr>')
+
 -- search buffers
 vim.keymap.set('n', '<leader>;', '<cmd>Buffers<cr>')
+
 -- quick-save
 vim.keymap.set('n', '<leader>w', '<cmd>w<cr>')
+
 -- Jump to start and end of line using the home row keys
 vim.keymap.set('', 'H', '^')
 vim.keymap.set('', 'L', '$')
+
 -- <leader><leader> toggles between buffers
 vim.keymap.set('n', '<leader><leader>', '<c-^>')
+
 -- Ctrl+h to stop searching
 vim.keymap.set('v', '<C-h>', '<cmd>nohlsearch<cr>')
 vim.keymap.set('n', '<C-h>', '<cmd>nohlsearch<cr>')
+
 -- no arrow keys --- force yourself to use the home row
 vim.keymap.set('n', '<up>', '<nop>')
 vim.keymap.set('n', '<down>', '<nop>')
@@ -113,6 +119,7 @@ vim.keymap.set('i', '<up>', '<nop>')
 vim.keymap.set('i', '<down>', '<nop>')
 vim.keymap.set('i', '<left>', '<nop>')
 vim.keymap.set('i', '<right>', '<nop>')
+
 -- let the left and right arrows be useful: they can switch buffers
 vim.keymap.set('n', '<left>', ':bp<cr>')
 vim.keymap.set('n', '<right>', ':bn<cr>')
@@ -130,6 +137,7 @@ vim.api.nvim_create_autocmd(
 		command = 'silent! lua vim.highlight.on_yank({ timeout = 500 })'
 	}
 )
+
 -- help filetype detection (add as needed)
 --vim.api.nvim_create_autocmd('BufRead', { pattern = '*.ext', command = 'set filetype=someft' })
 -- chezmoi uses Go templating, but they are still...
@@ -166,6 +174,7 @@ require("lazy").setup({
 		config = function()
 			vim.cmd([[colorscheme base16-gruvbox-dark-hard]])
 			vim.o.background = 'dark'
+
 			-- Make comments more prominent -- they are important.
 			local bools = vim.api.nvim_get_hl(0, { name = 'Boolean' })
 			vim.api.nvim_set_hl(0, 'Comment', bools)
@@ -201,6 +210,7 @@ require("lazy").setup({
 					return vim.fn.getreg('%')
 				end
 			end
+
 			-- https://github.com/itchyny/lightline.vim/issues/657
 			vim.api.nvim_exec(
 				[[
@@ -221,6 +231,7 @@ require("lazy").setup({
 		config = function()
 			-- stop putting a giant window over my editor
 			vim.g.fzf_layout = { down = '~20%' }
+
 			-- when using :Files, pass the file list through
 			--
 			--   https://github.com/jonhoo/proximity-sort
@@ -369,10 +380,13 @@ require("lazy").setup({
 		config = function()
 			-- never ever fold!
 			vim.g.vim_markdown_folding_disabled = 1
+
 			-- support front-matter in .md files
 			vim.g.vim_markdown_frontmatter = 1
+
 			-- 'o' on a list item should insert at same level
 			vim.g.vim_markdown_new_list_item_indent = 0
+
 			-- don't add bullets when wrapping:
 			-- https://github.com/preservim/vim-markdown/issues/232
 			vim.g.vim_markdown_auto_insert_bullets = 0
