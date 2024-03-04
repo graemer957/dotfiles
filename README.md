@@ -7,6 +7,7 @@ Collection of configuration files for Linux and macOS, managed by [chezmoi](http
 - [x] `tmux`
 - [x] `alacritty`
 - [ ] `neovim`
+- [x] Add mode into neovim table to disambiguate arrow key actions
 
 ## Keyboard shortcuts
 
@@ -41,20 +42,25 @@ Prefix: C-a
 
 `<leader>`: `<Space>`
 
-| Hotkey | Action |
-|--------|--------|
-| C-h | Stop searching |
-| C-p | Open file |
-| H | Beginning of line |
-| L | Go to end of line |
-| L-; | Search open buffers |
-| L-L | Switch to last buffer |
-| L-L+ | nop |
-| L-e | Open LSP diagnostic |
-| L-w | Write buffer |
-| `<Down>` | nop (force my use of vi style keyboard navigation when editing |
-| `<Left>` | Switch to left buffer when not editing |
-| `<Left>` | nop (force my use of vi style keyboard navigation when editing |
-| `<Right>` | Switch to right buffer when not editing |
-| `<Right>` | nop (force my use of vi style keyboard navigation when editing |
-| `<Up>` | nop (force my use of vi style keyboard navigation when editing |
+| Mode | Description |
+|------|-------------|
+| i | Insert |
+| n | Normal |
+
+| Mode | Hotkey | Action |
+|------|--------|--------|
+| i | `<Down>` | nop (force my use of vi style keyboard navigation |
+| i | `<Left>` | nop (force my use of vi style keyboard navigation |
+| i | `<Right>` | nop (force my use of vi style keyboard navigation |
+| i | `<Up>` | nop (force my use of vi style keyboard navigation |
+| n | C-h | Stop searching |
+| n | C-p | Open file |
+| n | H | Beginning of line |
+| n | L | Go to end of line |
+| n | L-; | Search open buffers |
+| n | L-L | Switch to last buffer |
+| n | L-L+ | nop |
+| n | L-e | Open LSP diagnostic |
+| n | L-w | Write buffer |
+| n | `<Left>` | Switch to left buffer |
+| n | `<Right>` | Switch to right buffer |
