@@ -2,10 +2,13 @@
 
 abbr -a c cargo
 abbr -a e nvim
-abbr -a o open
 abbr -a g git
-abbr -a gs git status
 abbr -a gd git diff
+abbr -a gs git status
+abbr -a ll exa -l
+abbr -a lll exa -al
+abbr -a ls exa
+abbr -a o open
 
 # Thse may not be needed long term, but finding myself type them often right now!
 abbr -a cha chezmoi apply
@@ -13,10 +16,6 @@ abbr -a chc chezmoi cd
 abbr -a chd chezmoi diff
 abbr -a che chezmoi edit
 abbr -a chu chezmoi update
-
-abbr -a ls exa
-abbr -a ll exa -l
-abbr -a lll exa -al
 
 # Homebrew environment variables
 {{- if and (eq .chezmoi.os "darwin") (eq .chezmoi.arch "amd64") }}
