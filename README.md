@@ -29,10 +29,8 @@ Prefix: C-a
 | Key | Action |
 |-----|--------|
 | C-a | Switch to last window |
-| C-h | Increase size of pane leftwards |
-| C-j | Increase size of pane downwards |
-| C-k | Increase size of pane upwards |
-| C-l | Increase size of pane rightwards |
+| C-h | Switch to the previous session |
+| C-l | Switch to the next session |
 | h | Move focus left a pane |
 | j | Move focus down a pane |
 | k | Move focus up a pane |
