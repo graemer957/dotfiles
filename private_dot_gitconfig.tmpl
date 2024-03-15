@@ -1,0 +1,65 @@
+[user]
+	name = Graeme Read
+	{{ if eq .chezmoi.hostname "agentsmith" -}}
+	email = {{ onepasswordRead "op://personal/paf2hner4fpvubehfcdk2onsui/title" }}
+	signingkey = {{ onepasswordRead "op://personal/paf2hner4fpvubehfcdk2onsui/publickey" }}
+	{{- end }}
+[ui "color"]
+	ui = always
+[color]
+	ui = true
+[core]
+	autocrlf = input
+	safecrlf = true
+	# https://sebastiandedeyne.com/setting-up-a-global-gitignore-file/
+	excludesfile = ~/.gitignore_global
+[merge]
+	tool = nvim -d
+[alias]
+	c = commit
+	d = diff
+	s = status
+	lg = log --oneline
+	last = log -1 HEAD
+	cl = log -p -- ':(exclude)Cargo.lock'
+	f = push --force-with-lease
+	# https://stackoverflow.com/a/11688523/472927
+	ss = "!f() { git stash show stash^{/$*} -p; }; f"
+	sa = "!f() { git stash apply stash^{/$*}; }; f"
+	sl = stash list
+[pull]
+	ff = only
+[push]
+	# https://stackoverflow.com/questions/21839651/git-what-is-the-difference-between-push-default-matching-and-simple
+	default = simple
+	autoSetupRemote = true
+[help]
+	autocorrect = 1
+[url "git@github.com:"]
+	insteadOf = gh:
+[github]
+	user = graemer957
+[diff]
+	algorithm = histogram
+	indentHeuristic = true
+[protocol]
+	version = 2
+[init]
+	defaultBranch = main
+[filter "lfs"]
+	required = true
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+[gpg]
+	format = ssh
+[gpg "ssh"]
+	{{ if eq .chezmoi.os "darwin" -}}
+	program = /Applications/1Password.app/Contents/MacOS/op-ssh-sign
+	{{- end }}
+[commit]
+	gpgsign = true
+
+# Example of how to modify the config on a per directory basis
+#[includeIf "gitdir:~/Code/WWE/"]
+#    path = ~/.wwe.gitconfig
