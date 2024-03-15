@@ -58,6 +58,7 @@ Prefix: C-a
 | n | L-; | Search open buffers |
 | n | L-L | Switch to last buffer |
 | n | L-L+ | nop |
+| n | L-c | Copy entire buffer into clipboard |
 | n | L-e | Open LSP diagnostic |
 | n | L-w | Write buffer |
 | n | `<Left>` | Switch to left buffer |

@@ -105,6 +105,10 @@ vim.keymap.set('n', '<leader>w', '<cmd>w<cr>')
 vim.keymap.set('', 'H', '^')
 vim.keymap.set('', 'L', '$')
 
+-- Neat clipboard integration
+-- <leader>c will copy entire buffer into clipboard
+vim.keymap.set('n', '<leader>c', '<cmd>w !pbcopy<cr><cr>')
+
 -- <leader><leader> toggles between buffers
 vim.keymap.set('n', '<leader><leader>', '<c-^>')
 
