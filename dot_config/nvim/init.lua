@@ -87,6 +87,10 @@ vim.opt.listchars = 'tab:^ ,nbsp:¬,extends:»,precedes:«,trail:•'
 -- see https://github.com/chriskempson/base16-vim?tab=readme-ov-file#troubleshooting
 vim.opt.termguicolors = true
 
+-- enable system clipboard synchronisation
+-- see https://stackoverflow.com/a/30691754
+vim.opt.clipboard:append { 'unnamed', 'unnamedplus' }
+
 -------------------------------------------------------------------------------
 --
 -- hotkeys
