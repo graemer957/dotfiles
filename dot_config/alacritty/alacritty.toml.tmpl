@@ -11,31 +11,72 @@ shell = "/usr/local/bin/fish"
 shell = "/opt/homebrew/bin/fish"
 {{- end }}
 
-[window]
-dimensions = { columns = 160, lines = 40 }
+# Base16 Gruvbox dark, hard 256 - alacritty color config
+# Dawid Kurek (dawikur@gmail.com), morhetz (https://github.com/morhetz/gruvbox)
+[[colors.indexed_colors]]
+color = "#fe8019"
+index = 16
+
+[[colors.indexed_colors]]
+color = "#d65d0e"
+index = 17
+
+[[colors.indexed_colors]]
+color = "#3c3836"
+index = 18
+
+[[colors.indexed_colors]]
+color = "#504945"
+index = 19
+
+[[colors.indexed_colors]]
+color = "#bdae93"
+index = 20
+
+[[colors.indexed_colors]]
+color = "#ebdbb2"
+index = 21
+
+[colors.bright]
+black = "#665c54"
+blue = "#bdae93"
+cyan = "#d65d0e"
+green = "#3c3836"
+magenta = "#ebdbb2"
+red = "#fe8019"
+white = "#fbf1c7"
+yellow = "#504945"
+
+[colors.cursor]
+cursor = "#d5c4a1"
+text = "#1d2021"
+
+[colors.normal]
+black = "#1d2021"
+blue = "#83a598"
+cyan = "#8ec07c"
+green = "#b8bb26"
+magenta = "#d3869b"
+red = "#fb4934"
+white = "#d5c4a1"
+yellow = "#fabd2f"
+
+[colors.primary]
+background = "#1d2021"
+foreground = "#d5c4a1"
+
+[font]
+size = 16.0
+
+[font.normal]
+family = "NotoSansM Nerd Font"
+style = "Light"
 
 [scrolling]
 # tmux keeps the session history
 history = 0
 
-[font]
-normal = { family = "NotoSansM Nerd Font", style = "Light" }
-size = 16.0
-
-[colors]
-# Base16 Gruvbox dark, hard 256 - alacritty color config
-# Dawid Kurek (dawikur@gmail.com), morhetz (https://github.com/morhetz/gruvbox)
-draw_bold_text_with_bright_colors = false
-primary = { background = '#1d2021', foreground = '#d5c4a1' }
-cursor = { text = '#1d2021', cursor = '#d5c4a1' }
-normal = { black = '#1d2021', red = '#fb4934', green = '#b8bb26', yellow = '#fabd2f', blue = '#83a598', magenta = '#d3869b', cyan = '#8ec07c', white = '#d5c4a1' }
-bright = { black = '#665c54', red = '#fe8019', green = '#3c3836', yellow = '#504945', blue = '#bdae93', magenta = '#ebdbb2', cyan = '#d65d0e', white = '#fbf1c7' }
-indexed_colors = [
-	{ index = 16, color = '#fe8019' },
-	{ index = 17, color = '#d65d0e' },
-	{ index = 18, color = '#3c3836' },
-	{ index = 19, color = '#504945' },
-	{ index = 20, color = '#bdae93' },
-	{ index = 21, color = '#ebdbb2' },
-]
-
+{{ if eq .chezmoi.os "darwin" -}}
+[window]
+dimensions = { columns = 160, lines = 40 }
+{{- end }}
