@@ -8,6 +8,16 @@ Collection of configuration files for Linux and macOS, managed by [chezmoi](http
 - [x] `alacritty`
 - [ ] `neovim`
 - [x] Add mode into neovim table to disambiguate arrow key actions
+- [x] `git`
+- [ ] `dunst`
+- [ ] `ulauncher`
+- [ ] `yambar`
+- [ ] `sway`
+- [ ] Global keyboard shortcut [ideas](https://github.com/jonhoo/configs/blob/master/gui/.config/sxhkd/sxhkdrc)
+- [ ] Take a look at `hypr` WM
+- [ ] `mineapps.list`
+- [ ] Lighter 'server' config?
+
 
 ## Keyboard shortcuts
 
