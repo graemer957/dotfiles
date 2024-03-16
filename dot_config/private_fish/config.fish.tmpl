@@ -115,6 +115,10 @@ else
 	abbr -a lll 'ls -la'
 end
 
+if test -f /usr/local/share/autojump/autojump.fish
+	source /usr/local/share/autojump/autojump.fish
+end
+
 {{- if eq .chezmoi.os "darwin" }}
 
 # macOS only
