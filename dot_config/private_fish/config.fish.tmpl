@@ -80,6 +80,9 @@ setenv FZF_DEFAULT_OPTS '--height 20%'
 # see https://github.com/BurntSushi/ripgrep
 setenv RIPGREP_CONFIG_PATH ~/.config/rg/rg.conf
 
+# Rust stuff
+setenv RUST_BACKTRACE 1
+
 function fish_user_key_bindings
 	if functions -q fzf_key_bindings
 		fzf_key_bindings
