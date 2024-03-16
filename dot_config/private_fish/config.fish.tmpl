@@ -5,9 +5,6 @@ abbr -a d nvim -d
 abbr -a du dust -d 1
 abbr -a e nvim
 abbr -a g git
-abbr -a ll exa -l
-abbr -a lll exa -al
-abbr -a ls exa
 abbr -a o open
 
 # Thse may not be needed long term, but finding myself type them often right now!
@@ -105,6 +102,17 @@ function fish_prompt
 	set_color red
 	echo -n '| '
 	set_color normal
+end
+
+if command -v eza > /dev/null
+	abbr -a l 'eza'
+	abbr -a ls 'eza'
+	abbr -a ll 'eza -l'
+	abbr -a lll 'eza -la'
+else
+	abbr -a l 'ls'
+	abbr -a ll 'ls -l'
+	abbr -a lll 'ls -la'
 end
 
 {{- if eq .chezmoi.os "darwin" }}
