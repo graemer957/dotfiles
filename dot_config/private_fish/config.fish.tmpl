@@ -14,7 +14,8 @@ abbr -a chd chezmoi diff
 abbr -a che chezmoi edit
 abbr -a chu chezmoi update
 
-# Homebrew environment variables
+# [macOS] Homebrew environment variables
+# NOTE: Do not move this further down, otherwise `tmux` will not be found!
 {{- if and (eq .chezmoi.os "darwin") (eq .chezmoi.arch "amd64") }}
 eval $(/usr/local/bin/brew shellenv)
 {{- else if and (eq .chezmoi.os "darwin") (eq .chezmoi.arch "arm64") }}
@@ -34,14 +35,20 @@ if status is-interactive
 	end
 end
 
-# Environment variables
-setenv EDITOR nvim
+if command -v eza > /dev/null
+	abbr -a l 'eza'
+	abbr -a ls 'eza'
+	abbr -a ll 'eza -l'
+	abbr -a lll 'eza -la'
+else
+	abbr -a l 'ls'
+	abbr -a ll 'ls -l'
+	abbr -a lll 'ls -la'
+end
 
-# Remove the default fish greeting
-set fish_greeting
-
-# Cargo
-fish_add_path $HOME/.cargo/bin
+if test -f /usr/local/share/autojump/autojump.fish
+	source /usr/local/share/autojump/autojump.fish
+end
 
 # Fish git prompt
 set __fish_git_prompt_showuntrackedfiles 'yes'
@@ -80,6 +87,20 @@ setenv RIPGREP_CONFIG_PATH ~/.config/rg/rg.conf
 # Rust stuff
 setenv RUST_BACKTRACE 1
 
+# Environment variables
+setenv EDITOR nvim
+
+# Remove the default fish greeting
+set fish_greeting
+
+# Cargo
+fish_add_path $HOME/.cargo/bin
+
+{{ if eq .chezmoi.os "darwin" -}}
+# [macOS] rbenv for Ruby
+eval "$(rbenv init -)"
+{{- end }}
+
 function fish_user_key_bindings
 	if functions -q fzf_key_bindings
 		fzf_key_bindings
@@ -104,25 +125,3 @@ function fish_prompt
 	set_color normal
 end
 
-if command -v eza > /dev/null
-	abbr -a l 'eza'
-	abbr -a ls 'eza'
-	abbr -a ll 'eza -l'
-	abbr -a lll 'eza -la'
-else
-	abbr -a l 'ls'
-	abbr -a ll 'ls -l'
-	abbr -a lll 'ls -la'
-end
-
-if test -f /usr/local/share/autojump/autojump.fish
-	source /usr/local/share/autojump/autojump.fish
-end
-
-{{- if eq .chezmoi.os "darwin" }}
-
-# macOS only
-
-# rbenv for Ruby
-eval "$(rbenv init -)"
-{{- end }}
