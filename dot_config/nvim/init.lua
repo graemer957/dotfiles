@@ -123,6 +123,13 @@ vim.keymap.set('n', '<leader><leader>', '<c-^>')
 -- <leader>, shows/hides hidden characters
 vim.keymap.set('n', '<leader>,', ':set invlist<cr>')
 
+-- always center search results
+vim.keymap.set('n', 'n', 'nzz', { silent = true })
+vim.keymap.set('n', 'N', 'Nzz', { silent = true })
+vim.keymap.set('n', '*', '*zz', { silent = true })
+vim.keymap.set('n', '#', '#zz', { silent = true })
+vim.keymap.set('n', 'g*', 'g*zz', { silent = true })
+
 -- no arrow keys --- force yourself to use the home row
 vim.keymap.set('n', '<up>', '<nop>')
 vim.keymap.set('n', '<down>', '<nop>')
