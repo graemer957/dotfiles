@@ -120,6 +120,8 @@ vim.keymap.set('n', '<leader>c', '<cmd>w !pbcopy<cr><cr>')
 -- <leader><leader> toggles between buffers
 vim.keymap.set('n', '<leader><leader>', '<c-^>')
 
+-- <leader>, shows/hides hidden characters
+vim.keymap.set('n', '<leader>,', ':set invlist<cr>')
 
 -- no arrow keys --- force yourself to use the home row
 vim.keymap.set('n', '<up>', '<nop>')

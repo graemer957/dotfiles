@@ -75,3 +75,4 @@ Prefix: C-a
 | n | L-w | Write buffer |
 | n | `<Left>` | Switch to left buffer |
 | n | `<Right>` | Switch to right buffer |
+| n | , | Toggle hidden characters |
