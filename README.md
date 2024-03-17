@@ -17,6 +17,8 @@ Collection of configuration files for Linux and macOS, managed by [chezmoi](http
 - [ ] Take a look at `hypr` WM
 - [ ] `mineapps.list`
 - [ ] Lighter 'server' config?
+- [ ] Enable clicking on URLs in Alacritty
+- [ ] Check for useful fish functions for Linux setup
 
 
 ## Keyboard shortcuts
