@@ -130,6 +130,9 @@ vim.keymap.set('n', '*', '*zz', { silent = true })
 vim.keymap.set('n', '#', '#zz', { silent = true })
 vim.keymap.set('n', 'g*', 'g*zz', { silent = true })
 
+-- open new file adjacent to current file
+vim.keymap.set('n', '<leader>o', ':e <C-R>=expand("%:p:h") . "/" <cr>')
+
 -- no arrow keys --- force yourself to use the home row
 vim.keymap.set('n', '<up>', '<nop>')
 vim.keymap.set('n', '<down>', '<nop>')

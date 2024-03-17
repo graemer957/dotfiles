@@ -63,6 +63,7 @@ Prefix: C-a
 | i | `<Left>` | nop (force my use of vi style keyboard navigation |
 | i | `<Right>` | nop (force my use of vi style keyboard navigation |
 | i | `<Up>` | nop (force my use of vi style keyboard navigation |
+| n | , | Toggle hidden characters |
 | n | C-h | Stop searching |
 | n | C-p | Open file |
 | n | H | Beginning of line |
@@ -72,7 +73,7 @@ Prefix: C-a
 | n | L-L+ | nop |
 | n | L-c | Copy entire buffer into clipboard |
 | n | L-e | Open LSP diagnostic |
+| n | L-o | Open a new file adjacent to the current file |
 | n | L-w | Write buffer |
 | n | `<Left>` | Switch to left buffer |
 | n | `<Right>` | Switch to right buffer |
-| n | , | Toggle hidden characters |
