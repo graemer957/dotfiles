@@ -105,6 +105,10 @@ vim.keymap.set('n', '<leader>;', '<cmd>Buffers<cr>')
 -- quick-save
 vim.keymap.set('n', '<leader>w', '<cmd>w<cr>')
 
+-- Ctrl+h to stop searching
+vim.keymap.set('v', '<C-h>', '<cmd>nohlsearch<cr>')
+vim.keymap.set('n', '<C-h>', '<cmd>nohlsearch<cr>')
+
 -- Jump to start and end of line using the home row keys
 vim.keymap.set('', 'H', '^')
 vim.keymap.set('', 'L', '$')
@@ -116,9 +120,6 @@ vim.keymap.set('n', '<leader>c', '<cmd>w !pbcopy<cr><cr>')
 -- <leader><leader> toggles between buffers
 vim.keymap.set('n', '<leader><leader>', '<c-^>')
 
--- Ctrl+h to stop searching
-vim.keymap.set('v', '<C-h>', '<cmd>nohlsearch<cr>')
-vim.keymap.set('n', '<C-h>', '<cmd>nohlsearch<cr>')
 
 -- no arrow keys --- force yourself to use the home row
 vim.keymap.set('n', '<up>', '<nop>')
