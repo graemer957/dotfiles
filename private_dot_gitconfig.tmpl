@@ -16,17 +16,19 @@
 [merge]
 	tool = nvim -d
 [alias]
+	a = add -p
 	c = commit
-	d = diff
-	s = status
-	lg = log --oneline
-	last = log -1 HEAD
+	co = checkout
 	cl = log -p -- ':(exclude)Cargo.lock'
+	d = diff
 	f = push --force-with-lease
-	# https://stackoverflow.com/a/11688523/472927
-	ss = "!f() { git stash show stash^{/$*} -p; }; f"
+	last = log -1 HEAD
+	lg = log --oneline
+	s = status
 	sa = "!f() { git stash apply stash^{/$*}; }; f"
 	sl = stash list
+	# https://stackoverflow.com/a/11688523/472927
+	ss = "!f() { git stash show stash^{/$*} -p; }; f"
 [pull]
 	ff = only
 [push]
