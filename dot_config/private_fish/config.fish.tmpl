@@ -46,9 +46,15 @@ else
 	abbr -a lll 'ls -la'
 end
 
+{{ if and (eq .chezmoi.os "darwin") (eq .chezmoi.arch "amd64") -}}
 if test -f /usr/local/share/autojump/autojump.fish
 	source /usr/local/share/autojump/autojump.fish
 end
+{{- else if and (eq .chezmoi.os "darwin") (eq .chezmoi.arch "arm64") -}}
+if test -f /opt/homebrew/share/autojump/autojump.fish
+	source /opt/homebrew/share/autojump/autojump.fish
+end
+{{- end }}
 
 # Fish git prompt
 set __fish_git_prompt_showuntrackedfiles 'yes'
@@ -99,6 +105,9 @@ fish_add_path $HOME/.cargo/bin
 {{ if eq .chezmoi.os "darwin" -}}
 # [macOS] rbenv for Ruby
 eval "$(rbenv init -)"
+
+# [macOS] 1Password SSH Agent
+setenv SSH_AUTH_SOCK ~/Library/Group\ Containers/2BUA8C4S2C.com.1password/t/agent.sock
 {{- end }}
 
 function fish_user_key_bindings
