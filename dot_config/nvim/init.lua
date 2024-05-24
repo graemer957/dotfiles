@@ -91,6 +91,10 @@ vim.opt.termguicolors = true
 -- see https://stackoverflow.com/a/30691754
 vim.opt.clipboard:append { 'unnamed', 'unnamedplus' }
 
+-- Disable the in-line error text
+-- See https://github.com/neovim/nvim-lspconfig/wiki/UI-Customization
+vim.diagnostic.config({	virtual_text = false })
+
 -------------------------------------------------------------------------------
 --
 -- hotkeys
