@@ -372,6 +372,15 @@ require("lazy").setup({
 					vim.keymap.set('n', '<leader>f', function()
 						vim.lsp.buf.format { async = true }
 					end, opts)
+					if vim.lsp.inlay_hint then
+						vim.keymap.set('n', '<leader>i', function ()
+							if vim.lsp.inlay_hint.is_enabled() then
+								vim.lsp.inlay_hint.enable(false, { bufnr })
+							else
+								vim.lsp.inlay_hint.enable(true, { bufnr })
+							end
+						end, opts)
+					end
 
 					local client = vim.lsp.get_client_by_id(ev.data.client_id)
 
