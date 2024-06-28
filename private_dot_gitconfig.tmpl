@@ -1,8 +1,8 @@
 [user]
 	name = Graeme Read
 	{{ if eq .chezmoi.hostname "agentsmith" -}}
-	email = {{ onepasswordRead "op://personal/paf2hner4fpvubehfcdk2onsui/title" }}
-	signingkey = {{ onepasswordRead "op://personal/paf2hner4fpvubehfcdk2onsui/publickey" }}
+	email = {{ onepasswordRead "op://jfabgjw6euv4xxc2e2oqqlbud4/paf2hner4fpvubehfcdk2onsui/title" }}
+	signingkey = {{ onepasswordRead "op://jfabgjw6euv4xxc2e2oqqlbud4/paf2hner4fpvubehfcdk2onsui/publickey" }}
 	{{- else if eq .chezmoi.hostname "MBH102258" -}}
 	email = {{ onepasswordRead "op://z6sddnfnoh7ur2his6xqtllhuy/7xfr4lg7554m47q27tc57g4rr4/title" }}
 	signingkey = {{ onepasswordRead "op://z6sddnfnoh7ur2his6xqtllhuy/7xfr4lg7554m47q27tc57g4rr4/publickey" }}
