@@ -1,0 +1,10 @@
+{{ if eq .chezmoi.hostname "agentsmith" -}}
+status is-interactive; or exit 0
+
+function terraform -d "Set up environment for terraform"
+    set -x CLOUDFLARE_EMAIL 'op://jfabgjw6euv4xxc2e2oqqlbud4/4tzg6f42yljasmgpty2wgxn7qm/email'
+    set -x CLOUDFLARE_API_KEY 'op://jfabgjw6euv4xxc2e2oqqlbud4/4tzg6f42yljasmgpty2wgxn7qm/dd14722e57a9491188f32f11b61bdea2'
+
+    op run -- terraform $argv
+end
+{{- end }}
