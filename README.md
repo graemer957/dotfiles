@@ -20,6 +20,13 @@ Collection of configuration files for Linux and macOS, managed by [chezmoi](http
 - [ ] Enable clicking on URLs in Alacritty
 - [ ] Check for useful fish functions for Linux setup
 
+## Firefox
+
+Version 128 has introduced a questionable new 'privacy preserving' Ad API developed alongside meta, see:
+- [OSNews article](https://www.osnews.com/story/140247/i-told-you-so-mozilla-working-with-facebook-to-weaken-firefox-privacy-and-anti-tracking-features/)
+- [privacyguides.org](https://blog.privacyguides.org/2024/07/14/mozilla-disappoints-us-yet-again-2/)
+
+Disappointingly you are opted into this experimental API when installing the build. Suffice as to say, I am disabling this: Settings > Privacy & Security > Web Site Advertising Preferences > Disable "Allow web sites to perform privacy ad measurement".
 
 ## Keyboard shortcuts
 
