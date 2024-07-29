@@ -122,7 +122,11 @@ function fish_prompt
 	set_color brblack
 	echo -n "["(date "+%H:%M")"] "
 	set_color blue
-	echo -n (hostname -s)
+    {{- if eq .chezmoi.os "darwin" }}
+    echo -n (hostname -s)
+    {{- else if eq .chezmoi.os "linux" }}
+    echo -n (hostnamectl hostname)
+    {{- end }}
 	if [ $PWD != $HOME ]
 		set_color brblack
 		echo -n ':'
