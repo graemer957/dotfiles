@@ -1,6 +1,6 @@
 [user]
 	name = Graeme Read
-	{{ if eq .chezmoi.hostname "agentsmith" -}}
+	{{ if or (eq .chezmoi.hostname "agentsmith") (eq .chezmoi.hostname "dozer") -}}
 	email = {{ onepasswordRead "op://jfabgjw6euv4xxc2e2oqqlbud4/paf2hner4fpvubehfcdk2onsui/title" }}
 	signingkey = {{ onepasswordRead "op://jfabgjw6euv4xxc2e2oqqlbud4/paf2hner4fpvubehfcdk2onsui/publickey" }}
 	{{- else if eq .chezmoi.hostname "MBH102258" -}}
@@ -61,6 +61,8 @@
 [gpg "ssh"]
 	{{ if eq .chezmoi.os "darwin" -}}
 	program = /Applications/1Password.app/Contents/MacOS/op-ssh-sign
+	{{- else -}}
+	program = /opt/1Password/op-ssh-sign
 	{{- end }}
 [commit]
 	gpgsign = true
