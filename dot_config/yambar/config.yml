@@ -1,0 +1,23 @@
+bar:
+  height: 42
+  location: bottom
+  background: 222222ff
+  foreground: dfdfdfff
+  font: NotoSansM Nerd Font:style=Light:size=14
+  spacing: 8
+  margin: 16
+
+  left:
+    - clock:
+        date-format: "%a %d"
+        time-format: "%H:%M"
+        content:
+          - string: {text: "{date} {time}", deco: { stack: [underline: { size: 2, color: 0a6cf5ff }] }}
+  right:
+    - cpu:
+       poll-interval: 2000
+       content:
+         map:
+           conditions:
+             id < 0:
+              - string: {text: "💻 {cpu}%", deco: { stack: [underline: { size: 2, color: f90000ff }] }}
