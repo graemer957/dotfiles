@@ -3,8 +3,8 @@ status is-interactive; or exit 0
 function rclone_data2_env
     set -x AWS_ACCESS_KEY_ID 'op://z6sddnfnoh7ur2his6xqtllhuy/stsuw4hlvkbenonaqukuu5yu3q/access key id'
     set -x AWS_SECRET_ACCESS_KEY 'op://z6sddnfnoh7ur2his6xqtllhuy/stsuw4hlvkbenonaqukuu5yu3q/secret access key'
-    set -x RCLONE_CRYPT_PASSWORD 'op://z6sddnfnoh7ur2his6xqtllhuy/stsuw4hlvkbenonaqukuu5yu3q/crypt password'
-    set -x RCLONE_CRYPT_PASSWORD2 'op://z6sddnfnoh7ur2his6xqtllhuy/stsuw4hlvkbenonaqukuu5yu3q/crypt password2'
+    set -x RCLONE_CRYPT_PASSWORD 'op://z6sddnfnoh7ur2his6xqtllhuy/vfueykvgqjghrfffttnyxv3id4/password'
+    set -x RCLONE_CRYPT_PASSWORD2 "op://z6sddnfnoh7ur2his6xqtllhuy/vfueykvgqjghrfffttnyxv3id4/salt aka password2"
 
     op run -- rclone $argv
 end
