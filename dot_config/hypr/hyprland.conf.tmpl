@@ -58,6 +58,25 @@ env = GTK_THEME,Adwaita:dark
 env = GTK2_RC_FILES,/usr/share/themes/Adwaita-dark/gtk-2.0/gtkrc
 env = QT_STYLE_OVERRIDE,Adwaita-Dark
 
+
+{{ if eq .chezmoi.hostname "switch" -}}
+# From elsewhere
+env = LIBVA_DRIVER_NAME,nvidia
+env = XDG_SESSION_TYPE,wayland
+env = GBM_BACKEND,nvidia-drm
+env = __GLX_VENDOR_LIBRARY_NAME,nvidia
+
+cursor {
+    no_hardware_cursors = true
+}
+
+# VA-API support in Firefox
+env = NVD_BACKEND,direct
+env = MOZ_DISABLE_RDD_SANBOX,1
+env = __EGL_VENDOR_LIBRARY_FILENAMES,/usr/share/glvnd/egl_vendor.d/10_nvidia.json
+{{- end }}
+
+
 #####################
 ### LOOK AND FEEL ###
 #####################
@@ -139,7 +158,11 @@ input {
 
     follow_mouse = 0
 
-    sensitivity = 0 # -1.0 - 1.0, 0 means no modification.
+    {{ if eq .chezmoi.hostname "switch" -}}
+    sensitivity = -0.4
+    {{- else -}}
+    sensitivity = 0.0
+    {{- end }}
 
     touchpad {
         natural_scroll = false
