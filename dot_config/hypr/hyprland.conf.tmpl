@@ -38,6 +38,7 @@ $menu = rofi -show drun
 # Or execute your favorite apps at launch like this:
 
 exec-once = yambar & firefox-developer-edition
+exec-once=dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
 
 #############################
 ### ENVIRONMENT VARIABLES ###
