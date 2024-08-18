@@ -12,7 +12,7 @@ bar:
         date-format: "%a %d"
         time-format: "%H:%M"
         content:
-          - string: {text: "{date} {time}", deco: { stack: [underline: { size: 2, color: 0a6cf5ff }] }}
+          - string: {text: " {date} {time} ", deco: { stack: [underline: { size: 2, color: 0a6cf5ff }] }}
   right:
     - cpu:
        poll-interval: 2000
@@ -20,4 +20,4 @@ bar:
          map:
            conditions:
              id < 0:
-              - string: {text: "💻 {cpu}%", deco: { stack: [underline: { size: 2, color: f90000ff }] }}
+              - string: {text: " 💻 {cpu}% ", deco: { stack: [underline: { size: 2, color: f90000ff }] }}
