@@ -2,10 +2,14 @@
 type = s3
 provider = Cloudflare
 acl = private
-{{ if or (eq .chezmoi.hostname "agentsmith") (eq .chezmoi.hostname "dozer") (eq .chezmoi.hostname "switch") -}}
+{{ if eq .chezmoi.hostname "agentsmith" -}}
 access_key_id = {{ onepasswordRead "op://jfabgjw6euv4xxc2e2oqqlbud4/c77lsjtwtxxpehawkmv6bfvdxq/access key id" }}
 secret_access_key = {{ onepasswordRead "op://jfabgjw6euv4xxc2e2oqqlbud4/c77lsjtwtxxpehawkmv6bfvdxq/secret access key" }}
 endpoint = {{ onepasswordRead "op://jfabgjw6euv4xxc2e2oqqlbud4/c77lsjtwtxxpehawkmv6bfvdxq/website" }}
+{{- else if eq .chezmoi.hostname "dozer" -}}
+access_key_id = {{ onepasswordRead "op://jfabgjw6euv4xxc2e2oqqlbud4/m4fl7mhg45jqlmrdij35ythfty/access key id" }}
+secret_access_key = {{ onepasswordRead "op://jfabgjw6euv4xxc2e2oqqlbud4/m4fl7mhg45jqlmrdij35ythfty/secret access key" }}
+endpoint = {{ onepasswordRead "op://jfabgjw6euv4xxc2e2oqqlbud4/m4fl7mhg45jqlmrdij35ythfty/website" }}
 {{- else if eq .chezmoi.hostname "MBH102258" -}}
 access_key_id = {{ onepasswordRead "op://z6sddnfnoh7ur2his6xqtllhuy/stsuw4hlvkbenonaqukuu5yu3q/access key id" }}
 secret_access_key = {{ onepasswordRead "op://z6sddnfnoh7ur2his6xqtllhuy/stsuw4hlvkbenonaqukuu5yu3q/secret access key" }}

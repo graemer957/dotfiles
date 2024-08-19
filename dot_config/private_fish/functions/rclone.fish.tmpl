@@ -15,6 +15,10 @@ function rclone_data1_mount -d "Mount data1: from `rclone serve`"
     mount -oport=9571,mountport=9571 localhost: ~/data1
 end
 
+function rclone_data1_mount_l -d "Mount data1: from r2"
+    rclone_data1_env mount data1: data1 -v
+end
+
 function rclone_data2_env
     set -x RCLONE_CRYPT_PASSWORD 'op://z6sddnfnoh7ur2his6xqtllhuy/vfueykvgqjghrfffttnyxv3id4/password'
     set -x RCLONE_CRYPT_PASSWORD2 "op://z6sddnfnoh7ur2his6xqtllhuy/vfueykvgqjghrfffttnyxv3id4/salt aka password2"
@@ -30,3 +34,6 @@ function rclone_data2_mount -d "Mount data2: from `rclone serve`"
     mount -oport=9572,mountport=9572 localhost: ~/data2
 end
 
+function rclone_data2_mount_l -d "Mount data2: from r2"
+    rclone_data2_env mount data2: data2 -v
+end
