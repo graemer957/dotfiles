@@ -1,0 +1,23 @@
+[r2]
+type = s3
+provider = Cloudflare
+acl = private
+{{ if or (eq .chezmoi.hostname "agentsmith") (eq .chezmoi.hostname "dozer") (eq .chezmoi.hostname "switch") -}}
+access_key_id = {{ onepasswordRead "op://jfabgjw6euv4xxc2e2oqqlbud4/c77lsjtwtxxpehawkmv6bfvdxq/access key id" }}
+secret_access_key = {{ onepasswordRead "op://jfabgjw6euv4xxc2e2oqqlbud4/c77lsjtwtxxpehawkmv6bfvdxq/secret access key" }}
+endpoint = {{ onepasswordRead "op://jfabgjw6euv4xxc2e2oqqlbud4/c77lsjtwtxxpehawkmv6bfvdxq/website" }}
+{{- else if eq .chezmoi.hostname "MBH102258" -}}
+access_key_id = {{ onepasswordRead "op://z6sddnfnoh7ur2his6xqtllhuy/stsuw4hlvkbenonaqukuu5yu3q/access key id" }}
+secret_access_key = {{ onepasswordRead "op://z6sddnfnoh7ur2his6xqtllhuy/stsuw4hlvkbenonaqukuu5yu3q/secret access key" }}
+endpoint = {{ onepasswordRead "op://z6sddnfnoh7ur2his6xqtllhuy/stsuw4hlvkbenonaqukuu5yu3q/website" }}
+no_check_bucket = true
+{{- end }}
+
+[data1]
+type = crypt
+remote = r2:data1
+
+[data2]
+type = crypt
+remote = r2:data2
+

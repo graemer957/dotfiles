@@ -1,8 +1,21 @@
 status is-interactive; or exit 0
 
+function rclone_data1_env
+    set -x RCLONE_CRYPT_PASSWORD 'op://jfabgjw6euv4xxc2e2oqqlbud4/247ru76s52vlusynqnmhaifomm/password'
+    set -x RCLONE_CRYPT_PASSWORD2 "op://jfabgjw6euv4xxc2e2oqqlbud4/247ru76s52vlusynqnmhaifomm/salt aka password2"
+
+    op run -- rclone $argv
+end
+
+function rclone_data1_serve -d "Serve data1: via `rclone`"
+    rclone_data1_env serve nfs data1: --addr 0.0.0.0:9571 --vfs-cache-mode=full -v
+end
+
+function rclone_data1_mount -d "Mount data1: from `rclone serve`"
+    mount -oport=9571,mountport=9571 localhost: ~/data1
+end
+
 function rclone_data2_env
-    set -x AWS_ACCESS_KEY_ID 'op://z6sddnfnoh7ur2his6xqtllhuy/stsuw4hlvkbenonaqukuu5yu3q/access key id'
-    set -x AWS_SECRET_ACCESS_KEY 'op://z6sddnfnoh7ur2his6xqtllhuy/stsuw4hlvkbenonaqukuu5yu3q/secret access key'
     set -x RCLONE_CRYPT_PASSWORD 'op://z6sddnfnoh7ur2his6xqtllhuy/vfueykvgqjghrfffttnyxv3id4/password'
     set -x RCLONE_CRYPT_PASSWORD2 "op://z6sddnfnoh7ur2his6xqtllhuy/vfueykvgqjghrfffttnyxv3id4/salt aka password2"
 
