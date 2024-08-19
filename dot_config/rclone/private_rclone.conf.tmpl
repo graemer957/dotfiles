@@ -10,6 +10,10 @@ endpoint = {{ onepasswordRead "op://jfabgjw6euv4xxc2e2oqqlbud4/c77lsjtwtxxpehawk
 access_key_id = {{ onepasswordRead "op://jfabgjw6euv4xxc2e2oqqlbud4/m4fl7mhg45jqlmrdij35ythfty/access key id" }}
 secret_access_key = {{ onepasswordRead "op://jfabgjw6euv4xxc2e2oqqlbud4/m4fl7mhg45jqlmrdij35ythfty/secret access key" }}
 endpoint = {{ onepasswordRead "op://jfabgjw6euv4xxc2e2oqqlbud4/m4fl7mhg45jqlmrdij35ythfty/website" }}
+{{- else if eq .chezmoi.hostname "switch" -}}
+access_key_id = {{ onepasswordRead "op://jfabgjw6euv4xxc2e2oqqlbud4/hln6x6xrn3aahhzxeaawh6colm/access key id" }}
+secret_access_key = {{ onepasswordRead "op://jfabgjw6euv4xxc2e2oqqlbud4/hln6x6xrn3aahhzxeaawh6colm/secret access key" }}
+endpoint = {{ onepasswordRead "op://jfabgjw6euv4xxc2e2oqqlbud4/hln6x6xrn3aahhzxeaawh6colm/website" }}
 {{- else if eq .chezmoi.hostname "MBH102258" -}}
 access_key_id = {{ onepasswordRead "op://z6sddnfnoh7ur2his6xqtllhuy/stsuw4hlvkbenonaqukuu5yu3q/access key id" }}
 secret_access_key = {{ onepasswordRead "op://z6sddnfnoh7ur2his6xqtllhuy/stsuw4hlvkbenonaqukuu5yu3q/secret access key" }}
