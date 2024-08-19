@@ -1,0 +1,18 @@
+{{ if and (eq .chezmoi.os "linux") (eq .chezmoi.osRelease.id "arch") -}}
+#
+# ~/.bashrc
+#
+
+# If not running interactively, don't do anything
+[[ $- != *i* ]] && return
+
+alias ls='ls --color=auto'
+alias grep='grep --color=auto'
+PS1='[\u@\h \W]\$ '
+
+if [[ "$(tty)" == "/dev/tty5" ]] then
+	Hyprland
+else
+	exec fish
+fi
+{{- end}}
