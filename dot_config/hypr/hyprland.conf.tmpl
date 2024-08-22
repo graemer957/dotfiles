@@ -197,6 +197,9 @@ bind = $mainMod, COMMA, togglesplit, # dwindle
 bind = , XF86AudioLowerVolume, exec, pactl set-sink-mute @DEFAULT_SINK@ false ; pactl set-sink-volume @DEFAULT_SINK@ -3%
 bind = , XF86AudioRaiseVolume, exec, pactl set-sink-mute @DEFAULT_SINK@ false ; pactl set-sink-volume @DEFAULT_SINK@ +3%
 bind = , XF86AudioMute, exec, pactl set-sink-mute @DEFAULT_SINK@ toggle
+bind = $mainMod, P, exec, $HOME/.cargo/bin/spotify_player playback play-pause
+bind = $mainMod, I, exec, $HOME/.cargo/bin/spotify_player playback next
+bind = $mainMod, U, exec, $HOME/.cargo/bin/spotify_player playback previous
 
 # Move focus with mainMod + arrow keys
 bind = $mainMod, left, movefocus, l
