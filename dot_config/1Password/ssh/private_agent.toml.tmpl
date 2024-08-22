@@ -24,16 +24,22 @@
 #
 # You can test the result by running:
 #
-#  SSH_AUTH_SOCK=~/Library/Group\ Containers/2BUA8C4S2C.com.1password/t/agent.sock ssh-add -l
+#  SSH_AUTH_SOCK=~/.1password/agent.sock ssh-add -l
 #
 # More examples can be found here:
 #  https://developer.1password.com/docs/ssh/agent/config
-# ssh-keys = []
+
+{{ if ne .chezmoi.hostname "MBH102258" -}}
+[[ssh-keys]]
+vault = "Private"
+{{- end }}
 
 [[ssh-keys]]
 item = "graeme.read@mnscorp.net"
 vault = "Marks & Spencers"
 
+{{ if eq .chezmoi.hostname "MBH102258" -}}
 [[ssh-keys]]
 item = "MBH071588"
 vault = "Marks & Spencers"
+{{- end -}}
