@@ -1,0 +1,6 @@
+{{ if ne .chezmoi.hostname "MBH102258" -}}
+[user]
+	name = Graeme Read
+	email = {{ onepasswordRead "op://z6sddnfnoh7ur2his6xqtllhuy/7xfr4lg7554m47q27tc57g4rr4/title" }}
+	signingkey = {{ onepasswordRead "op://z6sddnfnoh7ur2his6xqtllhuy/7xfr4lg7554m47q27tc57g4rr4/publickey" }}
+{{- end }}
