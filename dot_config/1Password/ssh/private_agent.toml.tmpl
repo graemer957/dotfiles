@@ -29,17 +29,26 @@
 # More examples can be found here:
 #  https://developer.1password.com/docs/ssh/agent/config
 
+{{ if eq .chezmoi.hostname "agentsmith" -}}
+[[ssh-keys]]
+item = "agentsmith"
+vault = "Private"
+{{- else if eq .chezmoi.hostname "switch" -}}
+[[ssh-keys]]
+item = "switch"
+vault = "Private"
+{{- else if eq .chezmoi.hostname "MBH102258" -}}
+[[ssh-keys]]
+item = "MBH071588"
+vault = "Marks & Spencers"
+{{- end }}
+
 {{ if ne .chezmoi.hostname "MBH102258" -}}
 [[ssh-keys]]
+item = "graeme@sigma957.net"
 vault = "Private"
 {{- end }}
 
 [[ssh-keys]]
 item = "graeme.read@mnscorp.net"
 vault = "Marks & Spencers"
-
-{{ if eq .chezmoi.hostname "MBH102258" -}}
-[[ssh-keys]]
-item = "MBH071588"
-vault = "Marks & Spencers"
-{{- end -}}
