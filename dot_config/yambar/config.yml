@@ -171,3 +171,6 @@ bar:
            conditions:
              id < 0:
               - string: {text: " 💻 {cpu}% ", deco: { stack: [underline: { size: 2, color: f90000ff }] }}
+
+# vim:set expandtab:ft=dosini:ts=2:sw=2:
+# vim:expandtab:ft=dosini:shiftwidth=2:tabstop=2:
