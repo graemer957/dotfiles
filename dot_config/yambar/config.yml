@@ -12,7 +12,7 @@ bar:
         date-format: "%a %d"
         time-format: "%H:%M"
         content:
-          - string: {text: " {date} {time} ", deco: { stack: [underline: { size: 2, color: 0a6cf5ff }] }}
+          - string: {text: " \uf073  {date}  \uf017  {time} ", deco: { stack: [underline: { size: 2, color: 0a6cf5ff }] }}
     - script:
         path: /usr/bin/yambar-hyprland-wses
         anchors:
