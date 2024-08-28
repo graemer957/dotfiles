@@ -20,8 +20,10 @@ abbr -a chd chezmoi diff
 abbr -a che chezmoi edit --apply
 abbr -a chu chezmoi update
 
+{{- if eq .chezmoi.os "darwin" -}}
 # [macOS] Homebrew environment variables
 # NOTE: Do not move this further down, otherwise `tmux` will not be found!
+{{- end -}}
 {{- if and (eq .chezmoi.os "darwin") (eq .chezmoi.arch "amd64") }}
 eval $(/usr/local/bin/brew shellenv)
 {{- else if and (eq .chezmoi.os "darwin") (eq .chezmoi.arch "arm64") }}
@@ -52,7 +54,7 @@ else
 	abbr -a lll 'ls -la'
 end
 
-{{ if and (eq .chezmoi.os "darwin") (eq .chezmoi.arch "amd64") -}}
+{{- if and (eq .chezmoi.os "darwin") (eq .chezmoi.arch "amd64") -}}
 if test -f /usr/local/share/autojump/autojump.fish
 	source /usr/local/share/autojump/autojump.fish
 end
@@ -108,7 +110,7 @@ set fish_greeting
 # Cargo
 fish_add_path $HOME/.cargo/bin
 
-{{ if eq .chezmoi.os "darwin" -}}
+{{- if eq .chezmoi.os "darwin" -}}
 # [macOS] rbenv for Ruby
 eval "$(rbenv init -)"
 
@@ -143,4 +145,3 @@ function fish_prompt
 	echo -n '| '
 	set_color normal
 end
-
