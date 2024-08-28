@@ -1,11 +1,12 @@
 [r2]
 type = s3
+# See https://developers.cloudflare.com/r2/examples/rclone/
 provider = Cloudflare
 acl = private
 {{ if eq .chezmoi.hostname "agentsmith" -}}
-access_key_id = {{ onepasswordRead "op://jfabgjw6euv4xxc2e2oqqlbud4/c77lsjtwtxxpehawkmv6bfvdxq/access key id" }}
-secret_access_key = {{ onepasswordRead "op://jfabgjw6euv4xxc2e2oqqlbud4/c77lsjtwtxxpehawkmv6bfvdxq/secret access key" }}
-endpoint = {{ onepasswordRead "op://jfabgjw6euv4xxc2e2oqqlbud4/c77lsjtwtxxpehawkmv6bfvdxq/website" }}
+access_key_id = {{ onepasswordRead "op://jfabgjw6euv4xxc2e2oqqlbud4/mixj2mexoy7nj6kmukhjopzwxu/access key id" }}
+secret_access_key = {{ onepasswordRead "op://jfabgjw6euv4xxc2e2oqqlbud4/mixj2mexoy7nj6kmukhjopzwxu/secret access key" }}
+endpoint = {{ onepasswordRead "op://jfabgjw6euv4xxc2e2oqqlbud4/mixj2mexoy7nj6kmukhjopzwxu/website" }}
 {{- else if eq .chezmoi.hostname "dozer" -}}
 access_key_id = {{ onepasswordRead "op://jfabgjw6euv4xxc2e2oqqlbud4/m4fl7mhg45jqlmrdij35ythfty/access key id" }}
 secret_access_key = {{ onepasswordRead "op://jfabgjw6euv4xxc2e2oqqlbud4/m4fl7mhg45jqlmrdij35ythfty/secret access key" }}
