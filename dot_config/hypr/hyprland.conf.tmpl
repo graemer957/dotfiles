@@ -195,6 +195,10 @@ bind = $mainMod SHIFT, V, togglefloating,
 bind = $mainMod SHIFT, P, pseudo, # dwindle
 bind = $mainMod, COMMA, togglesplit, # dwindle
 
+# Screenshots
+bind = , Print, exec, grim
+bind = SHIFT, Print, exec, grim -g "$(slurp)"
+
 # Handy audio control
 bind = , XF86AudioLowerVolume, exec, pactl set-sink-mute @DEFAULT_SINK@ false ; pactl set-sink-volume @DEFAULT_SINK@ -3%
 bind = , XF86AudioRaiseVolume, exec, pactl set-sink-mute @DEFAULT_SINK@ false ; pactl set-sink-volume @DEFAULT_SINK@ +3%
