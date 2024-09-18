@@ -332,6 +332,26 @@ require("lazy").setup({
 				},
 			}
 
+			-- Bash LSP
+			local configs = require 'lspconfig.configs'
+			if not configs.bash_lsp and vim.fn.executable('bash-language-server') == 1 then
+				configs.bash_lsp = {
+					default_config = {
+						cmd = { 'bash-language-server', 'start' },
+						filetypes = { 'sh' },
+						root_dir = require('lspconfig').util.find_git_ancestor,
+						init_options = {
+							settings = {
+								args = {}
+							}
+						}
+					}
+				}
+			end
+			if configs.bash_lsp then
+				lspconfig.bash_lsp.setup {}
+			end
+
 			-- Kotlin
 			-- Requires additional work before this can be enabled
 			-- Also requires `brew install kotlin-language-server`
