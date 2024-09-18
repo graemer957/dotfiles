@@ -63,6 +63,10 @@ end
 if test -f /opt/homebrew/share/autojump/autojump.fish
 	source /opt/homebrew/share/autojump/autojump.fish
 end
+{{- else if (eq .chezmoi.os "linux") -}}
+if test -f /usr/share/autojump/autojump.fish;
+	source /usr/share/autojump/autojump.fish;
+end
 {{- end }}
 
 # Fish git prompt
