@@ -123,12 +123,6 @@ eval "$(rbenv init -)"
 setenv SSH_AUTH_SOCK ~/Library/Group\ Containers/2BUA8C4S2C.com.1password/t/agent.sock
 {{- end }}
 
-function fish_user_key_bindings
-	if functions -q fzf_key_bindings
-		fzf_key_bindings
-	end
-end
-
 function fish_prompt
 	set_color brblack
 	echo -n "["(date "+%H:%M")"] "
