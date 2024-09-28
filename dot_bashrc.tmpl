@@ -19,4 +19,6 @@ if [[ "$(tty)" == "/dev/tty5" ]] then
 else
 	exec fish
 fi
+{{- else -}}
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
 {{- end}}
