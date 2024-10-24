@@ -58,3 +58,8 @@ set -g default-shell /usr/local/bin/fish
 # Without specifying tmux launches `zsh` even though `fish` is default shell!?
 set -g default-shell /opt/homebrew/bin/fish
 {{- end }}
+
+# Make copy-mode more like my neovim bindings
+bind-key -T copy-mode-vi H send-keys -X start-of-line
+bind-key -T copy-mode-vi L send-keys -X end-of-line
+bind-key -T copy-mode-vi y send-keys -X copy-selection-and-cancel
