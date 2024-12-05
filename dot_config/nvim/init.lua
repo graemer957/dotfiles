@@ -152,6 +152,9 @@ vim.keymap.set('n', '<right>', ':bn<cr>')
 -- enable word wrapping
 vim.keymap.set('n', '<leader><s-w>', ':set wrap<cr>')
 
+-- set British spelling
+vim.keymap.set('n', '<leader><s-s>', ':set spell spelllang=en_gb<cr>')
+
 -------------------------------------------------------------------------------
 --
 -- autocommands

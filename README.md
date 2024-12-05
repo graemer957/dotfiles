@@ -84,5 +84,6 @@ Prefix: C-a
 | n | L-o | Open a new file adjacent to the current file |
 | n | L-w | Write buffer |
 | n | L-s-w | Enable word wrap |
+| n | L-s-s | Enable British spell checker |
 | n | `<Left>` | Switch to left buffer |
 | n | `<Right>` | Switch to right buffer |
