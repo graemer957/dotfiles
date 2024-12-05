@@ -149,6 +149,9 @@ vim.keymap.set('i', '<right>', '<nop>')
 vim.keymap.set('n', '<left>', ':bp<cr>')
 vim.keymap.set('n', '<right>', ':bn<cr>')
 
+-- enable word wrapping
+vim.keymap.set('n', '<leader><s-w>', ':set wrap<cr>')
+
 -------------------------------------------------------------------------------
 --
 -- autocommands

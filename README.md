@@ -83,5 +83,6 @@ Prefix: C-a
 | n | L-i | Toggle inlay hints |
 | n | L-o | Open a new file adjacent to the current file |
 | n | L-w | Write buffer |
+| n | L-s-w | Enable word wrap |
 | n | `<Left>` | Switch to left buffer |
 | n | `<Right>` | Switch to right buffer |
