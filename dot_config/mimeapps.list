@@ -1,10 +1,10 @@
 [Default Applications]
-x-scheme-handler/http=firefox-developer-edition.desktop
-x-scheme-handler/https=firefox-developer-edition.desktop
+x-scheme-handler/http=zen.desktop
+x-scheme-handler/https=zen.desktop
 x-scheme-handler/postman=Postman.desktop
-image/png=firefox-developer-edition.desktop
-application/pdf=firefox-developer-edition.desktop
-text/html=firefox-developer-edition.desktop
+image/png=zen.desktop
+application/pdf=zen.desktop
+text/html=zen.desktop
 
 [Added Associations]
-image/jpeg=firefox-developer-edition.desktop;
+image/jpeg=zen.desktop;
