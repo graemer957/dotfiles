@@ -82,6 +82,11 @@ cursor {
 env = NVD_BACKEND,direct
 env = MOZ_DISABLE_RDD_SANDBOX,1
 env = __EGL_VENDOR_LIBRARY_FILENAMES,/usr/share/glvnd/egl_vendor.d/10_nvidia.json
+
+# Work shizzle
+## Use `podman` in rootless mode, see https://java.testcontainers.org/features/configuration/
+env = DOCKER_HOST,unix:///run/user/1000/podman/podman.sock
+env = TESTCONTAINERS_RYUK_DISABLED,true
 {{- end }}
 
 
