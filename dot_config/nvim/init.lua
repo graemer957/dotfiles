@@ -81,7 +81,7 @@ vim.api.nvim_create_autocmd('Filetype', { pattern = 'rust', command = 'set color
 
 -- show more hidden characters
 -- also, show tabs nicer
-vim.opt.listchars = 'tab:^ ,nbsp:¬,extends:»,precedes:«,trail:•'
+vim.opt.listchars = 'tab:^ ,nbsp:¬,extends:»,precedes:«,trail:•,eol:$'
 
 -- enable 24-bit RGB colours
 -- see https://github.com/chriskempson/base16-vim?tab=readme-ov-file#troubleshooting
