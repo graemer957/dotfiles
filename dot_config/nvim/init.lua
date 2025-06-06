@@ -277,10 +277,10 @@ require("lazy").setup({
 	},
 	-- fzf support for ^p
 	{
+		'junegunn/fzf'
+	},
+	{
 		'junegunn/fzf.vim',
-		dependencies = {
-			{ 'junegunn/fzf', dir = '~/.fzf', build = './install --all' },
-		},
 		config = function()
 			-- stop putting a giant window over my editor
 			vim.g.fzf_layout = { down = '~20%' }
