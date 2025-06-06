@@ -1,6 +1,6 @@
 [user]
 	name = Graeme Read
-	{{ if or (eq .chezmoi.hostname "agentsmith") (eq .chezmoi.hostname "dozer") (eq .chezmoi.hostname "switch") -}}
+	{{ if or (eq .chezmoi.hostname "agentsmith") (eq .chezmoi.hostname "dozer") (eq .chezmoi.hostname "switch") (eq .chezmoi.hostname "trinity") -}}
 	email = {{ onepasswordRead "op://jfabgjw6euv4xxc2e2oqqlbud4/paf2hner4fpvubehfcdk2onsui/title" }}
 	signingkey = {{ onepasswordRead "op://jfabgjw6euv4xxc2e2oqqlbud4/paf2hner4fpvubehfcdk2onsui/publickey" }}
 	{{- else if eq .chezmoi.hostname "MBH102258" -}}
