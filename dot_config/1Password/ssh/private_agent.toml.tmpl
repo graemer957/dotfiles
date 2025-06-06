@@ -45,6 +45,10 @@ vault = "Marks & Spencers"
 [[ssh-keys]]
 item = "dozer"
 vault = "Private"
+{{- else if eq .chezmoi.hostname "trinity" -}}
+[[ssh-keys]]
+item = "trinity"
+vault = "Private"
 {{- end }}
 
 {{ if ne .chezmoi.hostname "MBH102258" -}}
