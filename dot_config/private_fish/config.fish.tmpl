@@ -21,6 +21,11 @@ abbr -a chd chezmoi diff
 abbr -a che chezmoi edit --apply
 abbr -a chu chezmoi update
 
+if command -v sudo-rs > /dev/null
+    abbr -a sudo sudo-rs
+    abbr -a su su-rs
+end
+
 {{ if eq .chezmoi.os "darwin" -}}
 # [macOS] Homebrew environment variables
 # NOTE: Do not move this further down, otherwise `tmux` will not be found!
