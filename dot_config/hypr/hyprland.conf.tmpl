@@ -221,6 +221,9 @@ bind = , XF86AudioMute, exec, pactl set-sink-mute @DEFAULT_SINK@ toggle
 bind = $mainMod, P, exec, $HOME/.cargo/bin/spotify_player playback play-pause
 bind = $mainMod, I, exec, $HOME/.cargo/bin/spotify_player playback next
 bind = $mainMod, U, exec, $HOME/.cargo/bin/spotify_player playback previous
+$btHeadset = AC:80:0A:7B:00:87
+bind = $mainMod, XF86AudioMute, exec, bluetoothctl connect $btHeadset
+bind = $mainMod SHIFT, XF86AudioMute, exec, bluetoothctl disconnect $btHeadset
 
 # Move focus with alt + vim arrow keys
 bind = ALT, h, movefocus, l
