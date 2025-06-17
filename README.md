@@ -70,6 +70,7 @@ Prefix: C-a
 | i | `<Left>` | nop (force my use of vi style keyboard navigation |
 | i | `<Right>` | nop (force my use of vi style keyboard navigation |
 | i | `<Up>` | nop (force my use of vi style keyboard navigation |
+| i | A-BS | Delete word to left |
 | n | , | Toggle hidden characters |
 | n | C-h | Stop searching |
 | n | C-p | Open file |
