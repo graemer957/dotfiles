@@ -362,6 +362,25 @@ require("lazy").setup({
 			-- Also requires `brew install kotlin-language-server`
 			-- lspconfig.kotlin_language_server.setup {}
 
+			-- YAML
+			lspconfig.yamlls.setup {
+				settings = {
+					yaml = {
+						format = {
+							enable = true
+						},
+						schemaStore = {
+							-- You must disable built-in schemaStore support if you want to use
+							-- this plugin and its advanced options like `ignore`.
+							enable = false,
+							-- Avoid TypeError: Cannot read properties of undefined (reading 'length')
+							url = "",
+						},
+						schemas = require('schemastore').yaml.schemas(),
+					},
+				},
+			}
+
 			-- Global mappings.
 			-- See `:help vim.diagnostic.*` for documentation on any of the below functions
 			vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float)
@@ -495,11 +514,7 @@ require("lazy").setup({
 	'cespare/vim-toml',
 	-- yaml
 	{
-		"cuducos/yaml.nvim",
-		ft = { "yaml" },
-		dependencies = {
-			"nvim-treesitter/nvim-treesitter",
-		},
+		'b0o/schemastore.nvim',
 	},
 	-- rust
 	{
