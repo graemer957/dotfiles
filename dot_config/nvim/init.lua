@@ -196,6 +196,13 @@ vim.api.nvim_create_autocmd('BufRead', { pattern = '*.fish.tmpl', command = 'set
 vim.api.nvim_create_autocmd('BufRead', { pattern = '*.toml.tmpl', command = 'set filetype=toml' })
 vim.api.nvim_create_autocmd('BufRead', { pattern = '.gitconfig.tmpl', command = 'set filetype=gitconfig' })
 
+-- use nvim-lint for linting
+vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost", "InsertLeave" }, {
+  callback = function()
+    require("lint").try_lint()
+  end,
+})
+
 -------------------------------------------------------------------------------
 --
 -- plugin configuration
@@ -552,6 +559,14 @@ require("lazy").setup({
 			-- don't add bullets when wrapping:
 			-- https://github.com/preservim/vim-markdown/issues/232
 			vim.g.vim_markdown_auto_insert_bullets = 0
+		end
+	},
+	{
+		'mfussenegger/nvim-lint',
+		config = function()
+			require('lint').linters_by_ft = {
+				markdown = {'markdownlint-cli2'},
+			}
 		end
 	},
 })
