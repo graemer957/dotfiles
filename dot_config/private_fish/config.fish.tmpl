@@ -66,20 +66,6 @@ else
 	abbr -a lll 'ls -la'
 end
 
-{{ if and (eq .chezmoi.os "darwin") (eq .chezmoi.arch "amd64") -}}
-if test -f /usr/local/share/autojump/autojump.fish
-	source /usr/local/share/autojump/autojump.fish
-end
-{{- else if and (eq .chezmoi.os "darwin") (eq .chezmoi.arch "arm64") -}}
-if test -f /opt/homebrew/share/autojump/autojump.fish
-	source /opt/homebrew/share/autojump/autojump.fish
-end
-{{- else if (eq .chezmoi.os "linux") -}}
-if test -f /usr/share/autojump/autojump.fish;
-	source /usr/share/autojump/autojump.fish;
-end
-{{- end }}
-
 # Fish git prompt
 set __fish_git_prompt_showuntrackedfiles 'yes'
 set __fish_git_prompt_showdirtystate 'yes'

@@ -1,3 +1,9 @@
 function fish_user_key_bindings
-  fzf --fish | source
+    if command -v fzf > /dev/null
+        fzf --fish | source
+    end
+
+    if command -v zoxide > /dev/null
+        zoxide init fish | source
+    end
 end
