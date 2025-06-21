@@ -20,6 +20,7 @@ monitor=desc:Dell Inc. DELL S3423DWC 4C0TNH3, 3440x1440@99.98Hz,auto,auto
 # description itself (ie, cannot find way to escape)
 monitor=DP-1, 1920x1080@240.00Hz, auto, auto
 
+
 ###################
 ### MY PROGRAMS ###
 ###################
@@ -30,6 +31,7 @@ monitor=DP-1, 1920x1080@240.00Hz, auto, auto
 $terminal = alacritty
 $menu = rofi -show drun
 $browser = zen-browser
+
 
 #################
 ### AUTOSTART ###
@@ -47,6 +49,7 @@ exec-once = [workspace special:magic silent] 1password
 exec-once = [workspace special:magic silent] signal-desktop
 exec-once = [workspace special:magic silent] alacritty
 
+
 #############################
 ### ENVIRONMENT VARIABLES ###
 #############################
@@ -60,12 +63,12 @@ env = BROWSER,$browser
 env = NAME,Graeme Read
 env = EMAIL,graeme@sigma957.net
 env = TZ,Europe/London
+
 # Enable dark mode
 # See: https://wiki.archlinux.org/title/Dark_mode_switching
 env = GTK_THEME,Adwaita:dark
 env = GTK2_RC_FILES,/usr/share/themes/Adwaita-dark/gtk-2.0/gtkrc
 env = QT_STYLE_OVERRIDE,Adwaita-Dark
-
 
 {{ if eq .chezmoi.hostname "switch" -}}
 # nVidia tweaks
@@ -160,6 +163,7 @@ misc {
     disable_hyprland_logo = true
 }
 
+
 #############
 ### INPUT ###
 #############
@@ -188,6 +192,7 @@ gestures {
     workspace_swipe = false
 }
 
+
 ####################
 ### KEYBINDINGSS ###
 ####################
@@ -202,7 +207,7 @@ bind = $mainMod, M, exit,
 bind = $mainMod, R, exec, $menu
 bind = $mainMod, equal, exec, rofi -show calc -modi calc -no-show-match -no-sort -calc-command "echo '{result}' | wl-copy"
 bind = $mainMod, L, exec, waylock -init-color 0xfd7600 -fork-on-lock -ignore-empty-password
-bind = $mainMod CTRL_SHIFT, S, exec, waylock -init-color 0xfd7600 -fork-on-lock -ignore-empty-password && systemctl suspend
+bind = $mainMod CTRL_SHIFT, S, exec, waylock -init-color 0xfd7600 -fork-on-lock -ignore-empty-password && sleep 5 && systemctl suspend
 bind = $mainMod SHIFT, V, togglefloating,
 bind = $mainMod SHIFT, P, pseudo, # dwindle
 bind = $mainMod, COMMA, togglesplit, # dwindle
