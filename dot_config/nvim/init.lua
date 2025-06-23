@@ -95,6 +95,9 @@ vim.opt.clipboard:append { 'unnamed', 'unnamedplus' }
 -- See https://github.com/neovim/nvim-lspconfig/wiki/UI-Customization
 vim.diagnostic.config({	virtual_text = false })
 
+-- Disable modelines for security
+vim.o.modeline = false
+
 -------------------------------------------------------------------------------
 --
 -- hotkeys
