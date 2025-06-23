@@ -206,6 +206,17 @@ vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost", "InsertLeave" }, {
   end,
 })
 
+-- ensure consistency with how `markdownlint-cli2` is configured
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "markdown",
+  callback = function()
+    vim.bo.shiftwidth = 2
+    vim.bo.tabstop = 2
+    vim.bo.expandtab = true
+  end,
+})
+
+
 -------------------------------------------------------------------------------
 --
 -- plugin configuration
