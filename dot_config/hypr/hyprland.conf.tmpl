@@ -203,7 +203,7 @@ $mainMod = SUPER # Sets "Windows" key as main modifier
 # Example binds, see https://wiki.hyprland.org/Configuring/Binds/ for more
 bind = $mainMod, A, exec, $terminal
 bind = $mainMod, W, killactive,
-bind = $mainMod, M, exit,
+bind = $mainMod CTRL_SHIFT, M, exit,
 bind = $mainMod, R, exec, $menu
 bind = $mainMod, equal, exec, rofi -show calc -modi calc -no-show-match -no-sort -calc-command "echo '{result}' | wl-copy"
 bind = $mainMod, L, exec, waylock -init-color 0xfd7600 -fork-on-lock -ignore-empty-password
