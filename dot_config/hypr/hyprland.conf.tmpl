@@ -30,7 +30,7 @@ monitor=DP-1, 1920x1080@240.00Hz, auto, auto
 # Set programs that you use
 $terminal = alacritty
 $menu = rofi -show drun
-$browser = zen-browser
+$browser = firefox
 
 
 #################
@@ -213,7 +213,7 @@ bind = $mainMod SHIFT, P, pseudo, # dwindle
 bind = $mainMod, COMMA, togglesplit, # dwindle
 bind = $mainMod, PERIOD, exec, rofi -modi emoji -show emoji
 bind = $mainMod, F, fullscreen
-bind = $mainMod SHIFT, A, exec, [move 0 0] firefox-developer-edition --new-window & $terminal
+bind = $mainMod SHIFT, A, exec, $browser & $terminal
 
 # Screenshots
 bind = , Print, exec, grim
