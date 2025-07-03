@@ -73,4 +73,6 @@
 	gpgsign = true
 # Sign all work projects with a separate key
 [includeIf "gitdir:~/dev/work/"]
-    path = ~/.gitconfig_work
+	path = ~/.gitconfig_work
+[fetch]
+	prune = true
