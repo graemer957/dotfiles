@@ -10,6 +10,7 @@ abbr -a du dust -d 1
 abbr -a e nvim
 abbr -a g git
 abbr -a gr 'git pull;git branch -vv'
+abbr -a gpr 'set url (git push 2>&1 | tee /dev/tty | rg -o "https://github.com[^ ]*"); and xdg-open $url'
 {{ if eq .chezmoi.os "darwin" -}}
 abbr -a o open
 {{- else -}}
