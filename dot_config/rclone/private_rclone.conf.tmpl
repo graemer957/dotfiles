@@ -7,6 +7,7 @@ acl = private
 access_key_id = {{ onepasswordRead "op://jfabgjw6euv4xxc2e2oqqlbud4/mixj2mexoy7nj6kmukhjopzwxu/access key id" }}
 secret_access_key = {{ onepasswordRead "op://jfabgjw6euv4xxc2e2oqqlbud4/mixj2mexoy7nj6kmukhjopzwxu/secret access key" }}
 endpoint = {{ onepasswordRead "op://jfabgjw6euv4xxc2e2oqqlbud4/mixj2mexoy7nj6kmukhjopzwxu/website" }}
+no_check_bucket = true
 {{- else if eq .chezmoi.hostname "dozer" -}}
 access_key_id = {{ onepasswordRead "op://jfabgjw6euv4xxc2e2oqqlbud4/m4fl7mhg45jqlmrdij35ythfty/access key id" }}
 secret_access_key = {{ onepasswordRead "op://jfabgjw6euv4xxc2e2oqqlbud4/m4fl7mhg45jqlmrdij35ythfty/secret access key" }}
@@ -20,6 +21,10 @@ access_key_id = {{ onepasswordRead "op://z6sddnfnoh7ur2his6xqtllhuy/stsuw4hlvkbe
 secret_access_key = {{ onepasswordRead "op://z6sddnfnoh7ur2his6xqtllhuy/stsuw4hlvkbenonaqukuu5yu3q/secret access key" }}
 endpoint = {{ onepasswordRead "op://z6sddnfnoh7ur2his6xqtllhuy/stsuw4hlvkbenonaqukuu5yu3q/website" }}
 no_check_bucket = true
+{{- else if eq .chezmoi.hostname "trinity" -}}
+access_key_id = {{ onepasswordRead "op://jfabgjw6euv4xxc2e2oqqlbud4/z7l7to3qmrxumiviho7yjjsy7a/access key id" }}
+secret_access_key = {{ onepasswordRead "op://jfabgjw6euv4xxc2e2oqqlbud4/z7l7to3qmrxumiviho7yjjsy7a/secret access key" }}
+endpoint = {{ onepasswordRead "op://jfabgjw6euv4xxc2e2oqqlbud4/z7l7to3qmrxumiviho7yjjsy7a/website" }}
 {{- end }}
 
 [data1]
