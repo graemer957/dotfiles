@@ -218,7 +218,9 @@ user_pref("layout.word_select.eat_space_to_next_word", false);
 // visit https://github.com/yokoffing/Betterfox/wiki/Optional-Hardening
 // Enter your personal overrides below this line:
 
-
+// AI shizzle
+user_pref("browser.ml.linkPreview.enabled", false);
+user_pref("browser.ml.chat.page", false);
 
 /****************************************************************************
  * SECTION: SMOOTHFOX                                                       *
@@ -231,8 +233,3 @@ user_pref("layout.word_select.eat_space_to_next_word", false);
 /****************************************************************************
  * END: BETTERFOX                                                           *
 ****************************************************************************/
-
-
-
-
-
