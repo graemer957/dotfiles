@@ -1,9 +1,19 @@
+{{ if eq .chezmoi.os "darwin" -}}
+{{- else -}}
 bar:
+  {{ if eq .chezmoi.hostname "dozer" -}}
+  height: 84
+  {{- else -}}
   height: 42
+  {{- end }}
   location: bottom
   background: 222222ff
   foreground: dfdfdfff
+  {{ if eq .chezmoi.hostname "dozer" -}}
+  font: NotoSansM Nerd Font:style=Light:size=28
+  {{- else -}}
   font: NotoSansM Nerd Font:style=Light:size=14
+  {{- end }}
   spacing: 8
   margin: 16
 
@@ -164,6 +174,57 @@ bar:
                 - string: {text: ": {title}"}
 
   right:
+    {{ if eq .chezmoi.hostname "dozer" -}}
+    - battery:
+        name: BAT0
+        poll-interval: 30000
+        anchors:
+          discharging: &discharging
+            list:
+              items:
+                - ramp:
+                    tag: capacity
+                    items:
+                      - string: {text: , foreground: ff0000ff}
+                      - string: {text: , foreground: ffa600ff}
+                      - string: {text: ,}
+                      - string: {text: ,}
+                      - string: {text: ,}
+                      - string: {text: ,}
+                      - string: {text: ,}
+                      - string: {text: ,}
+                      - string: {text: ,}
+                      - string: {text: , foreground: 00ff00ff}
+                - string: {text: " {capacity}% {estimate}"}
+        content:
+          map:
+            conditions:
+              state == unknown:
+                <<: *discharging
+              state == discharging:
+                <<: *discharging
+              state == charging:
+                - string: {text: , foreground: 00ff00ff}
+                - string: {text: " {capacity}% {estimate}"}
+              state == full:
+                - string: {text: , foreground: 00ff00ff}
+                - string: {text: " {capacity}% full"}
+              state == "not charging":
+                - ramp:
+                    tag: capacity
+                    items:
+                      - string: {text:  , foreground: ff0000ff}
+                      - string: {text:  , foreground: ffa600ff}
+                      - string: {text:  , foreground: 00ff00ff}
+                      - string: {text:  , foreground: 00ff00ff}
+                      - string: {text:  , foreground: 00ff00ff}
+                      - string: {text:  , foreground: 00ff00ff}
+                      - string: {text:  , foreground: 00ff00ff}
+                      - string: {text:  , foreground: 00ff00ff}
+                      - string: {text:  , foreground: 00ff00ff}
+                      - string: {text:  , foreground: 00ff00ff}
+                - string: {text: " {capacity}%"}
+    {{ end -}}
     - cpu:
        poll-interval: 2000
        content:
@@ -174,3 +235,4 @@ bar:
 
 # vim:set expandtab:ft=dosini:ts=2:sw=2:
 # vim:expandtab:ft=dosini:shiftwidth=2:tabstop=2:
+{{- end }}
