@@ -224,6 +224,16 @@ user_pref("layout.word_select.eat_space_to_next_word", false);
 // AI shizzle
 user_pref("browser.ml.chat.page", false);
 
+// PREF: disable login manager
+user_pref("signon.rememberSignons", false);
+
+// PREF: disable address and credit card manager
+user_pref("extensions.formautofill.addresses.enabled", false);
+user_pref("extensions.formautofill.creditCards.enabled", false);
+
+// PREF: disable DNS-over-HTTP given our own network protection(s)
+user_pref("network.trr.mode", 5);
+
 /****************************************************************************
  * SECTION: SMOOTHFOX                                                       *
 ****************************************************************************/
