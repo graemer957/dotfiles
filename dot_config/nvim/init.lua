@@ -334,15 +334,17 @@ require("lazy").setup({
 		'neovim/nvim-lspconfig',
 		config = function()
 			-- Setup language servers.
-			local lspconfig = require('lspconfig')
 
 			-- Rust
-			lspconfig.rust_analyzer.setup {
+			vim.lsp.config('rust_analyzer', {
 				-- Server-specific settings. See `:help lspconfig-setup`
 				settings = {
 					["rust-analyzer"] = {
 						cargo = {
-							allFeatures = true,
+							features = "all",
+						},
+						checkOnSave = {
+							enable = true,
 						},
 						check = {
 							command = "clippy",
@@ -359,26 +361,12 @@ require("lazy").setup({
 						},
 					},
 				},
-			}
+			})
+			vim.lsp.enable('rust_analyzer')
 
 			-- Bash LSP
-			local configs = require 'lspconfig.configs'
-			if not configs.bash_lsp and vim.fn.executable('bash-language-server') == 1 then
-				configs.bash_lsp = {
-					default_config = {
-						cmd = { 'bash-language-server', 'start' },
-						filetypes = { 'sh' },
-						root_dir = require('lspconfig').util.find_git_ancestor,
-						init_options = {
-							settings = {
-								args = {}
-							}
-						}
-					}
-				}
-			end
-			if configs.bash_lsp then
-				lspconfig.bash_lsp.setup {}
+			if vim.fn.executable('bash-language-server') == 1 then
+				vim.lsp.enable('bashls')
 			end
 
 			-- Kotlin
@@ -387,23 +375,23 @@ require("lazy").setup({
 			-- lspconfig.kotlin_language_server.setup {}
 
 			-- YAML
-			lspconfig.yamlls.setup {
-				settings = {
-					yaml = {
-						format = {
-							enable = true
+			if vim.fn.executable('yaml-language-server') == 1 then
+				vim.lsp.config('yamlls', {
+					settings = {
+						yaml = {
+							schemaStore = {
+								-- You must disable built-in schemaStore support if you want to use
+								-- this plugin and its advanced options like `ignore`.
+								enable = false,
+								-- Avoid TypeError: Cannot read properties of undefined (reading 'length')
+								url = "",
+							},
+							schemas = require('schemastore').yaml.schemas(),
 						},
-						schemaStore = {
-							-- You must disable built-in schemaStore support if you want to use
-							-- this plugin and its advanced options like `ignore`.
-							enable = false,
-							-- Avoid TypeError: Cannot read properties of undefined (reading 'length')
-							url = "",
-						},
-						schemas = require('schemastore').yaml.schemas(),
 					},
-				},
-			}
+				})
+				vim.lsp.enable('yamlls')
+			end
 
 			-- Global mappings.
 			-- See `:help vim.diagnostic.*` for documentation on any of the below functions
