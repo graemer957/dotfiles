@@ -159,7 +159,7 @@ vim.keymap.set('n', '<leader><s-w>', ':set wrap<cr>')
 vim.keymap.set('n', '<leader><s-s>', ':set spell spelllang=en_gb<cr>')
 
 -- picked this shortcut up from fish, and find it useful
-vim.keymap.set('i', '<A-BS>', '<C-W>')
+vim.keymap.set({'i', 'c'}, '<A-BS>', '<C-W>')
 
 -------------------------------------------------------------------------------
 --
