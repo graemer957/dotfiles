@@ -7,6 +7,10 @@ code across all projects.
 
 * Always use **British English**
 * Prefer UK content when performing web searches
+* If they are installed use the following tools:
+  * `fd` instead of `find`
+  * `rg` (ripgrep) instead of `grep`
+* Ensure that you generate shell scripts/suggestions for `fish`, not bash
 
 ## Rust
 
