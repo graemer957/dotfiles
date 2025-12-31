@@ -11,6 +11,7 @@ code across all projects.
   * `fd` instead of `find`
   * `rg` (ripgrep) instead of `grep`
 * Ensure that you generate shell scripts/suggestions for `fish`, not bash
+* If you throw an acronym at me, like YAGNI, expand it at least once during the session!
 
 ## Rust
 
