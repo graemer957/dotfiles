@@ -15,7 +15,7 @@ PS1='[\u@\h \W]\$ '
 [ -f ~/.config/broot/launcher/bash/br ] && source ~/.config/broot/launcher/bash/br
 
 if [[ "$(tty)" == "/dev/tty5" ]] then
-	Hyprland
+	start-hyprland
 else
 	exec fish
 fi
