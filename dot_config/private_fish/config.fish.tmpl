@@ -62,6 +62,7 @@ if command -v eza > /dev/null
 	abbr -a ls 'eza'
 	abbr -a ll 'eza -l'
 	abbr -a lll 'eza -la'
+    abbr -a lr 'eza -l --sort=modified --colour=always | tail -n 5'
 else
 	abbr -a l 'ls'
 	abbr -a ll 'ls -l'
