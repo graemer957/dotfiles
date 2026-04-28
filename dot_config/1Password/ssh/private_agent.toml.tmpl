@@ -37,10 +37,10 @@ vault = "Private"
 [[ssh-keys]]
 item = "switch"
 vault = "Private"
-{{- else if eq .chezmoi.hostname "MBH102258" -}}
+{{- else if eq .chezmoi.hostname "thearchitect" -}}
 [[ssh-keys]]
-item = "MBH102258"
-vault = "Marks & Spencers"
+item = "thearchitect"
+vault = "Platformed"
 {{- else if eq .chezmoi.hostname "dozer" -}}
 [[ssh-keys]]
 item = "dozer"
@@ -51,12 +51,12 @@ item = "trinity"
 vault = "Private"
 {{- end }}
 
-{{ if ne .chezmoi.hostname "MBH102258" -}}
+{{ if ne .chezmoi.hostname "thearchitect" -}}
 [[ssh-keys]]
 item = "graeme@sigma957.net"
 vault = "Private"
 {{- end }}
 
 [[ssh-keys]]
-item = "graeme.read@mnscorp.net"
-vault = "Marks & Spencers"
+item = "graeme.read@platformed.com"
+vault = "Platformed"
