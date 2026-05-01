@@ -49,6 +49,10 @@ exec-once = [workspace special:magic silent] 1password
 exec-once = [workspace special:magic silent] signal-desktop
 exec-once = [workspace special:magic silent] alacritty
 
+# Colour scheme - modern apps read this via `xdg-desktop-portal`
+exec-once = gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
+exec-once = gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita-dark'
+
 
 #############################
 ### ENVIRONMENT VARIABLES ###
@@ -64,10 +68,8 @@ env = NAME,Graeme Read
 env = EMAIL,graeme@sigma957.net
 env = TZ,Europe/London
 
-# Enable dark mode
+# Enable dark mode for QT apps
 # See: https://wiki.archlinux.org/title/Dark_mode_switching
-env = GTK_THEME,Adwaita:dark
-env = GTK2_RC_FILES,/usr/share/themes/Adwaita-dark/gtk-2.0/gtkrc
 env = QT_STYLE_OVERRIDE,Adwaita-Dark
 
 {{ if eq .chezmoi.hostname "switch" -}}
