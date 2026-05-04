@@ -109,6 +109,9 @@ vim.keymap.set('', '<C-p>', '<cmd>Files<cr>')
 -- search buffers
 vim.keymap.set('n', '<leader>;', '<cmd>Buffers<cr>')
 
+-- search project with ripgrep (prompts for pattern)
+vim.keymap.set('n', '<leader>/', ':Rg ')
+
 -- quick-save
 vim.keymap.set('n', '<leader>w', '<cmd>w<cr>')
 
