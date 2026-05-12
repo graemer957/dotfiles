@@ -31,6 +31,9 @@ set -g mode-keys vi
 # If the mouse is enabled
 set -g mouse on
 
+# neovim and claude code both seem to want it
+set-option -g focus-events on
+
 # Move between panes with vi keys
 bind h select-pane -L
 bind j select-pane -D
