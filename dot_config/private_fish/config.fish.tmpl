@@ -96,9 +96,9 @@ setenv LESS '-F -X -R'
 
 # command-line fuzzy finder
 # see https://github.com/junegunn/fzf
-setenv FZF_DEFAULT_COMMAND 'fd --type file --follow -H'
-setenv FZF_CTRL_T_COMMAND 'fd --type file --follow -H'
-setenv FZF_DEFAULT_OPTS '--height 20%'
+set -gx FZF_DEFAULT_COMMAND 'fd --type file --follow -H'
+set -gx FZF_CTRL_T_COMMAND $FZF_DEFAULT_COMMAND
+set -gx FZF_DEFAULT_OPTS '--height 20%'
 
 # ripgrep, aka rg
 # see https://github.com/BurntSushi/ripgrep
