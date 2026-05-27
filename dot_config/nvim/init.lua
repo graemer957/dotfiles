@@ -209,7 +209,7 @@ vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost", "InsertLeave" }, {
   end,
 })
 
--- ensure consistency with how `markdownlint-cli2` is configured
+-- ensure consistency with how `rumdl` is configured
 vim.api.nvim_create_autocmd("FileType", {
   pattern = "markdown",
   callback = function()
@@ -569,9 +569,13 @@ require("lazy").setup({
 	{
 		'mfussenegger/nvim-lint',
 		config = function()
-			require('lint').linters_by_ft = {
-				markdown = {'markdownlint-cli2'},
-			}
+			local linters_by_ft = {}
+			if vim.fn.executable('rumdl') == 1 then
+				linters_by_ft.markdown = { 'rumdl' }
+			else
+				vim.notify('rumdl not found on PATH; markdown linting disabled', vim.log.levels.WARN)
+			end
+			require('lint').linters_by_ft = linters_by_ft
 		end
 	},
 })
