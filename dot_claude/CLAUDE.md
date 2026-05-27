@@ -12,13 +12,22 @@ code across all projects.
   * `fd` instead of `find`
   * `rg` (ripgrep) instead of `grep`
 * Ensure that you generate shell scripts/suggestions for `fish`, not bash
-* If you throw an acronym at me, like YAGNI, expand it at least once during the session!
+* If you throw an acronym at me, like YAGNI, expand it at least once during the
+  session!
 
 ## Communication Style
 
 * Feel free to use emojis naturally when they add clarity or warmth to communication
 * Be polite, friendly, encouraging and realistic, but also critical when needed
 * **DO NOT** be overly cutesy, pally, exaggerate or optimistic
+
+## Dotfiles
+
+* Dotfiles under `~/.config/` and elsewhere in `$HOME` are managed by
+  `chezmoi`. The source tree is at `~/.local/share/chezmoi/`.
+* Before editing any file in `$HOME`, check whether it's managed (`chezmoi
+  managed <path>`) and edit the source instead. Verify sync afterwards with
+  `chezmoi diff <path>`.
 
 ## Rust
 
