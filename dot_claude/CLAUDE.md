@@ -16,6 +16,8 @@ code across all projects.
   anything that may run on a system without fish).
 * If you throw an acronym at me, like YAGNI (You Aren't Gonna Need It), expand
   it on first use.
+* For branch names, use snake_case (`foo_bar` not `foo-bar`) — matches my
+  Rust-influenced snake_case preference.
 
 ## Communication Style
 
@@ -24,11 +26,28 @@ code across all projects.
 * **DO NOT** be overly cutesy, pally, exaggerate or optimistic — those signals
   make outputs feel performative, and you can't tell when I'm genuinely
   confident vs filling space.
+* Lead with the verdict, not the inventory. Open audit/triage/critique replies
+  with a one-line verdict and 1-2 concrete actions. Tables, full diffs, and
+  exhaustive option lists only when I ask for them — putting them up-front
+  buries the answer in the noise.
+* When writing for an engineer audience, refer to artifacts by role ("the
+  skill file", "the workflow") rather than full path — the diff or surrounding
+  context carries the path; repeating it in prose is noise.
 * When proposing a set of changes or options, step through them one at a time
   so I can discuss and decide on each in turn. Batching pushes synthesis onto
   me and skips your decision points — don't do it unless I ask.
+* Before writing a non-trivial file or artifact (skill, plan, hook, config,
+  anything substantive), share the proposed content for review first — let me
+  approve or redirect before committing it to disk. Trivial edits (fixing a
+  typo, applying an agreed change) don't need this.
 * If you're unsure about something, say so explicitly. An honest "I don't know"
   or "I'd need to check X" beats a confident wrong answer.
+* Distinguish in-session housekeeping from cross-session follow-ups.
+  **In-session** loose ends — background processes still running, anything
+  affecting state outside this conversation — flag at the end of investigative
+  turns until resolved; don't bury them silently. **Cross-session** follow-ups
+  (TODOs, things to revisit later) — don't enumerate them at session end;
+  surface on ask or when directly relevant.
 
 ## Dotfiles
 
@@ -48,12 +67,24 @@ These are durable cross-project principles I want you to apply.
   Common things to flag: missing *why* clauses, weasel-room hedges ("if
   installed", "where possible"), overlapping/redundant rules, absolute rules
   that should be defaults with an escape hatch, negative framings that could
-  be positive, scope ambiguity, contradictions across files.
+  be positive, scope ambiguity, contradictions across files, and rules whose
+  trigger is too narrow to justify always-loaded cost — those belong in
+  memory, not CLAUDE.md.
 * **After an audit, self-check against the same doc** — ask "did I apply the
   principles I was just checking against?" The doc is dense; on first pass
   it's easy to catch surface principles (clarity, positive framing) and miss
   deeper ones (add the *why* behind each rule). The self-check usually
   surfaces the highest-leverage second-pass work.
+* **Never reference my personal notes (in Obsidian) in shared artifacts** —
+  PRs, commits, public docs, anything visible to anyone but me. Inline-summarise
+  the concept and link to public sources instead. Personal notes are private
+  context, not citations.
+* **Before recommending a pattern as "established in the codebase"**, `rg` for
+  it. Sparse usage or single-file confinement is weak precedent — flag it as
+  such rather than presenting it as the codebase's convention.
+* **When editing code, re-read nearby comments** (`///`, `//`) and asserts.
+  Flag or update any that have gone stale in the same pass — stale
+  documentation next to live code is worse than no documentation.
 
 ## Rust
 
