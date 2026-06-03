@@ -117,6 +117,11 @@ here.
     to comment on vs let pass). Secondary: **depth** (subtle bugs, race
     conditions, hidden coupling) and **breadth** (correctness + perf +
     security + readability + architectural fit).
+  * **Testing** — writing higher-value tests: what's worth testing
+    (behaviour over implementation, not coverage theatre), in depth (edge
+    cases, failure modes, invariants, property-based), at the right layer
+    (unit / integration / e2e), and rearchitecting for seams where code
+    resists it.
 
 ## Rust
 
