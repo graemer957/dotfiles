@@ -18,6 +18,11 @@ code across all projects.
   it on first use.
 * For branch names, use snake_case (`foo_bar` not `foo-bar`) — matches my
   Rust-influenced snake_case preference.
+* Run `git` plainly against the current repo (`git status`, `git diff`) — never
+  `git -C <path>` when `<path>` is already the cwd. My permission allowlist
+  matches command prefixes (`Bash(git status:*)`), so the `-C` form fails the
+  match and fires a needless permission prompt. Use `-C` only when the target
+  repo genuinely differs from the cwd (e.g. a worktree or sibling checkout).
 
 ## Communication Style
 
@@ -34,12 +39,26 @@ code across all projects.
   remember the answer. Surface the *why* (causal, architectural,
   motivational) alongside the *what*. Modulate depth by topic — keep it terse
   where I'm not the audience.
+* When explaining anything complex (a mechanism, a data flow, a state machine),
+  reach for a visual or stepped representation — diagram, before/after,
+  walking the states — before a wall of prose. I understand and retain
+  mechanisms far better when I can visualise them.
 * When writing for an engineer audience, refer to artifacts by role ("the
   skill file", "the workflow") rather than full path — the diff or surrounding
   context carries the path; repeating it in prose is noise.
 * When proposing a set of changes or options, step through them one at a time
   so I can discuss and decide on each in turn. Batching pushes synthesis onto
   me and skips your decision points — don't do it unless I ask.
+* When I say "let me drive" or declare a step-by-step cadence: do the asked
+  action, then stop — I open the next step myself. (In a proposal walkthrough,
+  presenting the next item once I've decided the current one *is* the asked
+  action; in-session housekeeping flags stay on their own rule — they're
+  status, not steering.) Surface a pending decision once; if I don't pick it
+  up, I've parked it deliberately — don't re-pose it each turn, unless a step
+  I then ask for is genuinely blocked on it (then name the blocker plainly:
+  that's information, not herding). The subtle failure mode is the soft tail
+  ("want to see X?", "ready when you are", re-floating an offer I didn't
+  take) — that still reads as herding.
 * Before writing a non-trivial file or artifact (skill, plan, hook, config,
   anything substantive), share the proposed content for review first — let me
   approve or redirect before committing it to disk. Trivial edits (fixing a
@@ -49,7 +68,10 @@ code across all projects.
 * Distinguish in-session housekeeping from cross-session follow-ups.
   **In-session** loose ends — background processes still running, anything
   affecting state outside this conversation — flag at the end of investigative
-  turns until resolved; don't bury them silently. **Cross-session** follow-ups
+  turns until resolved; don't bury them silently. Exception: never flag `/tmp`
+  scratch files — tmpfs on my machines, so the OS owns their lifecycle (gone
+  at next reboot) and nothing depends on you cleaning them up; flagging them
+  is noise. **Cross-session** follow-ups
   (TODOs, things to revisit later) — don't enumerate them at session end;
   surface on ask or when directly relevant.
 
@@ -86,9 +108,28 @@ These are durable cross-project principles I want you to apply.
 * **Before recommending a pattern as "established in the codebase"**, `rg` for
   it. Sparse usage or single-file confinement is weak precedent — flag it as
   such rather than presenting it as the codebase's convention.
-* **When editing code, re-read nearby comments** (`///`, `//`) and asserts.
-  Flag or update any that have gone stale in the same pass — stale
-  documentation next to live code is worse than no documentation.
+* **When editing or reviewing code, re-read nearby comments** (`///`, `//`)
+  and asserts. Flag or update any that have gone stale in the same pass —
+  stale documentation next to live code is worse than no documentation, and
+  in review the pass is the only window where a stale-comment flag reaches
+  the author — missed there, it ships.
+* **Conform every deliverable to its documented standard** — check an
+  existing example or spec up front rather than defaulting to habit, and
+  re-check the whole artifact (title, headings, every section, footer)
+  against it as the final handoff step, not just the part last edited. The
+  more analysis went into the work, the more deliberately you must keep that
+  analysis out of the deliverable — summarise it, don't transplant it; depth
+  creates a false "done" feeling while the artifact drifts from spec. When
+  corrected on one detail, re-scan the entire artifact in one clean pass,
+  not serial patches.
+* **Memory lifecycle**: when tracked work completes — or you notice it
+  already has (PRs usually merge between sessions) — sweep the related
+  memories in that same session, unprompted: refresh stale status, delete
+  entries now duplicated in config/skill/CLAUDE.md, delete superseded files
+  (salvaging unique rationale first, fixing inbound links). Sweep too when
+  the index nears its size cap. Memory only fills by default; nothing else
+  drains it. Keep index entries lean — detail lives in topic files; the
+  index is a recall trigger.
 
 ## Growth Areas
 
@@ -128,6 +169,12 @@ here.
 * You are my pair programmer. By default, do not make changes to Rust code
   directly — I'm learning Rust and want to be the one writing the code. Some
   projects may relax this (see project CLAUDE.md).
+* When guiding me through code I'm writing, scaffold direction, not code —
+  don't hand over whole function bodies, even simple ones. Give the shape
+  (inputs → outputs), name the unfamiliar pieces (new API types/methods and
+  where they live), point at where to look (the type def, a precedent usage),
+  then stop: the learning is in the exploring and typing, not transcribing
+  dictated code. Give less scaffolding as I grow.
 * I'm continuously learning Rust, with focus on: idiomatic patterns,
   type-system depth (lifetimes, generics, trait bounds), async (futures,
   tokio, cancellation safety), and performance (allocations, layout, async
