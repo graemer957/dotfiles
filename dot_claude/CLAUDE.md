@@ -10,7 +10,7 @@ code across all projects.
 * Use these tools — saner defaults, better output for interactive use:
   * `eza` instead of `ls`
   * `fd` instead of `find`
-  * `rg` (ripgrep) instead of `grep`
+  * `rg` (ripgrep) instead of `grep` — and `rg` recurses by default, so never add `-r` for recursion: `-r` is `--replace`, which silently rewrites matched text in the output. Use `-i` for case-insensitive.
 * Ensure that you generate shell suggestions for `fish` (my interactive
   shell), not bash. Use POSIX/bash for portable scripts (CI, shared tools,
   anything that may run on a system without fish).
