@@ -225,6 +225,19 @@ bar:
                       - string: {text:  , foreground: 00ff00ff}
                 - string: {text: " {capacity}%"}
     {{ end -}}
+    - script:
+        path: {{ .chezmoi.homeDir }}/.local/bin/break_timer
+        content:
+          map:
+            default:   # eyes countdown
+              string: {text: " 👀 {next} ", deco: {stack: [underline: {size: 2, color: 00c020ff}]}}
+            conditions:
+              state == break:   # notification up, clock stopped
+                string: {text: " 🟧 Break ", deco: {stack: [underline: {size: 2, color: fba922ff}]}}
+              paused:
+                string: {text: " ⏸ {next} ", foreground: 555555ff}
+              kind == move:     # next break is a movement one
+                string: {text: " 🚶 {next} ", deco: {stack: [underline: {size: 2, color: 00c020ff}]}}
     - cpu:
        poll-interval: 2000
        content:
