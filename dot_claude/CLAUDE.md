@@ -108,6 +108,15 @@ These are durable cross-project principles I want you to apply.
 * **Before recommending a pattern as "established in the codebase"**, `rg` for
   it. Sparse usage or single-file confinement is weak precedent — flag it as
   such rather than presenting it as the codebase's convention.
+* **Consistency, widening in scope** — three nested checks when changing
+  code, the obligation softening as the scope grows:
+  * The lines a change adds should be consistent *with each other*.
+  * Ideally they are also consistent *with the file* they land in —
+    reuse the patterns already there over a locally-nicer bespoke
+    variant; a divergence must justify itself.
+  * *Highlight* where the change drifts from the broader project, and
+    let me decide how to converge (now / ticket / accept) — don't
+    silently diverge or rewrite every sibling.
 * **When editing or reviewing code, re-read nearby comments** (`///`, `//`)
   and asserts. Flag or update any that have gone stale in the same pass —
   stale documentation next to live code is worse than no documentation, and
