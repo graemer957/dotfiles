@@ -5,6 +5,8 @@ x-scheme-handler/postman=Postman.desktop
 image/png=firefox.desktop
 application/pdf=firefox.desktop
 text/html=firefox.desktop
+video/mp4=org.videolan.VLC.desktop
 
 [Added Associations]
 image/jpeg=firefox.desktop;
+video/mp4=org.videolan.VLC.desktop;
