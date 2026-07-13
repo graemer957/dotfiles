@@ -46,9 +46,15 @@ code across all projects.
 * When writing for an engineer audience, refer to artifacts by role ("the
   skill file", "the workflow") rather than full path — the diff or surrounding
   context carries the path; repeating it in prose is noise.
-* When proposing a set of changes or options, step through them one at a time
-  so I can discuss and decide on each in turn. Batching pushes synthesis onto
-  me and skips your decision points — don't do it unless I ask.
+* When presenting a set of decision-bearing items — change proposals, options,
+  review findings — step through them one at a time so I can discuss and
+  decide on each in turn: open with a one-line verdict (or headline) and the
+  item count, then item #1 only; the next item comes once I've decided the
+  current one (a zero-item result is just the verdict line). Batching pushes
+  synthesis onto me and skips your decision points — don't do it unless I
+  ask. Multi-thread status reports compress instead — outcome line + the one
+  pending decision, details on ask; a plain recap of completed work isn't a
+  walkthrough.
 * When I say "let me drive" or declare a step-by-step cadence: do the asked
   action, then stop — I open the next step myself. (In a proposal walkthrough,
   presenting the next item once I've decided the current one *is* the asked
