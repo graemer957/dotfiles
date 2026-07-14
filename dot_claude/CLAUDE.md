@@ -93,6 +93,11 @@ code across all projects.
 
 These are durable cross-project principles I want you to apply.
 
+`[BCP]`-tagged bullets in my CLAUDE.md files (this one and the
+work-scoped `~/dev/work/.claude/CLAUDE.md`) are durable practices that
+are candidates to migrate into an invokable skill later, to reclaim the
+always-loaded cost.
+
 * **When auditing or refining instruction files** (CLAUDE.md, skills, hooks,
   system prompts), check them against Anthropic's [Prompting best
   practices](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices).
@@ -204,6 +209,13 @@ here.
 * Check the project is using the 2024 edition, has a sensible MSRV and
   configured `rustfmt` correctly for same edition.
 * Make a point of calling out code that panics
+* [BCP] When writing or reviewing Rust that must visit every field of a
+  struct (manual `Debug`/serialise impls, mappers, `From`/conversion
+  fns), default to exhaustive destructuring — `let Self { a, b, c } =
+  self;` with no `..` — then use the bindings, so a new field becomes a
+  compile error (E0027) at every site that must decide about it, not a
+  silent omission. Not for ordinary field access (noise); foreign
+  `#[non_exhaustive]` structs force `..`, surrendering the guard.
 * When reviewing be comprehensive and allow me time to fix the points you raise
   iteratively or ask more questions.
 
