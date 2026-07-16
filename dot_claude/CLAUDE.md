@@ -111,27 +111,34 @@ code across all projects.
 
 ## Best Current Practices
 
-These are durable cross-project principles I want you to apply.
+These are durable cross-project principles (BCPs), applied always. The
+canonical index is the `bcp` skill's registry
+(`~/.claude/skills/bcp/registry.md`); the bullets here are the ambient
+subset no file-path or task trigger can scope. Trigger-bound BCPs live in
+`~/.claude/rules/` and the skill's supporting files. New candidates: park
+in my personal TODO tagged `[BCP]`, then graduate via `/bcp`.
 
-`[BCP]`-tagged bullets in my CLAUDE.md files (this one and the
-work-scoped `~/dev/work/.claude/CLAUDE.md`) are durable practices that
-are candidates to migrate into an invokable skill later, to reclaim the
-always-loaded cost.
-
-* **When auditing or refining instruction files** (CLAUDE.md, skills, hooks,
-  system prompts), check them against Anthropic's [Prompting best
-  practices](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices).
-  Common things to flag: missing *why* clauses, weasel-room hedges ("if
-  installed", "where possible"), overlapping/redundant rules, absolute rules
-  that should be defaults with an escape hatch, negative framings that could
-  be positive, scope ambiguity, contradictions across files, and rules whose
-  trigger is too narrow to justify always-loaded cost — those belong in
-  memory, not CLAUDE.md.
-* **After an audit, self-check against the same doc** — ask "did I apply the
-  principles I was just checking against?" The doc is dense; on first pass
-  it's easy to catch surface principles (clarity, positive framing) and miss
-  deeper ones (add the *why* behind each rule). The self-check usually
-  surfaces the highest-leverage second-pass work.
+* **Structural fix over doc rule** — when a fix is a new "remember to…"
+  instruction, first look for the structural fix that makes the footgun
+  impossible (a shared dependency, a chained recipe, a lint, a type);
+  documentation-as-mitigation only when tooling genuinely can't enforce
+  the invariant.
+* **A sweep needs a gate** — a repo-wide one-shot remediation fixes only
+  the snapshot it branched from; parallel branches reintroduce the
+  anti-pattern on merge. Pair every sweep with a check that runs on every
+  PR.
+* **Comments state the present** — a comment documents the current
+  invariant and its why, never the change that produced it ("instead of",
+  "now", "previously" are red flags); that history lives in the diff and
+  PR body.
+* **Immutable text states invariants** — commit messages and other
+  write-once text carry only what stays permanently true, never a
+  point-in-time measurement or speed claim; measurements belong where they
+  can be dated and re-measured (the PR body).
+* **Throw on violated invariants** — a "can't happen" branch fails loudly
+  (throw/assert) rather than degrading into a swallowed failure state that
+  hides the bug from monitoring; graceful handling is reserved for
+  genuinely-expected failures.
 * **Never reference my personal notes (in Obsidian) in shared artifacts** —
   PRs, commits, public docs, anything visible to anyone but me. Inline-summarise
   the concept and link to public sources instead. Personal notes are private
@@ -229,13 +236,6 @@ here.
 * Check the project is using the 2024 edition, has a sensible MSRV and
   configured `rustfmt` correctly for same edition.
 * Make a point of calling out code that panics
-* [BCP] When writing or reviewing Rust that must visit every field of a
-  struct (manual `Debug`/serialise impls, mappers, `From`/conversion
-  fns), default to exhaustive destructuring — `let Self { a, b, c } =
-  self;` with no `..` — then use the bindings, so a new field becomes a
-  compile error (E0027) at every site that must decide about it, not a
-  silent omission. Not for ordinary field access (noise); foreign
-  `#[non_exhaustive]` structs force `..`, surrendering the guard.
 * When reviewing be comprehensive and allow me time to fix the points you raise
   iteratively or ask more questions.
 
