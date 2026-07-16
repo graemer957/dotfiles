@@ -111,3 +111,9 @@ Index of every Best Current Practice. Each entry's `Home` is where its adherence
 - Home: work-level CLAUDE.md (final; machine-specific examples stay private)
 - Trigger: authoring anything checked into a team repo
 - Detect: search shared artifacts for personal-only tooling
+
+### pr-review-workflow
+- Statement: PR review findings stay within the diff's changed files; verify against stacked child PRs before and after the review; grade a proposed fix separately from its hazard; findings adversarially validated by minimal-context agents before reaching the reviewer, then staged as one pending review the reviewer submits themself.
+- Home: `review-pr` skill in the work profile (final)
+- Trigger: reviewing a pull request
+- Detect: judgement — review-time

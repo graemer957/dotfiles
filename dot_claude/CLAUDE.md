@@ -105,9 +105,14 @@ code across all projects.
 
 * Dotfiles under `~/.config/` and elsewhere in `$HOME` are managed by
   `chezmoi`. The source tree is at `~/.local/share/chezmoi/`.
-* Before editing any file in `$HOME`, check whether it's managed (`chezmoi
-  managed <path>`) and edit the source instead. Verify sync afterwards with
-  `chezmoi diff <path>`.
+* Before editing any file in `$HOME`, check `chezmoi managed <path>`:
+  * **Already managed** → edit the chezmoi source (`chezmoi source-path
+    <path>`); I review and `chezmoi apply`.
+  * **New file** → write to the live location; I `chezmoi add` it. (The first
+    staged edit after an add may prompt "overwriting a change" on apply —
+    add-from-live leaves chezmoi's last-written record stale; check `chezmoi
+    diff`, then overwrite.)
+  * Either way, `apply`/`add` is mine — hand back once the edit is staged.
 
 ## Best Current Practices
 
@@ -187,7 +192,8 @@ here.
   * **Performance** — algorithmic (Big-O, data-structure choice), memory
     (working-set, allocation patterns), I/O (network, disk, query plans,
     batching), and concurrency/contention (locks, async scheduling, parallel
-    speedup). Language-agnostic; Rust-specific perf covered in `## Rust`.
+    speedup). Language-agnostic; Rust-specific perf is covered in the
+    path-scoped Rust rule (`~/.claude/rules/rust.md`).
   * **Systems-level engineering** — drawn to platform work (compilers,
     browsers, operating systems, libraries). I want to be able to follow
     internals, not just use them.
@@ -222,55 +228,6 @@ here.
   where they live), point at where to look (the type def, a precedent usage),
   then stop: the learning is in the exploring and typing, not transcribing
   dictated code. Give less scaffolding as I grow.
-* I'm continuously learning Rust, with focus on: idiomatic patterns,
-  type-system depth (lifetimes, generics, trait bounds), async (futures,
-  tokio, cancellation safety), and performance (allocations, layout, async
-  overhead).
-* Highlight idiomatic Rust and expert-level patterns I may not have seen;
-  point out idioms I'm using wrongly.
-* Correct my terminology when I'm wrong, even on small points.
-* Optimise for **maintainability** — simple, readable solutions; choose
-  imperative vs functional on clarity; avoid over-engineering.
-* Keep an eye on allocations. Feel free to point out where they could be reduced.
-  * Use references when possible
-* Check the project is using the 2024 edition, has a sensible MSRV and
-  configured `rustfmt` correctly for same edition.
-* Make a point of calling out code that panics
-* When reviewing be comprehensive and allow me time to fix the points you raise
-  iteratively or ask more questions.
-
-### Commands
-
-These are the bare-`cargo` equivalents. Where a project provides `just`
-recipes, prefer those.
-
-#### Checking
-
-```bash
-# Check a local package and all of its dependencies for errors
-cargo c
-```
-
-#### Building
-
-```bash
-# Compile a local package and all of its dependencies
-cargo b
-```
-
-#### Testing
-
-```bash
-# Execute all unit and integration tests and build examples of a local package
-cargo nextest run
-
-# Check code coverage
-cargo llvm-cov nextest --html
-```
-
-#### Linting
-
-```bash
-# Checks a package to catch common mistakes and improve your Rust code.
-cargo clippy
-```
+* The rest of my Rust guidance (learning focus, idiom/allocation/panic
+  call-outs, project checks, commands) is path-scoped in
+  `~/.claude/rules/rust.md` — it loads when Rust files enter context.
