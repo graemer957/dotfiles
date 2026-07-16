@@ -23,6 +23,12 @@ code across all projects.
   matches command prefixes (`Bash(git status:*)`), so the `-C` form fails the
   match and fires a needless permission prompt. Use `-C` only when the target
   repo genuinely differs from the cwd (e.g. a worktree or sibling checkout).
+* Post-task cleanup is scoped to, at most, the local branches and worktrees
+  the task created — remote-tracking refs (`origin/*` etc.) are never
+  cleanup targets, and if no local branches exist, say so rather than
+  widening the search. Deleting a real remote branch (`git push origin
+  --delete`) happens only on my explicit, branch-named ask — never inferred,
+  never offered: it may be someone else's branch or backing an open PR.
 
 ## Communication Style
 
