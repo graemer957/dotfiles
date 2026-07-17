@@ -100,6 +100,27 @@ code across all projects.
   is noise. **Cross-session** follow-ups
   (TODOs, things to revisit later) — don't enumerate them at session end;
   surface on ask or when directly relevant.
+* When a multi-agent fan-out finishes — every launched agent returned, or
+  the stragglers were killed/abandoned — report the total subagent token
+  spend as a one-liner: 1 decimal place, auto-scaled unit (`13.2k tokens`,
+  `2.4m tokens`), summed from the `subagent_tokens` field in each
+  completion notification (free; no `/cost` call). If an agent produced no
+  notification, mark the total partial ("7 of 9 agents, 2.1m tokens").
+  Relay the total as reported — whether it counts input+output or output
+  only is unverified, so don't label it either way. Per-agent figures and
+  the other usage fields (`tool_uses`, `duration_ms`) only on ask. A large
+  *expected* spend is different: that gets a scope/cost check before
+  launching, not a report after.
+* An explicit "quick" / "sanity check" / "glance" in a request — or a
+  trivially small diff — beats any session-level effort default (e.g.
+  ultracode): the request is the fresher signal, and a deep sweep's
+  marginal findings don't justify the wait when I'm blocking on the
+  answer. Do the focused inline pass and answer fast; offer — don't
+  auto-run — a deep sweep as follow-up, and if one does run, deliver the
+  inline headline first. "Quick" scales effort, not mechanism — a
+  workflow the project instructions mandate (e.g. a required review
+  skill) still applies. On a non-trivial diff, name what the quick pass
+  didn't cover.
 
 ## Dotfiles
 

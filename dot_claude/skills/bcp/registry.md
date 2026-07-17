@@ -90,6 +90,12 @@ Index of every Best Current Practice. Each entry's `Home` is where its adherence
 - Trigger: adding or reviewing piped commands in CI run steps
 - Detect: search workflows for `run:` pipelines where the failure-bearing command isn't last and no `shell:` / `set -o pipefail` applies
 
+### instantiation-checked-unproven
+- Statement: a `macro_rules!` body is checked only at expansion — names and types resolve per call site, not at definition — so an uncalled macro (or an arm no call site exercises) compiles clean regardless of its contents. "It compiles" counts as evidence only once every arm has an in-tree expansion (a call site or test); until then treat unexpanded arms as unproven, in both authoring and review.
+- Home: ~/.claude/rules/rust.md (final)
+- Trigger: writing or reviewing `macro_rules!` code, or citing its compile status as verification
+- Detect: find `macro_rules!` definitions; check each arm has an expanding call site or test
+
 ## Task-moment — home: this skill
 
 ### audit-instruction-files
