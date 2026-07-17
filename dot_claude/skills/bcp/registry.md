@@ -84,6 +84,12 @@ Index of every Best Current Practice. Each entry's `Home` is where its adherence
 - Trigger: adding or editing CI tool-install steps
 - Detect: search workflows for pinned download-and-verify installs; compare pinned versions against upstream latest
 
+### pipes-mask-exit-status
+- Statement: a pipeline exits with its last command's status, and GitHub Actions `run:` steps default to `bash -e` without `pipefail` — so `cmd | tee …` goes green when `cmd` fails. When a piped step's status-bearing command isn't last, make its failure propagate: explicit `shell: bash` selects `bash -eo pipefail`, or set workflow-level `defaults.run.shell` to fix it by construction. Pipes ending in the command that matters are unaffected.
+- Home: ~/.claude/rules/ci.md (final)
+- Trigger: adding or reviewing piped commands in CI run steps
+- Detect: search workflows for `run:` pipelines where the failure-bearing command isn't last and no `shell:` / `set -o pipefail` applies
+
 ## Task-moment — home: this skill
 
 ### audit-instruction-files

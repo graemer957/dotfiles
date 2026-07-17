@@ -7,6 +7,7 @@ paths:
 # Rust
 
 - Code whose job is to visit every field of a struct — manual `Debug`/serialise impls, mappers, `From`/conversion fns — opens with exhaustive destructuring (`let Self { a, b, c } = self;`, no `..` rest pattern), so a new field becomes a compile error (E0027) at every site that must decide about it. Same-crate types only: foreign `#[non_exhaustive]` structs force `..`, surrendering the guard. Not for ordinary field access — noise.
+- Refer to traits and types by `use`-imported short name (`T: Debug`, not `T: std::fmt::Debug`) — a fully-qualified path in a signature or bound usually signals a missing import. Qualify only to break a real name collision (e.g. a crate's own `Result` beside `std`'s) or in one-off macro/generated contexts. The prelude ships the `#[derive(Debug)]` *macro*, not the `Debug` *trait* — deriving never needs an import; naming the trait always does.
 - I'm continuously learning Rust, with focus on: idiomatic patterns, type-system depth (lifetimes, generics, trait bounds), async (futures, tokio, cancellation safety), and performance (allocations, layout, async overhead).
 - Highlight idiomatic Rust and expert-level patterns I may not have seen; point out idioms I'm using wrongly.
 - Correct my terminology when I'm wrong, even on small points.
