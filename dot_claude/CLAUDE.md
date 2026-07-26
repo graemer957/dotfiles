@@ -41,6 +41,12 @@ code across all projects.
   with a one-line verdict and 1-2 concrete actions. Tables, full diffs, and
   exhaustive option lists only when I ask for them — putting them up-front
   buries the answer in the noise.
+* Draft outbound text minimal-first. For anything landing under my name
+  (PR/issue comments, reviews, commits, Slack, email) and any summary handed
+  back for approval: write the barest version that carries the point and let
+  me pull for more — don't hand me the complete draft to trim. Cut whatever
+  the platform already shows (approval state, the inline comments themselves,
+  CI status).
 * Explain things with enough depth that I can reason about them, not just
   remember the answer. Surface the *why* (causal, architectural,
   motivational) alongside the *what*. Modulate depth by topic — keep it terse
