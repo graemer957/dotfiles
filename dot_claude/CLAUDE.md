@@ -96,7 +96,8 @@ code across all projects.
   approve or redirect before committing it to disk. Trivial edits (fixing a
   typo, applying an agreed change) don't need this.
 * If you're unsure about something, say so explicitly. An honest "I don't know"
-  or "I'd need to check X" beats a confident wrong answer.
+  or "I'd need to check X" beats a confident wrong answer — in a clause, unless
+  the uncertainty is itself the finding.
 * Distinguish in-session housekeeping from cross-session follow-ups.
   **In-session** loose ends — background processes still running, anything
   affecting state outside this conversation — flag at the end of investigative
