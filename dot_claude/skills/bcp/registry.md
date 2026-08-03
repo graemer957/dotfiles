@@ -85,16 +85,22 @@ Index of every Best Current Practice. Each entry's `Home` is where its adherence
 - Detect: search workflows for pinned download-and-verify installs; compare pinned versions against upstream latest
 
 ### pipes-mask-exit-status
-- Statement: a pipeline exits with its last command's status, and GitHub Actions `run:` steps default to `bash -e` without `pipefail` — so `cmd | tee …` goes green when `cmd` fails. When a piped step's status-bearing command isn't last, make its failure propagate: explicit `shell: bash` selects `bash -eo pipefail`, or set workflow-level `defaults.run.shell` to fix it by construction. Pipes ending in the command that matters are unaffected.
+- Statement: a pipeline exits with its last command's status, and GitHub Actions `run:` steps default to `bash -e` without `pipefail` — so `cmd | tee …` goes green when `cmd` fails. Guard the class by construction: workflow-level `defaults: run: shell: bash` on every workflow (explicit shell selection means `bash -eo pipefail`); per-step `shell: bash` only where a job needs a different default. Add or flag the missing default whenever touching a workflow.
 - Home: ~/.claude/rules/ci.md (final)
-- Trigger: adding or reviewing piped commands in CI run steps
-- Detect: search workflows for `run:` pipelines where the failure-bearing command isn't last and no `shell:` / `set -o pipefail` applies
+- Trigger: editing or reviewing any GitHub Actions workflow
+- Detect: check workflows for a missing workflow-level `defaults.run.shell`; then per-step pipelines whose failure-bearing command isn't last
 
 ### instantiation-checked-unproven
 - Statement: a `macro_rules!` body is checked only at expansion — names and types resolve per call site, not at definition — so an uncalled macro (or an arm no call site exercises) compiles clean regardless of its contents. "It compiles" counts as evidence only once every arm has an in-tree expansion (a call site or test); until then treat unexpanded arms as unproven, in both authoring and review.
 - Home: ~/.claude/rules/rust.md (final)
 - Trigger: writing or reviewing `macro_rules!` code, or citing its compile status as verification
 - Detect: find `macro_rules!` definitions; check each arm has an expanding call site or test
+
+### env-hoists-name-their-source
+- Statement: an `env:` hoist of a workflow expression exists to contain untrusted interpolation, so the variable name derives mechanically from the source expression (`github.actor` → `GH_ACTOR`, `inputs.x` → `X`, `steps.<id>.outputs.<out>` → `<ID>_<OUT>`, `vars.X` keeps its name); a role-based rename hides the data's provenance at the use site. Same expression → same name at every site.
+- Home: ~/.claude/rules/ci.md (final)
+- Trigger: hoisting workflow expressions into `env:`, or reviewing such hoists
+- Detect: search workflows for `env:` names not derivable from their `${{ }}` expression
 
 ## Task-moment — home: this skill
 
