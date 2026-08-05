@@ -102,6 +102,12 @@ Index of every Best Current Practice. Each entry's `Home` is where its adherence
 - Trigger: hoisting workflow expressions into `env:`, or reviewing such hoists
 - Detect: search workflows for `env:` names not derivable from their `${{ }}` expression
 
+### hardening-sweeps-audit-actions
+- Statement: a sweep that changes a job's ambient environment (credentials, permissions, tokens, network) must audit each *action's* internal behaviour per event type, not just the workflow's visible steps — action internals can be event-conditional in ways PR CI never exercises, so the push/schedule path breaks invisibly pre-merge.
+- Home: ~/.claude/rules/ci.md (final)
+- Trigger: any sweep changing a workflow job's ambient environment (credentials, permissions, tokens, network)
+- Detect: judgement — for each action in a swept job, check its inputs/behaviour on non-PR events
+
 ## Task-moment — home: this skill
 
 ### audit-instruction-files
