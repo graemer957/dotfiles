@@ -17,7 +17,7 @@ PS1='[\u@\h \W]\$ '
 
 if [[ "$(tty)" == "/dev/tty5" ]] then
 	start-hyprland
-else
+elif [[ -z "$BASH_EXECUTION_STRING" ]]; then
 	exec fish
 fi
 {{- else -}}
