@@ -1,0 +1,333 @@
+------------------
+---- MONITORS ----
+------------------
+
+-- See https://wiki.hypr.land/Configuring/Basics/Monitors/
+hl.monitor({ output = "", mode = "preferred", position = "auto", scale = "auto" })
+
+-- Disable built-in display
+-- hl.monitor({ output = "eDP-1", disabled = true })
+
+-- This does the same as GNOME and stops the signal
+-- hl.monitor({ output = "DP-1", mode = "3440x1440@99.98Hz", position = "auto", scale = "auto" })
+hl.monitor({
+    output   = "desc:Dell Inc. DELL S3423DWC 4C0TNH3",
+    mode     = "3440x1440@99.98Hz",
+    position = "auto",
+    scale    = "auto",
+})
+
+-- Happy days at least I get 60Hz under Hyprland!
+-- hl.monitor({ output = "DP-1", mode = "3440x1440@59.97Hz", position = "auto", scale = "auto" })
+
+-- Gaming screen
+-- FIXME: Using `desc` does not seem to work right now, due to # in the
+-- description itself (ie, cannot find way to escape)
+hl.monitor({ output = "DP-1", mode = "1920x1080@240.00Hz", position = "auto", scale = "auto" })
+
+
+---------------------
+---- MY PROGRAMS ----
+---------------------
+
+-- Set programs that you use
+local terminal = "alacritty"
+local menu     = "rofi -show drun"
+local browser  = "firefox"
+
+
+-------------------
+---- AUTOSTART ----
+-------------------
+
+-- Autostart necessary processes (like notifications daemons, status bars, etc.)
+-- Or execute your favorite apps at launch like this:
+
+hl.on("hyprland.start", function()
+    hl.exec_cmd("yambar")
+    hl.exec_cmd(browser)
+    hl.exec_cmd("dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP")
+    hl.exec_cmd("/usr/lib/mate-polkit/polkit-mate-authentication-agent-1")
+    hl.exec_cmd("alacritty", { workspace = "2 silent" })
+    hl.exec_cmd("1password", { workspace = "special:magic silent" })
+    hl.exec_cmd("signal-desktop", { workspace = "special:magic silent" })
+    hl.exec_cmd("alacritty", { workspace = "special:magic silent" })
+
+    -- Colour scheme - modern apps read this via `xdg-desktop-portal`
+    hl.exec_cmd("gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'")
+    hl.exec_cmd("gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita-dark'")
+end)
+
+
+-------------------------------
+---- ENVIRONMENT VARIABLES ----
+-------------------------------
+
+-- See https://wiki.hypr.land/Configuring/Advanced-and-Cool/Environment-variables/
+
+hl.env("XCURSOR_SIZE", "24")
+hl.env("HYPRCURSOR_SIZE", "24")
+hl.env("EDITOR", "nvim")
+hl.env("BROWSER", browser)
+hl.env("NAME", "Graeme Read")
+hl.env("EMAIL", "graeme@sigma957.net")
+hl.env("TZ", "Europe/London")
+
+-- Enable dark mode for QT apps
+-- See: https://wiki.archlinux.org/title/Dark_mode_switching
+hl.env("QT_STYLE_OVERRIDE", "Adwaita-Dark")
+
+{{ if eq .chezmoi.hostname "switch" -}}
+-- nVidia tweaks
+hl.env("LIBVA_DRIVER_NAME", "nvidia")
+hl.env("XDG_SESSION_TYPE", "wayland")
+hl.env("GBM_BACKEND", "nvidia-drm")
+hl.env("__GLX_VENDOR_LIBRARY_NAME", "nvidia")
+
+hl.config({
+    cursor = {
+        no_hardware_cursors = true,
+        no_warps            = true,
+    },
+})
+
+-- VA-API support in Firefox
+hl.env("NVD_BACKEND", "direct")
+hl.env("MOZ_DISABLE_RDD_SANDBOX", "1")
+hl.env("__EGL_VENDOR_LIBRARY_FILENAMES", "/usr/share/glvnd/egl_vendor.d/10_nvidia.json")
+
+-- Work shizzle
+-- Use `podman` in rootless mode, see https://java.testcontainers.org/features/configuration/
+hl.env("DOCKER_HOST", "unix:///run/user/1000/podman/podman.sock")
+hl.env("TESTCONTAINERS_RYUK_DISABLED", "true")
+{{- end }}
+
+
+-----------------------
+---- LOOK AND FEEL ----
+-----------------------
+
+-- Refer to https://wiki.hypr.land/Configuring/Basics/Variables/
+hl.config({
+    general = {
+        gaps_in  = 2,
+        gaps_out = 8,
+
+        border_size = 1,
+
+        col = {
+            active_border   = "rgb(fabd2f)",
+            inactive_border = "rgb(222222)",
+        },
+
+        -- Set to true to enable resizing windows by clicking and dragging on borders and gaps
+        resize_on_border = false,
+
+        -- Please see https://wiki.hypr.land/Configuring/Advanced-and-Cool/Tearing/ before you turn this on
+        allow_tearing = false,
+
+        layout = "dwindle",
+    },
+
+    decoration = {
+        rounding = 0,
+
+        -- Change transparency of focused and unfocused windows
+        active_opacity   = 1.0,
+        inactive_opacity = 1.0,
+
+        shadow = {
+            enabled = false,
+        },
+
+        blur = {
+            enabled = false,
+        },
+    },
+
+    animations = {
+        enabled = true,
+    },
+})
+
+hl.animation({ leaf = "global",     enabled = true, speed = 3, bezier = "default" })
+hl.animation({ leaf = "workspaces", enabled = false })
+
+-- See https://wiki.hypr.land/Configuring/Layouts/Dwindle-Layout/ for more
+hl.config({
+    dwindle = {
+        preserve_split = true, -- You probably want this
+    },
+})
+
+-- See https://wiki.hypr.land/Configuring/Layouts/Master-Layout/ for more
+hl.config({
+    master = {
+        new_status = "master",
+    },
+})
+
+hl.config({
+    misc = {
+        force_default_wallpaper  = 0,
+        disable_hyprland_logo    = true,
+        disable_splash_rendering = true,
+    },
+})
+
+
+---------------
+---- INPUT ----
+---------------
+
+hl.config({
+    input = {
+        kb_layout  = "gb",
+        kb_variant = "",
+        kb_model   = "",
+        kb_options = "",
+        kb_rules   = "",
+
+        follow_mouse = 0,
+
+        sensitivity = 0.0,
+
+        touchpad = {
+            natural_scroll      = true,
+            clickfinger_behavior = true,
+            tap_to_click        = false,
+        },
+    },
+
+    gestures = {
+        workspace_swipe_touch = false,
+    },
+
+    -- Experimental
+    cursor = {
+        hide_on_key_press = true,
+    },
+})
+
+
+---------------------
+---- KEYBINDINGS ----
+---------------------
+
+-- See https://wiki.hypr.land/Configuring/Basics/Binds/
+local mainMod = "SUPER" -- Sets "Windows" key as main modifier
+
+hl.bind(mainMod .. " + A", hl.dsp.exec_cmd(terminal))
+hl.bind(mainMod .. " + W", hl.dsp.window.close())
+hl.bind(mainMod .. " + CTRL + SHIFT + M", hl.dsp.exit())
+hl.bind(mainMod .. " + R", hl.dsp.exec_cmd(menu))
+hl.bind(mainMod .. " + equal", hl.dsp.exec_cmd([[rofi -show calc -modi calc -no-show-match -no-sort -calc-command "echo '{result}' | wl-copy"]]))
+hl.bind(mainMod .. " + L", hl.dsp.exec_cmd("~/.local/bin/lock"))
+hl.bind(mainMod .. " + CTRL + SHIFT + S", hl.dsp.exec_cmd("~/.local/bin/lock & sleep 5 && systemctl suspend"))
+-- pause/resume break timer
+hl.bind(mainMod .. " + B", hl.dsp.exec_cmd("pkill --signal USR1 -f 'bin/break_timer'"))
+hl.bind(mainMod .. " + SHIFT + V", hl.dsp.window.float({ action = "toggle" }))
+hl.bind(mainMod .. " + SHIFT + P", hl.dsp.window.pseudo()) -- dwindle
+hl.bind(mainMod .. " + comma", hl.dsp.layout("togglesplit")) -- dwindle
+hl.bind(mainMod .. " + period", hl.dsp.exec_cmd("rofi -modi emoji -show emoji"))
+hl.bind(mainMod .. " + F", hl.dsp.window.fullscreen())
+hl.bind(mainMod .. " + SHIFT + A", hl.dsp.exec_cmd(browser .. " & " .. terminal))
+
+-- Screenshots
+hl.bind("Print", hl.dsp.exec_cmd("grim"))
+hl.bind("SHIFT + Print", hl.dsp.exec_cmd([[grim -g "$(slurp)"]]))
+
+-- Handy audio control
+hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd("pactl set-sink-mute @DEFAULT_SINK@ false ; pactl set-sink-volume @DEFAULT_SINK@ -3%"))
+hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("pactl set-sink-mute @DEFAULT_SINK@ false ; pactl set-sink-volume @DEFAULT_SINK@ +3%"))
+hl.bind("XF86AudioMute", hl.dsp.exec_cmd("pactl set-sink-mute @DEFAULT_SINK@ toggle"))
+hl.bind(mainMod .. " + P", hl.dsp.exec_cmd("playerctl play-pause"))
+hl.bind(mainMod .. " + I", hl.dsp.exec_cmd("playerctl next"))
+hl.bind(mainMod .. " + U", hl.dsp.exec_cmd("playerctl previous"))
+
+local btHeadset = "AC:80:0A:7B:00:87"
+hl.bind(mainMod .. " + XF86AudioMute", hl.dsp.exec_cmd("bluetoothctl connect " .. btHeadset))
+hl.bind(mainMod .. " + SHIFT + XF86AudioMute", hl.dsp.exec_cmd("bluetoothctl disconnect " .. btHeadset))
+
+-- Move focus with alt + vim arrow keys
+hl.bind("ALT + h", hl.dsp.focus({ direction = "left" }))
+hl.bind("ALT + SHIFT + h", hl.dsp.window.resize({ x = -32, y = 0, relative = true }))
+hl.bind("ALT + l", hl.dsp.focus({ direction = "right" }))
+hl.bind("ALT + SHIFT + l", hl.dsp.window.resize({ x = 32, y = 0, relative = true }))
+hl.bind("ALT + k", hl.dsp.focus({ direction = "up" }))
+hl.bind("ALT + SHIFT + k", hl.dsp.window.resize({ x = 0, y = -32, relative = true }))
+hl.bind("ALT + j", hl.dsp.focus({ direction = "down" }))
+hl.bind("ALT + SHIFT + j", hl.dsp.window.resize({ x = 0, y = 32, relative = true }))
+
+-- Percentage resizes: the Lua resize dispatcher takes pixels only, so resolve
+-- the monitor-relative width at dispatch time.
+local function resizeExactPct(pctW, pctH)
+    return function()
+        local m = hl.get_active_monitor()
+        if not m then return end
+        hl.dispatch(hl.dsp.window.resize({
+            x = math.floor(m.width * pctW / 100),
+            y = math.floor(m.height * pctH / 100),
+        }))
+    end
+end
+
+hl.bind("ALT + SHIFT + bracketleft",  resizeExactPct(33, 100)) -- left 1/3, right 2/3
+hl.bind("ALT + SHIFT + bracketright", resizeExactPct(67, 100)) -- left 2/3, right 1/3
+hl.bind("ALT + SHIFT + equal",        resizeExactPct(50, 100)) -- reset to 50/50
+
+-- Switch workspaces with mainMod + [0-9]
+-- Move active window to a workspace with mainMod + SHIFT + [0-9]
+for i = 1, 10 do
+    local key = i % 10 -- 10 maps to key 0
+    hl.bind(mainMod .. " + " .. key, hl.dsp.focus({ workspace = i }))
+    hl.bind(mainMod .. " + SHIFT + " .. key, hl.dsp.window.move({ workspace = i }))
+end
+
+-- Special workspace (scratchpad)
+hl.bind(mainMod .. " + S", hl.dsp.workspace.toggle_special("magic"))
+hl.bind(mainMod .. " + SHIFT + S", hl.dsp.window.move({ workspace = "special:magic" }))
+
+-- Scroll through workspaces with mainMod + scroll or j/k
+hl.bind(mainMod .. " + mouse_down", hl.dsp.focus({ workspace = "r+1" }))
+hl.bind(mainMod .. " + mouse_up", hl.dsp.focus({ workspace = "r-1" }))
+hl.bind(mainMod .. " + J", hl.dsp.focus({ workspace = "r+1" }))
+hl.bind(mainMod .. " + K", hl.dsp.focus({ workspace = "r-1" }))
+hl.bind(mainMod .. " + SHIFT + J", hl.dsp.window.move({ workspace = "r+1" }))
+hl.bind(mainMod .. " + SHIFT + K", hl.dsp.window.move({ workspace = "r-1" }))
+
+-- Move/resize windows with mainMod + LMB/RMB and dragging
+hl.bind(mainMod .. " + mouse:272", hl.dsp.window.drag(), { mouse = true })
+hl.bind(mainMod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
+
+
+--------------------------------
+---- WINDOWS AND WORKSPACES ----
+--------------------------------
+
+-- See https://wiki.hypr.land/Configuring/Basics/Window-Rules/
+-- and https://wiki.hypr.land/Configuring/Basics/Workspace-Rules/
+
+hl.window_rule({
+    name  = "windowrule-1",
+    match = { class = "^(Rofi)$" },
+    float = true,
+})
+
+hl.window_rule({
+    name  = "windowrule-2",
+    match = { class = ".*" }, -- You'll probably like this.
+    suppress_event = "maximize",
+})
+
+hl.window_rule({
+    name  = "windowrule-3",
+    match = { class = "^(Signal)$" },
+    workspace = "special:magic",
+})
+
+hl.window_rule({
+    name  = "windowrule-4",
+    match = { class = "^(1Password)$", float = false },
+    workspace = "special:magic",
+})
