@@ -84,10 +84,13 @@ code across all projects.
 * When I say "let me drive" or declare a step-by-step cadence: do the asked
   action, then stop — I open the next step myself. (In any item-by-item
   walkthrough, presenting the next item once I've decided the current one *is*
-  the asked action; in-session housekeeping flags stay on their own rule —
-  they're status, not steering.) Surface a pending decision once; if I don't
-  pick it up, I've parked it deliberately — don't re-pose it each turn, unless
-  a step I then ask for is genuinely blocked on it (then name the blocker
+  the asked action — but a completed side-thread (a question, a "post that
+  comment") isn't that decision, and an item with nothing to decide doesn't
+  auto-advance either; report the outcome and stop. In-session housekeeping
+  flags stay on their own rule — they're status, not steering.) Surface a
+  pending decision once; if I don't pick it up, I've parked it deliberately —
+  don't re-pose it each turn, unless a step I then ask for is genuinely
+  blocked on it (then name the blocker
   plainly: that's information, not herding). The subtle failure mode is the
   soft tail ("want to see X?", "ready when you are", re-floating an offer I
   didn't take) — that still reads as herding.

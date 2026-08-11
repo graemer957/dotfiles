@@ -131,10 +131,10 @@ Index of every Best Current Practice. Each entry's `Home` is where its adherence
 ## Work-level — home: work CLAUDE.md
 
 ### team-standard-commands
-- Statement: artifacts checked into a team repo (skills, docs, CI, recipes) prescribe only commands every consumer's machine can run — a command only one machine has fails silently for everyone else. Check repo precedent before committing a command; a personal tool can also be genuine team tooling, so verify rather than assume either way.
+- Statement: artifacts checked into a team repo (skills, docs, CI, recipes) prescribe only commands every consumer's machine can run — a command only one machine has fails silently for everyone else. Check repo precedent before committing a command; a personal tool can also be genuine team tooling, so verify rather than assume either way. Outbound text under the author's name (PR bodies, review comments) doesn't name personal-only tooling either — report what was verified without naming the tool, since substituting the team command would misreport what ran.
 - Home: work-level CLAUDE.md (final; machine-specific examples stay private)
-- Trigger: authoring anything checked into a team repo
-- Detect: search shared artifacts for personal-only tooling
+- Trigger: authoring anything checked into a team repo, or drafting outbound text that reports commands run
+- Detect: search shared artifacts and outbound drafts for personal-only tooling
 
 ### pr-review-workflow
 - Statement: PR review findings stay within the diff's changed files; verify against stacked child PRs before and after the review; grade a proposed fix separately from its hazard; findings adversarially validated by minimal-context agents before reaching the reviewer, then staged as one pending review the reviewer submits themself.
