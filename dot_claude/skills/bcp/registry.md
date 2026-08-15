@@ -64,6 +64,12 @@ Index of every Best Current Practice. Each entry's `Home` is where its adherence
 - Trigger: writing anything shared
 - Detect: search shared artifacts for private-vault references (e.g. "Obsidian", vault paths)
 
+### absence-needs-positive-verification
+- Statement: a single negative signal — a 404, an empty grep, a missing list entry — proves only that the probe saw nothing; many APIs return the same shape for "doesn't exist" and "no permission", and a query can simply be wrong. Assert absent/unused/not-required only when the probe would have shown the thing were it present, or a second independent method agrees; otherwise say "can't see it" and name the limitation, never "it doesn't exist".
+- Home: personal CLAUDE.md § Best Current Practices (final)
+- Trigger: making any absence, unused, or not-required claim
+- Detect: judgement — absence claims resting on a single probe
+
 ## File-scoped — home: path-scoped rules in ~/.claude/rules/
 
 ### derive-dont-mirror-state
@@ -73,10 +79,10 @@ Index of every Best Current Practice. Each entry's `Home` is where its adherence
 - Detect: search for effects whose body only sets state derived from other state/props
 
 ### exhaustive-destructuring
-- Statement: code whose job is to visit every field of a struct (manual Debug/serialise impls, mappers, conversion fns) opens with a full destructure and no `..` rest pattern, so a new field becomes a compile error at every site that must decide about it. Same-crate types only (foreign non-exhaustive structs force `..`); not for ordinary field access.
+- Statement: code whose job is to visit every member of a same-crate closed set — struct fields (manual Debug/serialise impls, mappers, conversion fns: full destructure, no `..` rest pattern) or enum variants (classifier/decision code: exhaustive `match`, no `_` arm, as a method on the enum) — is written so a new field or variant becomes a compile error at every site that must decide about it. Same-crate types only (foreign non-exhaustive types force `..`/`_`, surrendering the guard); not for ordinary field access.
 - Home: ~/.claude/rules/rust.md (final)
-- Trigger: writing or reviewing field-visiting Rust
-- Detect: find manual Debug/serialise/From impls; check for `..` rest patterns; judgement on whether the type is field-visiting
+- Trigger: writing or reviewing field-visiting or variant-classifying Rust
+- Detect: find manual Debug/serialise/From impls and per-variant predicate chains (`is_a() || is_b()`); check for `..` rest patterns and `_` arms
 
 ### pinned-installs-rot
 - Statement: version pins inside CI run steps (pinned curl + checksum installs) are invisible to dependency automation, so they rot silently. Prefer an installer-action manifest that rides routine dependency bumps — confirming the tool is on the action's verified list, since fallback install paths may skip verification; otherwise record the pin somewhere a freshness sweep will find it.

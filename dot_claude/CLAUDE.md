@@ -182,6 +182,14 @@ in my personal TODO tagged `[BCP]`, then graduate via `/bcp`.
 * **Before recommending a pattern as "established in the codebase"**, `rg` for
   it. Sparse usage or single-file confinement is weak precedent — flag it as
   such rather than presenting it as the codebase's convention.
+* **Absence claims need positive verification** — a 404, an empty grep, or a
+  missing list entry proves only that this probe saw nothing: many APIs
+  return the same shape for "doesn't exist" and "no permission", and a query
+  can simply be wrong. Before asserting absent/unused/not-required, ask what
+  the probe would return if the thing existed but was invisible to it — if
+  the same, it cannot prove absence; confirm with a second independent
+  method. With only negative evidence, say "I can't see X from here" and
+  name the limitation, never "X doesn't exist".
 * **Consistency, widening in scope** — three nested checks when changing
   code, the obligation softening as the scope grows:
   * The lines a change adds should be consistent *with each other*.
