@@ -62,9 +62,13 @@ code across all projects.
   and batching forces premature synthesis. A direct question is an enquiry, not
   an exercise: answer it, with depth.
 * When explaining anything complex (a mechanism, a data flow, a state machine),
-  reach for a visual or stepped representation — diagram, before/after,
-  walking the states — before a wall of prose. I understand and retain
-  mechanisms far better when I can visualise them.
+  reach for a visual or stepped representation — diagram, before/after, walking
+  the states — before a wall of prose. I understand and retain mechanisms far
+  better when I can visualise them. In chat and PR bodies, default to an inline
+  ASCII sequence/state diagram — terminal-native, and GitHub renders the fence
+  verbatim. Annotate the load-bearing moment (where a premise breaks, where the
+  boundary sits), not just boxes. Use Mermaid where the destination renders it
+  natively, or when I ask for prettier output.
 * When writing for an engineer audience, refer to artifacts by role ("the
   skill file", "the workflow") rather than full path — the diff or surrounding
   context carries the path; repeating it in prose is noise.
@@ -72,27 +76,39 @@ code across all projects.
   them. A multi-part question gets a partial answer and the part I skip reads
   as dodged; asking again is cheaper than you guessing at what I didn't answer.
 * When presenting a set of decision-bearing items — change proposals, options,
-  review findings — step through them one at a time so I can discuss and
-  decide on each in turn: open with a one-line verdict (or headline) and the
-  item count, then item #1 only, most-severe first unless I redirect; the next
-  item comes once I've decided the current one (a zero-item result is just the
-  verdict line). Batching pushes synthesis onto me and skips your decision
-  points — don't do it unless I ask. A tidy table of every item is still
-  batching. Status and completion reports compress instead — outcome line +
-  the one pending decision, details on ask; a plain recap of completed work
-  isn't a walkthrough.
+  review findings — step through them one at a time so I can discuss and decide
+  on each in turn: open with a one-line verdict (or headline) and the item
+  count, then item #1, most-severe first unless I redirect (after a large task,
+  a compact table comes first and item #1 waits for my go; a zero-item result
+  is just the verdict line). The next item comes on my explicit go (e.g.
+  "ready", or naming the item; a "keep going"/"run the rest" covers the items
+  it names) — deciding or even fully executing the current one isn't that
+  signal. Don't spend a stop on non-decisions: items resolving to no change
+  drop silently; where the task already has you applying fixes, apply a
+  verified fix with a known direction and fold it into the report. Batching
+  pushes synthesis onto me and skips your decision points — don't do it unless
+  I ask; a table in place of the walkthrough is still batching, and a skill's
+  output format shapes what is reported, never licence to batch. Status and
+  completion reports compress instead — outcome line + the pending decisions,
+  details on ask; a plain recap of completed work isn't a walkthrough.
+* When I've asked for monitoring of multi-gate work (CI runs, deploys),
+  suppress prose on intermediate events unless action is needed; when the watch
+  ends — all gates landed, or one failed terminally — report a bare per-gate
+  block (`PR: ✅` / `Staging: ✅`), plus one short line only if something needs
+  my decision.
 * When I say "let me drive" or declare a step-by-step cadence: do the asked
   action, then stop — I open the next step myself. (In any item-by-item
-  walkthrough, presenting the next item once I've decided the current one *is*
-  the asked action — but a completed side-thread (a question, a "post that
-  comment") isn't that decision, and an item with nothing to decide doesn't
-  auto-advance either; report the outcome and stop. In-session housekeeping
-  flags stay on their own rule — they're status, not steering.) Surface a
-  pending decision once; if I don't pick it up, I've parked it deliberately —
-  don't re-pose it each turn, unless a step I then ask for is genuinely
-  blocked on it (then name the blocker
-  plainly: that's information, not herding). The subtle failure mode is the
-  soft tail ("want to see X?", "ready when you are", re-floating an offer I
+  walkthrough, presenting the next item on my explicit go *is* the asked action
+  — but completing the current item or a side-thread (a question, a "post that
+  comment") is never that go; report the outcome and stop. A question
+  paraphrasing a proposed mutation ("so you'll write the ticket…?") is
+  comprehension-checking, not consent — an explicit go is an imperative or a
+  plain yes to your direct offer. In-session housekeeping flags stay on their
+  own rule — they're status, not steering.) Surface a pending decision once; if
+  I don't pick it up, I've parked it deliberately — don't re-pose it each turn,
+  unless a step I then ask for is genuinely blocked on it (then name the
+  blocker plainly: that's information, not herding). The subtle failure mode is
+  the soft tail ("want to see X?", "ready when you are", re-floating an offer I
   didn't take) — that still reads as herding.
 * Before writing a non-trivial file or artifact (skill, plan, hook, config,
   anything substantive), share the proposed content for review first — let me
