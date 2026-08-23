@@ -5,66 +5,77 @@ Index of every Best Current Practice. Each entry's `Home` is where its adherence
 ## Ambient — home: CLAUDE.md bullets
 
 ### structural-fix-over-doc-rule
+
 - Statement: when a fix is a new "remember to…" instruction (doc, CLAUDE.md rule, skill step), first look for the structural fix that makes the footgun impossible — a shared dependency, a recipe that chains the steps, a lint, a type that makes the bad state unrepresentable. Documentation-as-mitigation is the fallback only when tooling genuinely can't enforce the invariant.
 - Home: personal CLAUDE.md § Best Current Practices (final)
 - Trigger: proposing any fix or new process rule
 - Detect: judgement — new "remember to X" rules in diffs or docs that paper over an enforceable footgun
 
 ### sweep-needs-a-gate
+
 - Statement: a point-in-time remediation fixes only the snapshot it branched from; work on parallel branches silently reintroduces the anti-pattern when it merges. Pair every repo-wide hygiene sweep with a gate that runs on every PR.
 - Home: personal CLAUDE.md § Best Current Practices (final)
 - Trigger: planning or reviewing repo-wide hygiene/remediation work
 - Detect: remediation changes with no companion always-on check
 
 ### comments-present-not-past
+
 - Statement: a comment documents the current invariant and its why — never the change that produced it, what the code used to do, or why the new way is better. That history belongs in the diff, the PR body, and blame.
 - Home: personal CLAUDE.md § Best Current Practices (final); host projects may restate it in their own CLAUDE.md
 - Trigger: writing or reviewing code comments
 - Detect: search comments for "instead of", "previously", "no longer", "used to", "replaced", "now"; judgement filter for false positives
 
 ### immutable-text-states-invariants
+
 - Statement: write-once text (commit messages above all) carries only what stays permanently true — the structural invariant, never a point-in-time measurement or forward claim ("~3 min saved", "2× faster"). Measurements belong where they can be re-measured and dated: the PR body, a scorecard.
 - Home: personal CLAUDE.md § Best Current Practices (final)
 - Trigger: drafting commit messages or any write-once artifact
 - Detect: pre-commit review of drafts for magnitudes, timings, or speed-up claims (post-commit the text is immutable — detection is only useful before landing)
 
 ### throw-on-violated-invariants
+
 - Statement: a "can't happen" branch — a programming-error invariant, not a recoverable runtime condition — fails loudly (throw/assert) rather than degrading into a swallowed failure state; silent degradation hides the bug from monitoring and turns a code error into a mystery report. Reserve graceful handling for genuinely-expected failures.
 - Home: personal CLAUDE.md § Best Current Practices (final)
 - Trigger: writing error handling
 - Detect: judgement — new error paths that map impossible states to default values or UI flags
 
 ### verify-pattern-precedent
+
 - Statement: before recommending a pattern as "established in the codebase", search for it; sparse usage or single-file confinement is weak precedent — flag it as such rather than presenting it as the convention.
 - Home: personal CLAUDE.md § Best Current Practices (final)
 - Trigger: citing codebase precedent
 - Detect: judgement — conversational claim, not mechanically screenable
 
 ### consistency-widening-in-scope
+
 - Statement: three nested checks when changing code, the obligation softening as scope grows — added lines consistent with each other; ideally consistent with the file (reuse its patterns over a locally-nicer bespoke variant); highlight drift from the broader project and let the owner decide convergence.
 - Home: personal CLAUDE.md § Best Current Practices (final)
 - Trigger: any code change
 - Detect: judgement — review-time
 
 ### re-read-nearby-comments
+
 - Statement: when editing or reviewing code, re-read nearby comments and asserts; flag or update any gone stale in the same pass — stale documentation next to live code is worse than none, and review is the only window where the flag reaches the author.
 - Home: personal CLAUDE.md § Best Current Practices (final)
 - Trigger: any code edit or review
 - Detect: judgement — comments adjacent to diff hunks
 
 ### conform-to-documented-standard
+
 - Statement: check a deliverable's documented spec or an existing example up front, and re-check the whole artifact against it as the final hand-off step — not just the part last edited. Summarise analysis into the deliverable rather than transplanting it. When corrected on one detail, re-scan the entire artifact in one pass.
 - Home: personal CLAUDE.md § Best Current Practices (final)
 - Trigger: producing any deliverable with a documented standard
 - Detect: judgement — hand-off gate
 
 ### no-private-note-references
+
 - Statement: never reference private personal notes in shared artifacts (PRs, commits, public docs); inline-summarise the concept and link public sources instead.
 - Home: personal CLAUDE.md § Best Current Practices (final)
 - Trigger: writing anything shared
 - Detect: search shared artifacts for private-vault references (e.g. "Obsidian", vault paths)
 
 ### absence-needs-positive-verification
+
 - Statement: a single negative signal — a 404, an empty grep, a missing list entry — proves only that the probe saw nothing; many APIs return the same shape for "doesn't exist" and "no permission", and a query can simply be wrong. Assert absent/unused/not-required only when the probe would have shown the thing were it present, or a second independent method agrees; otherwise say "can't see it" and name the limitation, never "it doesn't exist".
 - Home: personal CLAUDE.md § Best Current Practices (final)
 - Trigger: making any absence, unused, or not-required claim
@@ -73,62 +84,93 @@ Index of every Best Current Practice. Each entry's `Home` is where its adherence
 ## File-scoped — home: path-scoped rules in ~/.claude/rules/
 
 ### derive-dont-mirror-state
+
 - Statement: if a value can be computed from existing state or props, derive it during render rather than storing a second copy kept in sync by an effect — the mirrored copy buys an extra render, a stale-value window, and a reset obligation. The tell: a state setter inside an effect whose only job is to track another value.
 - Home: ~/.claude/rules/react.md (final)
 - Trigger: React state code
 - Detect: search for effects whose body only sets state derived from other state/props
 
 ### exhaustive-destructuring
+
 - Statement: code whose job is to visit every member of a same-crate closed set — struct fields (manual Debug/serialise impls, mappers, conversion fns: full destructure, no `..` rest pattern) or enum variants (classifier/decision code: exhaustive `match`, no `_` arm, as a method on the enum) — is written so a new field or variant becomes a compile error at every site that must decide about it. Same-crate types only (foreign non-exhaustive types force `..`/`_`, surrendering the guard); not for ordinary field access.
 - Home: ~/.claude/rules/rust.md (final)
 - Trigger: writing or reviewing field-visiting or variant-classifying Rust
 - Detect: find manual Debug/serialise/From impls and per-variant predicate chains (`is_a() || is_b()`); check for `..` rest patterns and `_` arms
 
 ### pinned-installs-rot
+
 - Statement: version pins inside CI run steps (pinned curl + checksum installs) are invisible to dependency automation, so they rot silently. Prefer an installer-action manifest that rides routine dependency bumps — confirming the tool is on the action's verified list, since fallback install paths may skip verification; otherwise record the pin somewhere a freshness sweep will find it.
 - Home: ~/.claude/rules/ci.md (final)
 - Trigger: adding or editing CI tool-install steps
 - Detect: search workflows for pinned download-and-verify installs; compare pinned versions against upstream latest
 
 ### pipes-mask-exit-status
+
 - Statement: a pipeline exits with its last command's status, and GitHub Actions `run:` steps default to `bash -e` without `pipefail` — so `cmd | tee …` goes green when `cmd` fails. Guard the class by construction: workflow-level `defaults: run: shell: bash` on every workflow (explicit shell selection means `bash -eo pipefail`); per-step `shell: bash` only where a job needs a different default. Add or flag the missing default whenever touching a workflow.
 - Home: ~/.claude/rules/ci.md (final)
 - Trigger: editing or reviewing any GitHub Actions workflow
 - Detect: check workflows for a missing workflow-level `defaults.run.shell`; then per-step pipelines whose failure-bearing command isn't last
 
 ### instantiation-checked-unproven
+
 - Statement: a `macro_rules!` body is checked only at expansion — names and types resolve per call site, not at definition — so an uncalled macro (or an arm no call site exercises) compiles clean regardless of its contents. "It compiles" counts as evidence only once every arm has an in-tree expansion (a call site or test); until then treat unexpanded arms as unproven, in both authoring and review.
 - Home: ~/.claude/rules/rust.md (final)
 - Trigger: writing or reviewing `macro_rules!` code, or citing its compile status as verification
 - Detect: find `macro_rules!` definitions; check each arm has an expanding call site or test
 
 ### env-hoists-name-their-source
+
 - Statement: an `env:` hoist of a workflow expression exists to contain untrusted interpolation, so the variable name derives mechanically from the source expression (`github.actor` → `GH_ACTOR`, `inputs.x` → `X`, `steps.<id>.outputs.<out>` → `<ID>_<OUT>`, `vars.X` keeps its name); a role-based rename hides the data's provenance at the use site. Same expression → same name at every site.
 - Home: ~/.claude/rules/ci.md (final)
 - Trigger: hoisting workflow expressions into `env:`, or reviewing such hoists
 - Detect: search workflows for `env:` names not derivable from their `${{ }}` expression
 
 ### hardening-sweeps-audit-actions
+
 - Statement: a sweep that changes a job's ambient environment (credentials, permissions, tokens, network) must audit each *action's* internal behaviour per event type, not just the workflow's visible steps — action internals can be event-conditional in ways PR CI never exercises, so the push/schedule path breaks invisibly pre-merge.
 - Home: ~/.claude/rules/ci.md (final)
 - Trigger: any sweep changing a workflow job's ambient environment (credentials, permissions, tokens, network)
 - Detect: judgement — for each action in a swept job, check its inputs/behaviour on non-PR events
 
+### zizmor-on-workflow-changes
+
+- Statement: every change under `.github/` gets a `zizmor` run over the changed files before hand-back — it audits Actions-specific vulnerability classes (template injection, credential persistence, mutable action refs) that generic review misses. Findings the change introduced are fixed; pre-existing ones are flagged, not silently fixed. The tool is required on the machine: a missing binary stops the hand-back and is reported, never skipped.
+- Home: ~/.claude/rules/ci.md (final)
+- Trigger: editing anything under `.github/`
+- Detect: CI-touching hand-backs with no zizmor result reported
+
+### rumdl-on-markdown
+
+- Statement: every Markdown file created or edited gets `rumdl check` before hand-back — new files pass clean; edits fix the findings they introduced or touched and flag pre-existing ones elsewhere. Personal Markdown (memory, skills, rules, notes) relaxes MD013 — memory files also MD041 — via `-d` flags on the command, since `rumdl` config discovery is working-directory-only. The tool is required on the machine: a missing binary stops the hand-back and is reported.
+- Home: ~/.claude/rules/markdown.md (final)
+- Trigger: creating or editing any Markdown file
+- Detect: Markdown-touching hand-backs with no rumdl result reported
+
+### shellcheck-on-shell-scripts
+
+- Statement: every shell script created or edited gets a `shellcheck` run before hand-back — new scripts pass clean; edits fix the findings they introduced or touched and flag pre-existing ones elsewhere. The tool is required on the machine: a missing binary stops the hand-back and is reported.
+- Home: ~/.claude/rules/shell.md (final)
+- Trigger: creating or editing a shell script (`.sh`/`.bash`; extension-less scripts escape the path trigger)
+- Detect: shell-touching hand-backs with no shellcheck result reported
+
 ## Task-moment — home: this skill
 
 ### audit-instruction-files
+
 - Statement: run the authoring.md audit checklist on every instruction-file edit, naming which sources ran, then self-check: "did I apply the principles I just checked against?"
 - Home: authoring.md (final)
 - Trigger: writing or editing a SKILL.md, CLAUDE.md, rule, or hook
-- Detect: the checklist is the detector
+- Detect: the checklist is the detector; enforced mechanically by the `bcp-instruction-gate` PreToolUse hook (`~/.claude/hooks/`), which blocks instruction-file edits in sessions that have not invoked this skill
 
 ### skill-authoring-conventions
+
 - Statement: conventions only hold when they live where the work happens and fire by construction, not recall — for skill authoring that mechanism is authoring.md's frontmatter and body conventions, applied at write time.
 - Home: authoring.md (final)
 - Trigger: SKILL.md authoring
 - Detect: audit existing SKILL.md files against authoring.md
 
 ### periodic-currency-audit
+
 - Statement: a push-based update stream measures activity, not currency — quiet weeks are silence, not health (majors held back, git-source and transitive-only dependencies invisible). Bound drift with a periodic pull-based staleness audit.
 - Home: registry only; execution deliberately dropped for Rust (2026-07: the audit-tool candidate proved broken for the workspace, so the push stream is the accepted coverage — revisit only if a blind spot bites)
 - Trigger: dependency-maintenance planning
@@ -137,12 +179,14 @@ Index of every Best Current Practice. Each entry's `Home` is where its adherence
 ## Work-level — home: work CLAUDE.md
 
 ### team-standard-commands
+
 - Statement: artifacts checked into a team repo (skills, docs, CI, recipes) prescribe only commands every consumer's machine can run — a command only one machine has fails silently for everyone else. Check repo precedent before committing a command; a personal tool can also be genuine team tooling, so verify rather than assume either way. Outbound text under the author's name (PR bodies, review comments) doesn't name personal-only tooling either — report what was verified without naming the tool, since substituting the team command would misreport what ran.
 - Home: work-level CLAUDE.md (final; machine-specific examples stay private)
 - Trigger: authoring anything checked into a team repo, or drafting outbound text that reports commands run
 - Detect: search shared artifacts and outbound drafts for personal-only tooling
 
 ### pr-review-workflow
+
 - Statement: PR review findings stay within the diff's changed files; verify against stacked child PRs before and after the review; grade a proposed fix separately from its hazard; findings adversarially validated by minimal-context agents before reaching the reviewer, then staged as one pending review the reviewer submits themself.
 - Home: `review-pr` skill in the work profile (final)
 - Trigger: reviewing a pull request

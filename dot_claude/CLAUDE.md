@@ -152,7 +152,9 @@ code across all projects.
 
 * Dotfiles under `~/.config/` and elsewhere in `$HOME` are managed by
   `chezmoi`. The source tree is at `~/.local/share/chezmoi/`.
-* Before editing any file in `$HOME`, check `chezmoi managed <path>`:
+* Before editing any file in `$HOME`, check `chezmoi managed <path>` — the
+  file is managed only if the path appears in the output; the command lists
+  matches and exits 0 either way, so the exit code proves nothing:
   * **Already managed** → edit the chezmoi source (`chezmoi source-path
     <path>`); I review and `chezmoi apply`.
   * **New file** → write to the live location; I `chezmoi add` it. (The first

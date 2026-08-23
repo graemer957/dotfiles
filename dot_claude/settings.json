@@ -50,6 +50,19 @@
     ],
     "defaultMode": "auto"
   },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/home/graemer/.claude/hooks/bcp-instruction-gate.py"
+          }
+        ]
+      }
+    ]
+  },
   "model": "opus",
   "tui": "fullscreen"
 }

@@ -18,7 +18,7 @@ description: Graeme's Best Current Practices (BCPs) — durable engineering rule
 ## Workflow
 
 1. Identify the task: authoring, audit, or lifecycle.
-2. **Authoring**: read `authoring.md` before writing; run its audit checklist before hand-off, naming which checklist sources ran.
+2. **Authoring**: read `authoring.md` before drafting — a proposed edit shared for approval is already the artifact, not a preview of it, so the audit checklist runs before any draft is shared (naming which sources ran), never after approval.
 3. **Audit**: read `registry.md`; select entries whose trigger matches the artifact; report violations one at a time, most severe first.
 4. **Lifecycle** (new BCP candidate): confirm it is durable and cross-project; a practice that is work-specific by nature homes in the work-level CLAUDE.md instead, but is indexed here all the same; add a registry entry; place its adherence text by trigger shape — file-type-bound → path-scoped rule in `~/.claude/rules/`; task-moment → a supporting file in this skill; unscopeable → a terse CLAUDE.md bullet. A home only counts if it loads: confirm it's discoverable in every launch profile that needs it — a `CLAUDE_CONFIG_DIR` profile sees `~/.claude` skills and rules only via the launcher's symlink bridge. New areas become supporting files here (e.g. `rust.md`), read only when their scope applies. If the new BCP introduces a task-moment trigger for this skill, extend the description's use-when list in the same edit.
 
