@@ -1,0 +1,18 @@
+{
+  "//": "HOOKS ONLY. This file loads via --settings (claude.fish), which OUTRANKS user/project/local settings for scalar keys — any other setting added here silently pins that value across every profile. List keys (hooks) merge additively, which is the point.",
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/home/graemer/.claude/hooks/inject-rules.py",
+            "timeout": 10,
+            "statusMessage": "Checking path-scoped rules"
+          }
+        ]
+      }
+    ]
+  }
+}
