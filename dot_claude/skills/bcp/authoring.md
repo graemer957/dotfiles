@@ -19,7 +19,7 @@ Conventions for writing or editing a SKILL.md, CLAUDE.md, path-scoped rule, or h
 
 1. **These conventions** (the sections above).
 2. **The instruction-file checklist**: missing why clauses; weasel hedges ("if installed", "where possible"); overlapping or redundant rules; absolutes that should be defaults with an escape hatch; negative framings outside Boundaries; scope ambiguity; contradictions across files; triggers too narrow to justify always-loaded cost.
-3. **Anthropic's prompting best-practices doc** — read it, don't paraphrase from memory: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices. It applies to any model-facing instruction text (CLAUDE.md bullets and rules included, not just API prompts); skip it only when the edit adds no new instruction semantics (typo, rewrap, link fix), and name the skip.
+3. **Anthropic's prompting best-practices doc** — read it, don't paraphrase from memory: <https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices>. It applies to any model-facing instruction text (CLAUDE.md bullets and rules included, not just API prompts); skip it only when the edit adds no new instruction semantics (typo, rewrap, link fix), and name the skip.
 4. **The host project's comment/documentation conventions**, when the artifact is checked into a repo.
 
 Reconcile conflicts explicitly — e.g. Don't-X boundaries vs positive framing resolves to: negatives allowed only in Boundaries. Grep the artifact for leftover references to anything the edit changed. Close with the self-check: "did I apply the principles I just checked against?"
