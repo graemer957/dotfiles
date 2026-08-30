@@ -50,6 +50,7 @@
     ],
     "defaultMode": "auto"
   },
+  "model": "opus",
   "hooks": {
     "PreToolUse": [
       {
@@ -74,6 +75,8 @@
       }
     ]
   },
-  "model": "opus",
-  "tui": "fullscreen"
+  "tui": "fullscreen",
+  "remoteControlAtStartup": false,
+  "inputNeededNotifEnabled": true,
+  "agentPushNotifEnabled": true
 }
