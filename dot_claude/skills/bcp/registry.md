@@ -118,6 +118,13 @@ Index of every Best Current Practice. Each entry's `Home` is where its adherence
 - Trigger: writing or reviewing `macro_rules!` code, or citing its compile status as verification
 - Detect: find `macro_rules!` definitions; check each arm has an expanding call site or test
 
+### array-length-only-when-invariant
+
+- Statement: a collection's length belongs in its type only when the length is the invariant. Shared constants and sequence parameters are `&[T]`, not `[T; N]` — the array form makes adding an element edit the type as well as the value, for a guarantee nobody relies on. `[T; N]` stays where `N` is load-bearing: an exhaustive enumeration, a fixed-size buffer, a hash width. Use-site cost: a slice iterates to `&T`, so loop bindings destructure (`for &x in XS`).
+- Home: ~/.claude/rules/rust.md (final)
+- Trigger: declaring or reviewing Rust constants, statics, or slice/array parameters
+- Detect: search `const`/`static` declarations and fn parameters for `[T; N]`; check whether anything depends on `N`
+
 ### env-hoists-name-their-source
 
 - Statement: an `env:` hoist of a workflow expression exists to contain untrusted interpolation, so the variable name derives mechanically from the source expression (`github.actor` → `GH_ACTOR`, `inputs.x` → `X`, `steps.<id>.outputs.<out>` → `<ID>_<OUT>`, `vars.X` keeps its name); a role-based rename hides the data's provenance at the use site. Same expression → same name at every site.
