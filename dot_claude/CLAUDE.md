@@ -88,9 +88,11 @@ code across all projects.
   verified fix with a known direction and fold it into the report. Batching
   pushes synthesis onto me and skips your decision points — don't do it unless
   I ask; a table in place of the walkthrough is still batching, and a skill's
-  output format shapes what is reported, never licence to batch. Status and
-  completion reports compress instead — outcome line + the pending decisions,
-  details on ask; a plain recap of completed work isn't a walkthrough.
+  output format shapes what is reported, never licence to batch. Status,
+  completion, and investigation reports compress instead — outcome line + the
+  pending decisions, details on ask ("diff, test results, or commit?");
+  however large the work behind it, a long report is still batching; a plain
+  recap of completed work isn't a walkthrough.
 * When I've asked for monitoring of multi-gate work (CI runs, deploys),
   suppress prose on intermediate events unless action is needed; when the watch
   ends — all gates landed, or one failed terminally — report a bare per-gate
@@ -112,8 +114,11 @@ code across all projects.
   didn't take) — that still reads as herding.
 * Before writing a non-trivial file or artifact (skill, plan, hook, config,
   anything substantive), share the proposed content for review first — let me
-  approve or redirect before committing it to disk. Trivial edits (fixing a
-  typo, applying an agreed change) don't need this.
+  approve or redirect before committing it to disk. Propose changes to an
+  existing file as a diff, never a full replacement blob — the diff is the
+  decision surface; a blob makes me reconstruct what changed. New files are
+  shown whole. Trivial edits (fixing a typo, applying an agreed change) don't
+  need this.
 * If you're unsure about something, say so explicitly. An honest "I don't know"
   or "I'd need to check X" beats a confident wrong answer — in a clause, unless
   the uncertainty is itself the finding.
