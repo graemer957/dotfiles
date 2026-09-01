@@ -19,14 +19,9 @@ mk_rule ci '  - ".github/**"'
 printf '%s\n' "---" "paths:" '  - "**/*.{ts,tsx}"' "---" "" "body of braces" > "$FIXTURES/braces.md"
 printf '%s\n' "---" 'paths: ["**/*.css"]' "---" "" "body of flow" > "$FIXTURES/flow.md"
 
-# test_case NAME SESSION TOOL PATH WANT
 # WANT: comma-separated rule names expected to inject, "silent", or "warns".
-test_case() {
-  local name="$1" session="$2" tool="$3" path="$4" want="$5"
-  local out ctx
-  out=$(jq -n --arg t "$tool" --arg p "$path" --arg s "test-$session" \
-    '{tool_name:$t,tool_input:{file_path:$p},session_id:$s}' | INJECT_RULES_DIR="$FIXTURES" "$HOOK")
-  ctx=$(echo "$out" | jq -r '.hookSpecificOutput.additionalContext // ""' 2>/dev/null)
+assert_want() {
+  local name="$1" want="$2" out="$3" ctx="$4"
   case "$want" in
     silent)
       if [[ -z "$out" ]]; then echo "OK   $name → silent"; PASS=$((PASS+1))
@@ -45,6 +40,27 @@ test_case() {
       if [[ $ok -eq 1 ]]; then echo "OK   $name → $want"; PASS=$((PASS+1))
       else echo "FAIL $name → got: ${out:-<empty>} | want: $want"; FAIL=$((FAIL+1)); fi ;;
   esac
+}
+
+# test_case NAME SESSION TOOL PATH WANT
+test_case() {
+  local name="$1" session="$2" tool="$3" path="$4" want="$5"
+  local out ctx
+  out=$(jq -n --arg t "$tool" --arg p "$path" --arg s "test-$session" \
+    '{tool_name:$t,tool_input:{file_path:$p},session_id:$s}' | INJECT_RULES_DIR="$FIXTURES" "$HOOK")
+  ctx=$(echo "$out" | jq -r '.hookSpecificOutput.additionalContext // ""' 2>/dev/null)
+  assert_want "$name" "$want" "$out" "$ctx"
+}
+
+# test_bash NAME SESSION CWD COMMAND WANT — Bash payloads carry a command
+# and a cwd instead of a file_path.
+test_bash() {
+  local name="$1" session="$2" cwd="$3" cmd="$4" want="$5"
+  local out ctx
+  out=$(jq -n --arg c "$cmd" --arg d "$cwd" --arg s "test-$session" \
+    '{tool_name:"Bash",tool_input:{command:$c},cwd:$d,session_id:$s}' | INJECT_RULES_DIR="$FIXTURES" "$HOOK")
+  ctx=$(echo "$out" | jq -r '.hookSpecificOutput.additionalContext // ""' 2>/dev/null)
+  assert_want "$name" "$want" "$out" "$ctx"
 }
 
 # Out-of-tree surfaces match their rules.
@@ -72,8 +88,17 @@ test_case "flow-style warns"      s11 Edit "/a/b.css" "warns"
 # its first edit; an unmatched file is only fully silent once it has.
 test_case "unmatched ext warns first" s12 Edit "/a/b.txt" "warns"
 test_case "unmatched extension"   s12 Edit  "/a/c.txt" "silent"
-test_case "non-edit tool"         s13 Bash  "/a/b.md" "silent"
+test_case "non-edit tool"         s13 Grep  "/a/b.md" "silent"
 test_case "missing file_path"     s14 Edit  "" "silent"
+
+# Bash commands: path-looking tokens inject their rules; a command naming
+# no path returns before the rules loop, so it is silent even pre-warn.
+test_bash "bash cat skill"        s15 "/tmp" "cat /home/g/.claude/skills/foo/SKILL.md" "markdown,skills"
+test_bash "bash relative to cwd"  s16 "/home/g/dev/work/worktrees/platformed-x" "rumdl check docs/a.md" "markdown"
+test_bash "bash quoted + redirect" s17 "/tmp" "echo hi > '/a/b c/notes.md'" "markdown"
+test_bash "bash rust via sed"     s18 "/tmp" "sed -n '1,10p' /w/rust/lib.rs" "rust"
+test_bash "bash no path"          s19 "/tmp" "git status" "silent"
+test_bash "bash flags skipped"    s20 "/tmp" "git log --pretty=format:%h.%s" "silent"
 
 # Smoke test against the real rules dir: catches parser drift from the
 # real frontmatter style. Unique session id each run; no dedupe residue.

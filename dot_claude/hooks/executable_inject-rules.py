@@ -1,15 +1,21 @@
 #!/usr/bin/env python3
-"""Inject path-scoped rules for edited files, wherever they live.
+"""Inject path-scoped rules for files a tool call names, wherever they live.
 
 The native rules loader matches ~/.claude/rules/*.md `paths:` globs
 against the project root only, so files outside it (worktrees, Obsidian,
-.claude config trees, chezmoi source) never load their rules. On an
-Edit/Write, this PostToolUse hook re-reads each rule's frontmatter,
-matches the edited file's absolute path, and returns matching rule
-bodies as additionalContext — once per rule per session, tracked in a
-tmpfs marker directory. In-tree files are deliberately not skipped: a
-duplicate of the native injection costs one context copy per rule per
-session, and covers sessions where native injection misfires.
+.claude config trees, chezmoi source) never load their rules — and Bash
+commands (cat/sed/linters) load none at all, since rules key on the
+dedicated file tools. On an Edit/Write (the edited file) or a Bash call
+(every path-looking token in the command text, resolved against the
+call's cwd), this PostToolUse hook re-reads each rule's frontmatter,
+matches the absolute paths, and returns matching rule bodies as
+additionalContext — once per rule per session, tracked in a tmpfs marker
+directory. Bash token extraction is permissive by design: a stray token
+that resolves to a matching path merely injects a relevant rule early,
+so false positives are harmless; a command naming no path (a bare
+tree-wide lint) injects nothing. In-tree files are deliberately not
+skipped: a duplicate of the native injection costs one context copy per
+rule per session, and covers sessions where native injection misfires.
 
 Glob support is the subset the rules use: leading `**/`, trailing `/**`,
 plain suffixes, `?`, `[...]`. A rule whose globs need more (braces,
@@ -27,10 +33,12 @@ import sys
 from pathlib import Path
 
 PREAMBLE = (
-    "The file just edited is covered by path-scoped rules, which do not "
-    "auto-load for files outside the project root. Apply these rules to "
-    "this edit before handing the work back:"
+    "A file this tool call names is covered by path-scoped rules, which "
+    "do not auto-load for files outside the project root. Apply these "
+    "rules to this work before handing it back:"
 )
+
+BASH_TOKEN = re.compile(r'"([^"]*)"|\'([^\']*)\'|(\S+)')
 
 UNSUPPORTED_CHARS = "{}()"
 
@@ -71,6 +79,25 @@ def to_abs_pattern(glob):
     return "*/" + glob
 
 
+def bash_candidate_paths(command, cwd):
+    """Tokens of a Bash command that look like file paths, absolutised."""
+    paths = set()
+    for dq, sq, bare in BASH_TOKEN.findall(command):
+        tok = (dq or sq or bare).lstrip("<>").rstrip("();,")
+        if tok.startswith("-"):
+            continue
+        assignment = re.match(r"^[A-Za-z_][A-Za-z0-9_]*=(.*)$", tok)
+        if assignment:
+            tok = assignment.group(1)
+        if "/" not in tok and "." not in tok:
+            continue
+        tok = os.path.expanduser(tok)
+        if not os.path.isabs(tok):
+            tok = os.path.normpath(os.path.join(cwd, tok))
+        paths.add(tok)
+    return paths
+
+
 def rule_body(text):
     """The rule text with its frontmatter block removed."""
     lines = text.splitlines()
@@ -87,10 +114,17 @@ def main():
     except json.JSONDecodeError:
         return
 
-    if payload.get("tool_name") not in ("Edit", "Write"):
+    tool = payload.get("tool_name")
+    tool_input = payload.get("tool_input", {})
+    if tool in ("Edit", "Write"):
+        file_paths = [tool_input.get("file_path", "")]
+    elif tool == "Bash":
+        cwd = payload.get("cwd") or os.getcwd()
+        file_paths = sorted(bash_candidate_paths(tool_input.get("command", ""), cwd))
+    else:
         return
-    file_path = payload.get("tool_input", {}).get("file_path", "")
-    if not file_path:
+    file_paths = [p for p in file_paths if p]
+    if not file_paths:
         return
 
     session = re.sub(r"[^A-Za-z0-9_-]", "_", payload.get("session_id", "unknown"))
@@ -117,7 +151,8 @@ def main():
         if (state / name).exists():
             continue
         if any(
-            fnmatch.fnmatchcase(file_path, to_abs_pattern(g))
+            fnmatch.fnmatchcase(p, to_abs_pattern(g))
+            for p in file_paths
             for g in globs
             if g not in bad
         ):
