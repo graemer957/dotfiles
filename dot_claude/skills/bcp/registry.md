@@ -148,7 +148,7 @@ Index of every Best Current Practice. Each entry's `Home` is where its adherence
 
 ### rumdl-on-markdown
 
-- Statement: every Markdown file created or edited gets `rumdl check -d MD013` before hand-back — line length is off because soft wrapping is the convention everywhere. New files pass clean; edits fix the findings they introduced or touched and flag pre-existing ones elsewhere. Memory files and Obsidian notes relax further via `-d` flags on the command, since `rumdl` config discovery is working-directory-only; a repo shipping its own config governs from there. The tool is required on the machine: a missing binary stops the hand-back and is reported.
+- Statement: every Markdown file a tool call touches gets `rumdl check` before hand-back, run by the PostToolUse markdown hook with the disable list its `DISABLES` mapping assigns to the path — the mapping is the single home of the per-path lists (MD013 off everywhere: soft wrapping is the convention), and a by-hand run takes its `-d` list from there. New files pass clean; edits fix the findings they introduced or touched and flag pre-existing ones elsewhere. A repo shipping its own config governs from there. The tool is required on the machine: a missing binary stops the hand-back and is reported.
 - Home: ~/.claude/rules/markdown.md (final)
 - Trigger: creating or editing any Markdown file
 - Detect: Markdown-touching hand-backs with no rumdl result reported
