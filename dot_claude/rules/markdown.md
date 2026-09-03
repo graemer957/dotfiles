@@ -5,10 +5,12 @@ paths:
 
 # Markdown
 
-- Markdown linting is `rumdl`; the PostToolUse markdown hook runs it on every
-  file an edit touches, and the hook's `DISABLES` mapping is the single home
-  of the per-path disable lists — take the `-d` list from there when running
-  `rumdl` by hand, since a bare invocation reports findings the mapping
+- Markdown linting is `rumdl`. The PostToolUse markdown hook runs it on every
+  `.md` path an Edit, Write, or Bash call names, with the disable list the
+  hook's `DISABLES` mapping gives that path — the single home of those lists.
+  A finding is what `rumdl` reports under that list: the hook's silence after
+  an edit means clean, and a hand-run (for a file the hook didn't see) takes
+  the same `-d` list, since a bare invocation reports rules the mapping
   exempts.
 - In an existing file, fix the findings your edit introduced or touched and
   flag pre-existing ones elsewhere rather than fixing them, since that widens
