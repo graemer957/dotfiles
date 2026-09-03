@@ -12,6 +12,9 @@ paths:
   an edit means clean, and a hand-run (for a file the hook didn't see) takes
   the same `-d` list, since a bare invocation reports rules the mapping
   exempts.
+- Fix findings by hand. `rumdl fmt` and `rumdl check --fix` rewrite every
+  fixable rule in the file, including the ones the mapping disables, so an
+  auto-fix undoes the deliberate formatting those disables protect.
 - In an existing file, fix the findings your edit introduced or touched and
   flag pre-existing ones elsewhere rather than fixing them, since that widens
   the diff beyond the change under review. A new file passes clean.
