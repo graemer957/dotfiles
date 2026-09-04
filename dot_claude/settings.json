@@ -51,6 +51,7 @@
     "defaultMode": "auto"
   },
   "model": "opus",
+  "feedbackSurveyRate": 0,
   "hooks": {
     "PreToolUse": [
       {
