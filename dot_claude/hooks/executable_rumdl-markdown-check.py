@@ -2,12 +2,13 @@
 """Run rumdl over every Markdown file an Edit/Write/Bash call touched.
 
 PostToolUse: collects the .md paths the call named — file_path for Edit/Write,
-any .md token in a Bash command — and runs `rumdl check` on each one that
-exists, with the disable list DISABLES maps its path to, returning findings as
-additional context so the hand-back carries them. Reads (cat, rg) of a
-Markdown file also trigger a check; that is one redundant lint, cheaper than a
-missed one. A missing rumdl binary is reported, never skipped, matching the
-markdown rule.
+any .md token in a Bash command, bare ones resolved against the command's
+leading `cd <dir> &&` when it has one and the session cwd otherwise — and runs
+`rumdl check` on each one that exists, with the disable list DISABLES maps its
+path to, returning findings as additional context so the hand-back carries
+them. Reads (cat, rg) of a Markdown file also trigger a check; that is one
+redundant lint, cheaper than a missed one. A missing rumdl binary is reported,
+never skipped, matching the markdown rule.
 """
 
 import fnmatch
@@ -19,6 +20,7 @@ import subprocess
 import sys
 
 MD_TOKEN = re.compile(r"[\w./~-]+\.md\b")
+CD_PREFIX = re.compile(r"^\s*cd\s+(?P<dir>[^\s;&|]+)\s*(?:&&|;)")
 
 HOME = os.path.expanduser("~")
 
@@ -43,6 +45,16 @@ def disables_for(path):
     return DEFAULT_DISABLE
 
 
+def resolve_base(payload):
+    """Directory bare paths resolve against: a Bash command's leading `cd <dir> &&`, else the session cwd."""
+    base = payload.get("cwd") or os.getcwd()
+    if payload.get("tool_name") == "Bash":
+        m = CD_PREFIX.match(payload.get("tool_input", {}).get("command", ""))
+        if m:
+            base = os.path.join(base, os.path.expanduser(m["dir"].strip("'\"")))
+    return base
+
+
 def main():
     try:
         payload = json.load(sys.stdin)
@@ -58,9 +70,10 @@ def main():
     else:
         return
 
+    base = resolve_base(payload)
     paths = []
     for c in candidates:
-        c = os.path.expanduser(c)
+        c = os.path.normpath(os.path.join(base, os.path.expanduser(c)))
         if c.startswith(("/tmp/", "/var/tmp/")):
             continue  # scratch drafts (PR bodies, notes) are not deliverables
         if c.endswith(".md") and os.path.isfile(c) and c not in paths:
