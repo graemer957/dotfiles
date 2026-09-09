@@ -15,9 +15,13 @@ paths:
 - Fix findings by hand. `rumdl fmt` and `rumdl check --fix` rewrite every
   fixable rule in the file, including the ones the mapping disables, so an
   auto-fix undoes the deliberate formatting those disables protect.
-- In an existing file, fix the findings your edit introduced or touched and
-  flag pre-existing ones elsewhere rather than fixing them, since that widens
-  the diff beyond the change under review. A new file passes clean.
+- In a personal file, fix the findings your edit introduced or touched and
+  raise pre-existing ones in session rather than fixing them, since that
+  widens the diff beyond the change under review. In a team repo (a git work
+  tree under the hook's `TEAM_ROOT`) the hook lists only findings the working
+  copy adds over `HEAD`: fix those before hand-back and leave pre-existing
+  ones unmentioned — the linter isn't team-adopted, so they are neither yours
+  to fix nor worth the user's attention. A new file passes clean.
 - A repo shipping its own `rumdl` config governs from there. The tool is
   required on this machine: when `rumdl` isn't on PATH, stop and report the
   missing tool instead of handing back unlinted work.
