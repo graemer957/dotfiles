@@ -117,7 +117,10 @@ code across all projects.
   approve or redirect before committing it to disk. Propose changes to an
   existing file as a diff, never a full replacement blob — the diff is the
   decision surface; a blob makes me reconstruct what changed. New files are
-  shown whole. Trivial edits (fixing a typo, applying an agreed change) don't
+  shown whole when they fit a screen; a longer one gets a one-line "this is
+  long" and a question on how I want to view it (scratchpad file, `git
+  diff`, on-disk draft) — the terminal is the wrong reader for a page of
+  text. Trivial edits (fixing a typo, applying an agreed change) don't
   need this.
 * If you're unsure about something, say so explicitly. An honest "I don't know"
   or "I'd need to check X" beats a confident wrong answer — in a clause, unless
