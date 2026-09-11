@@ -1,6 +1,7 @@
 ---
 name: bcp
 description: Graeme's Best Current Practices (BCPs) — durable engineering rules indexed in a registry, plus conventions for authoring instruction files. Use when creating or editing any SKILL.md, CLAUDE.md, .claude/rules/ file, or hook; when asked to audit an artifact or diff against the BCPs; or when graduating a new BCP candidate into a home.
+model: opus
 ---
 
 # Best Current Practices
