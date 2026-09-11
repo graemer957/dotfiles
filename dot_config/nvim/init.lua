@@ -174,7 +174,9 @@ vim.api.nvim_create_autocmd(
 	'TextYankPost',
 	{
 		pattern = '*',
-		command = 'silent! lua vim.highlight.on_yank({ timeout = 500 })'
+		callback = function()
+			vim.hl.on_yank({ timeout = 500 })
+		end
 	}
 )
 
@@ -228,7 +230,7 @@ vim.api.nvim_create_autocmd("FileType", {
 -- first, grab the manager
 -- https://github.com/folke/lazy.nvim
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
-if not vim.loop.fs_stat(lazypath) then
+if not vim.uv.fs_stat(lazypath) then
 	vim.fn.system({
 		"git",
 		"clone",
@@ -292,14 +294,11 @@ require("lazy").setup({
 			end
 
 			-- https://github.com/itchyny/lightline.vim/issues/657
-			vim.api.nvim_exec(
-				[[
+			vim.cmd([[
 				function! g:LightlineFilename()
 					return v:lua.LightlineFilenameInLua()
 				endfunction
-				]],
-				true
-			)
+			]])
 		end
 	},
 	-- fzf support for ^p
