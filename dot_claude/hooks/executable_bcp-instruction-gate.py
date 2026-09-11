@@ -95,7 +95,8 @@ def main():
             "permissionDecision": "deny",
             "permissionDecisionReason": (
                 "Instruction-file gate: this edit targets a skill/CLAUDE.md/rule/hook, "
-                "and the bcp skill has not been invoked this session. Invoke Skill(bcp), "
+                "and the bcp skill has not been invoked this session — it carries the "
+                "authoring conventions instruction files are checked against. Invoke Skill(bcp), "
                 "apply its authoring checklist to the change (and to any draft already "
                 "shared in chat), then retry this exact edit."
             ),
