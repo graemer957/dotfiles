@@ -200,9 +200,13 @@ vim.api.nvim_create_autocmd(
 -- help filetype detection (add as needed)
 --vim.api.nvim_create_autocmd('BufRead', { pattern = '*.ext', command = 'set filetype=someft' })
 -- chezmoi uses Go templating, but they are still...
-vim.api.nvim_create_autocmd('BufRead', { pattern = '*.fish.tmpl', command = 'set filetype=fish' })
-vim.api.nvim_create_autocmd('BufRead', { pattern = '*.toml.tmpl', command = 'set filetype=toml' })
-vim.api.nvim_create_autocmd('BufRead', { pattern = '.gitconfig.tmpl', command = 'set filetype=gitconfig' })
+vim.filetype.add({
+	pattern = {
+		['.*%.fish%.tmpl'] = 'fish',
+		['.*%.toml%.tmpl'] = 'toml',
+		['.*dot_gitconfig.*%.tmpl'] = 'gitconfig',
+	},
+})
 
 -- use nvim-lint for linting
 vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost", "InsertLeave" }, {
