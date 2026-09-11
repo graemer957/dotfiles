@@ -125,7 +125,7 @@ vim.keymap.set('', 'L', '$')
 
 -- Neat clipboard integration
 -- <leader>c will copy entire buffer into clipboard
-vim.keymap.set('n', '<leader>c', '<cmd>w !pbcopy<cr><cr>')
+vim.keymap.set('n', '<leader>c', '<cmd>%y+<cr>')
 
 -- <leader><leader> toggles between buffers
 vim.keymap.set('n', '<leader><leader>', '<c-^>')
@@ -528,7 +528,6 @@ require("lazy").setup({
 			vim.g.rustfmt_autosave = 1
 			vim.g.rustfmt_emit_files = 1
 			vim.g.rustfmt_fail_silently = 0
-			vim.g.rust_clip_command = 'pbcopy'
 		end
 	},
 	-- fish
