@@ -425,11 +425,8 @@ require("lazy").setup({
 					end, opts)
 					if vim.lsp.inlay_hint then
 						vim.keymap.set('n', '<leader>i', function ()
-							if vim.lsp.inlay_hint.is_enabled() then
-								vim.lsp.inlay_hint.enable(false, { bufnr })
-							else
-								vim.lsp.inlay_hint.enable(true, { bufnr })
-							end
+							local filter = { bufnr = ev.buf }
+							vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled(filter), filter)
 						end, opts)
 					end
 

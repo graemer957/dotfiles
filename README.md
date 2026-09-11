@@ -82,7 +82,7 @@ Prefix: C-a
 | n | L-L+ | nop |
 | n | L-c | Copy entire buffer into clipboard |
 | n | L-e | Open LSP diagnostic |
-| n | L-i | Toggle inlay hints |
+| n | L-i | Toggle inlay hints (current buffer) |
 | n | L-o | Open a new file adjacent to the current file |
 | n | L-w | Write buffer |
 | n | L-/ | Search CWD using `rg` for given `<pattern>` |
