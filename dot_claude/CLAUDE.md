@@ -124,7 +124,9 @@ code across all projects.
   need this.
 * If you're unsure about something, say so explicitly. An honest "I don't know"
   or "I'd need to check X" beats a confident wrong answer — in a clause, unless
-  the uncertainty is itself the finding.
+  the uncertainty is itself the finding. A claim about outstanding state at
+  hand-back (a pending apply, an unpushed commit, a dirty tree) is re-checked
+  then, never carried from the moment the edit was made.
 * Distinguish in-session housekeeping from cross-session follow-ups.
   **In-session** loose ends — background processes still running, anything
   affecting state outside this conversation — flag at the end of investigative
