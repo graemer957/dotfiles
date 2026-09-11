@@ -74,6 +74,10 @@ bash_case "cp over chezmoi rule"       "cp /tmp/ci.md /home/g/.local/share/chezm
 bash_case "tee into hook"              "cat /tmp/h.py | tee /home/g/.claude/hooks/new-guard.py" "$WITHOUT_BCP" "deny"
 bash_case "stderr append into CLAUDE.md" "build 2>> /home/g/dev/work/.claude/CLAUDE.md" "$WITHOUT_BCP" "deny"
 bash_case "both streams into hook"     "build &> /home/g/.claude/hooks/new-guard.py" "$WITHOUT_BCP" "deny"
+bash_case "rumdl check --fix on CLAUDE.md" "rumdl check --fix /home/g/dev/work/.claude/CLAUDE.md" "$WITHOUT_BCP" "deny"
+bash_case "curl -o over hook"          "curl -sSL https://x/y.py -o /home/g/.claude/hooks/new-guard.py" "$WITHOUT_BCP" "deny"
+bash_case "wget -O over rule"          "wget -q https://x/ci.md -O /home/g/.claude/rules/ci.md" "$WITHOUT_BCP" "deny"
+bash_case "rsync into skills"          "rsync -a /tmp/skill/ /home/g/dev/work/.claude/skills/new/" "$WITHOUT_BCP" "deny"
 
 # Bash: same commands with bcp invoked → fall through.
 bash_case "sed -i, bcp ran"            "sed -i 's/a/b/' /home/g/dev/work/.claude/skills/review-pr/SKILL.md" "$WITH_BCP" "fall-through"
@@ -88,6 +92,8 @@ bash_case "read, stderr merged"        "cat /home/g/dev/work/.claude/skills/revi
 bash_case "read, stderr discarded"     "ls -1 /home/g/.claude/hooks/ 2>/dev/null" "$WITHOUT_BCP" "fall-through"
 bash_case "diff naming CLAUDE.md"      "git diff main HEAD -- CLAUDE.md .claude/ 2>&1" "$WITHOUT_BCP" "fall-through"
 bash_case "rg output discarded"        "rg -n foo /home/g/dev/work/.claude/skills/ >/dev/null" "$WITHOUT_BCP" "fall-through"
+bash_case "rumdl check (no --fix)"     "rumdl check -d MD013 /home/g/dev/work/.claude/CLAUDE.md" "$WITHOUT_BCP" "fall-through"
+bash_case "curl without -o"            "curl -sSL https://x/y | head -5 # see .claude/skills/x/SKILL.md" "$WITHOUT_BCP" "fall-through"
 
 # Non-edit tools → fall through.
 test_case "Read tool ignored"          Read  "/home/g/dev/work/.claude/skills/review-pr/SKILL.md" "$WITHOUT_BCP" "fall-through"

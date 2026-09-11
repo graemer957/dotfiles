@@ -51,7 +51,10 @@ MUTATING = re.compile(
     # target check below.
     r"|>>?(?!>)\s*(?!&\d|/dev/null\b)"
     r"|\btee\b|\bpython[23]?\b|\bperl\b|\bruby\b"
-    r"|\bnode\b|\bcp\b|\bmv\b|\brm\b|\brumdl\s+fmt\b|\bdd\b)"
+    r"|\bnode\b|\bcp\b|\bmv\b|\brm\b|\bdd\b|\brsync\b"
+    r"|\brumdl\s+(?:fmt\b|check\b.*--fix\b)"
+    # Downloads write their target: `curl -o`/`--output`, `wget -O`/`--output-document`.
+    r"|\bcurl\b.*\s(?:-[a-zA-Z]*o|--output)\b|\bwget\b.*\s(?:-[a-zA-Z]*O|--output-document)\b)"
 )
 
 BCP_MARKERS = ('"skill":"bcp"', "Launching skill: bcp")
