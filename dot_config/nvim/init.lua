@@ -320,7 +320,7 @@ require("lazy").setup({
 			--   https://github.com/jonhoo/proximity-sort
 			--
 			-- to prefer files closer to the current file.
-			function list_cmd()
+			local function list_cmd()
 				local base = vim.fn.fnamemodify(vim.fn.expand('%'), ':h:.:S')
 				if base == '.' then
 					-- if there is no current file,
@@ -518,8 +518,6 @@ require("lazy").setup({
 		'hashivim/vim-terraform',
 		ft = { "terraform" },
 	},
-	-- toml
-	'cespare/vim-toml',
 	-- yaml
 	{
 		'b0o/schemastore.nvim',
@@ -538,7 +536,7 @@ require("lazy").setup({
 	'khaveesh/vim-fish-syntax',
 	-- markdown
 	{
-		'plasticboy/vim-markdown',
+		'preservim/vim-markdown',
 		ft = { "markdown" },
 		dependencies = {
 			'godlygeek/tabular',
