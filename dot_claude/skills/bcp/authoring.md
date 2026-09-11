@@ -6,6 +6,7 @@ Conventions for writing or editing a SKILL.md, CLAUDE.md, path-scoped rule, or h
 
 - Gate auto-invocation with `disable-model-invocation: true` when the skill should fire only on explicit invocation — never via "don't auto-invoke" prose in the body.
 - Description = what + when, action-first, third person: it is the surface the model matches to decide relevance.
+- A new, renamed, or deleted skill updates its row in the personal skill ledger (model, Applied, one-line description) in the same edit; the ledger is the model authority the harness audit reconciles against.
 
 ## Body
 
