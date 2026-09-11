@@ -140,7 +140,7 @@ def main():
         return
 
     if shutil.which("rumdl") is None:
-        emit("rumdl is not installed; the markdown rule requires it — report this at hand-back, don't skip it.")
+        emit("rumdl is not installed; the markdown rule requires it — report this at hand-back.")
         return
 
     findings = []
