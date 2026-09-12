@@ -9,9 +9,6 @@ disable = ["pnpm", "yarn", "cargo", "gcloud", "chezmoi", "vim"]
 # The binary is cargo-managed; the Cargo step upgrades it with everything else.
 no_self_update = true
 
-# Escalate via the Rust sudo; the `sudo` abbr in fish never reaches topgrade.
-sudo_command = "sudo-rs"
-
 [commands]
 # Replaces the built-in cargo step, which cannot pass --cooldown or choose the
 # installer. The window leaves time for a compromised release to be noticed
