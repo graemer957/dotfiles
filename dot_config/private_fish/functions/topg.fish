@@ -1,4 +1,13 @@
 function topg --description 'Run topgrade, logging the session to ~/Documents/system_updates'
+    # topgrade treats an unparseable config as absent: one red line, exit 0,
+    # then a full run on built-in defaults. Any mention of the config file in
+    # a dry run is a load error; a healthy run never names it (unless -v).
+    set -l probe (topgrade -n --only rustup 2>&1)
+    if string match -q '*topgrade.toml*' $probe
+        printf '%s\n' $probe >&2
+        return 1
+    end
+
     set -l log_dir ~/Documents/system_updates
     mkdir -p $log_dir; or return
 
