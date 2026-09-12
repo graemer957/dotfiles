@@ -1,0 +1,4 @@
+# mise finds this file two levels above its binary (~/.cargo/bin/mise → ~/.cargo/lib/).
+# Its presence disables `mise self-update`, which would replace the cargo-built
+# binary with a prebuilt GitHub release; the message replaces mise's nag.
+message = "mise is cargo-managed: run `cargo install-update mise` (or `topg`)"
