@@ -19,3 +19,8 @@ no_self_update = true
 # --deny warnings: a yanked or advisoried dependency fails the step, so it
 # shows as FAILED in the summary rather than scrolling past.
 "Cargo audit" = "cargo audit bin --deny warnings ~/.cargo/bin/*"
+
+# fwupdmgr exits 0 when updates are pending and 2 when there are none; the
+# built-in step reports OK either way, so invert it: FAILED in the summary
+# means "run `fwupdmgr update` by hand".
+"Firmware pending" = "sh -c 'fwupdmgr get-updates >/dev/null 2>&1; test $? -eq 2'"
