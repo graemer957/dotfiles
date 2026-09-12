@@ -3,7 +3,7 @@
 # cargo:      replaced by the custom command below.
 # gcloud:     distro package (paru/dnf); the step would write into its files.
 # chezmoi:    applies unseen; reviewed by hand (`chezmoi update -vn`, apply).
-# vim:        Neovim plugins update on their own schedule (`:Lazy sync`).
+# vim:        would `Lazy! sync` and rewrite lazy-lock.json; see the restore command below.
 disable = ["pnpm", "yarn", "cargo", "gcloud", "chezmoi", "vim"]
 
 # The binary is cargo-managed; the Cargo step upgrades it with everything else.
@@ -24,3 +24,7 @@ no_self_update = true
 # built-in step reports OK either way, so invert it: FAILED in the summary
 # means "run `fwupdmgr update` by hand".
 "Firmware pending" = "sh -c 'fwupdmgr get-updates >/dev/null 2>&1; test $? -eq 2'"
+
+# lazy-lock.json is versioned, so it is the source of truth: `restore` installs
+# what it pins; the built-in vim step would `sync` and overwrite it instead.
+"Neovim (Lazy restore)" = "nvim --headless '+Lazy! restore' +qa"
