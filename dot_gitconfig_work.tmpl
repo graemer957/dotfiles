@@ -1,6 +1,7 @@
 {{ if ne .chezmoi.hostname "thearchitect" -}}
 [user]
 	name = Graeme Read
-	email = {{ onepasswordRead "op://vmyokdd4hckbpd7lfi64nlawiq/6w3xanezkfbxs456feuve4i7je/title" }}
-	signingkey = {{ onepasswordRead "op://vmyokdd4hckbpd7lfi64nlawiq/6w3xanezkfbxs456feuve4i7je/publickey" }}
+	{{ $key := onepassword "6w3xanezkfbxs456feuve4i7je" "vmyokdd4hckbpd7lfi64nlawiq" -}}
+	email = {{ $key.title }}
+	signingkey = {{ template "onepassword_field" (list $key "public key") }}
 {{- end }}

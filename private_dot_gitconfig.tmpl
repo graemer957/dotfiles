@@ -1,11 +1,13 @@
 [user]
 	name = Graeme Read
 	{{ if or (eq .chezmoi.hostname "agentsmith") (eq .chezmoi.hostname "dozer") (eq .chezmoi.hostname "switch") (eq .chezmoi.hostname "trinity") -}}
-	email = {{ onepasswordRead "op://jfabgjw6euv4xxc2e2oqqlbud4/paf2hner4fpvubehfcdk2onsui/title" }}
-	signingkey = {{ onepasswordRead "op://jfabgjw6euv4xxc2e2oqqlbud4/paf2hner4fpvubehfcdk2onsui/publickey" }}
+	{{- $key := onepassword "paf2hner4fpvubehfcdk2onsui" "jfabgjw6euv4xxc2e2oqqlbud4" -}}
+	email = {{ $key.title }}
+	signingkey = {{ template "onepassword_field" (list $key "public key") }}
 	{{- else if eq .chezmoi.hostname "thearchitect" -}}
-	email = {{ onepasswordRead "op://vmyokdd4hckbpd7lfi64nlawiq/6w3xanezkfbxs456feuve4i7je/title" }}
-	signingkey = {{ onepasswordRead "op://vmyokdd4hckbpd7lfi64nlawiq/6w3xanezkfbxs456feuve4i7je/publickey" }}
+	{{- $key := onepassword "6w3xanezkfbxs456feuve4i7je" "vmyokdd4hckbpd7lfi64nlawiq" -}}
+	email = {{ $key.title }}
+	signingkey = {{ template "onepassword_field" (list $key "public key") }}
 	{{- end }}
 [ui "color"]
 	ui = always

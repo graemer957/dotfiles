@@ -4,22 +4,26 @@ type = s3
 provider = Cloudflare
 acl = private
 {{ if eq .chezmoi.hostname "agentsmith" -}}
-access_key_id = {{ onepasswordRead "op://jfabgjw6euv4xxc2e2oqqlbud4/mixj2mexoy7nj6kmukhjopzwxu/access key id" }}
-secret_access_key = {{ onepasswordRead "op://jfabgjw6euv4xxc2e2oqqlbud4/mixj2mexoy7nj6kmukhjopzwxu/secret access key" }}
-endpoint = {{ onepasswordRead "op://jfabgjw6euv4xxc2e2oqqlbud4/mixj2mexoy7nj6kmukhjopzwxu/website" }}
+{{- $r2 := onepassword "mixj2mexoy7nj6kmukhjopzwxu" "jfabgjw6euv4xxc2e2oqqlbud4" -}}
+access_key_id = {{ template "onepassword_field" (list $r2 "Access Key ID") }}
+secret_access_key = {{ template "onepassword_field" (list $r2 "Secret Access Key") }}
+endpoint = {{ (index $r2.urls 0).href }}
 no_check_bucket = true
 {{- else if eq .chezmoi.hostname "dozer" -}}
-access_key_id = {{ onepasswordRead "op://jfabgjw6euv4xxc2e2oqqlbud4/m4fl7mhg45jqlmrdij35ythfty/access key id" }}
-secret_access_key = {{ onepasswordRead "op://jfabgjw6euv4xxc2e2oqqlbud4/m4fl7mhg45jqlmrdij35ythfty/secret access key" }}
-endpoint = {{ onepasswordRead "op://jfabgjw6euv4xxc2e2oqqlbud4/m4fl7mhg45jqlmrdij35ythfty/website" }}
+{{- $r2 := onepassword "m4fl7mhg45jqlmrdij35ythfty" "jfabgjw6euv4xxc2e2oqqlbud4" -}}
+access_key_id = {{ template "onepassword_field" (list $r2 "Access Key ID") }}
+secret_access_key = {{ template "onepassword_field" (list $r2 "Secret Access Key") }}
+endpoint = {{ (index $r2.urls 0).href }}
 {{- else if eq .chezmoi.hostname "switch" -}}
-access_key_id = {{ onepasswordRead "op://jfabgjw6euv4xxc2e2oqqlbud4/hln6x6xrn3aahhzxeaawh6colm/access key id" }}
-secret_access_key = {{ onepasswordRead "op://jfabgjw6euv4xxc2e2oqqlbud4/hln6x6xrn3aahhzxeaawh6colm/secret access key" }}
-endpoint = {{ onepasswordRead "op://jfabgjw6euv4xxc2e2oqqlbud4/hln6x6xrn3aahhzxeaawh6colm/website" }}
+{{- $r2 := onepassword "hln6x6xrn3aahhzxeaawh6colm" "jfabgjw6euv4xxc2e2oqqlbud4" -}}
+access_key_id = {{ template "onepassword_field" (list $r2 "Access Key ID") }}
+secret_access_key = {{ template "onepassword_field" (list $r2 "Secret Access Key") }}
+endpoint = {{ (index $r2.urls 0).href }}
 {{- else if eq .chezmoi.hostname "trinity" -}}
-access_key_id = {{ onepasswordRead "op://jfabgjw6euv4xxc2e2oqqlbud4/z7l7to3qmrxumiviho7yjjsy7a/access key id" }}
-secret_access_key = {{ onepasswordRead "op://jfabgjw6euv4xxc2e2oqqlbud4/z7l7to3qmrxumiviho7yjjsy7a/secret access key" }}
-endpoint = {{ onepasswordRead "op://jfabgjw6euv4xxc2e2oqqlbud4/z7l7to3qmrxumiviho7yjjsy7a/website" }}
+{{- $r2 := onepassword "z7l7to3qmrxumiviho7yjjsy7a" "jfabgjw6euv4xxc2e2oqqlbud4" -}}
+access_key_id = {{ template "onepassword_field" (list $r2 "Access Key ID") }}
+secret_access_key = {{ template "onepassword_field" (list $r2 "Secret Access Key") }}
+endpoint = {{ (index $r2.urls 0).href }}
 {{- end }}
 
 [data1]
