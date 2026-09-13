@@ -6,6 +6,10 @@
 # vim:        would `Lazy! sync` and rewrite lazy-lock.json; see the restore command below.
 disable = ["pnpm", "yarn", "cargo", "gcloud", "chezmoi", "vim"]
 
+# Every package-manager prompt gets its -y / --noconfirm: the log is the
+# review, not the prompt. On Arch this also skips paru's PKGBUILD review.
+assume_yes = true
+
 # The binary is cargo-managed; the Cargo step upgrades it with everything else.
 no_self_update = true
 

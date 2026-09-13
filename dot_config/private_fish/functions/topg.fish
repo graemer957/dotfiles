@@ -30,8 +30,6 @@ function topg --description 'Run topgrade, logging the session to ~/Documents/sy
 
     # damp: print each command before running it, so the log records what was
     # invoked, not just what it printed. Extra args pass through (e.g. --dry-run).
-    # -y flatpak: flatpak answers its own prompt "n" when stdout isn't a TTY,
-    # which tee makes true; dnf/pacman only check stdin, so they still ask.
-    topgrade -r damp $argv -y flatpak &| tee $log
+    topgrade -r damp $argv &| tee $log
     rm -r $shim
 end
