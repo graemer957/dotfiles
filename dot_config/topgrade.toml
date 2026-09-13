@@ -10,6 +10,10 @@ disable = ["pnpm", "yarn", "cargo", "gcloud", "chezmoi", "vim"]
 # review, not the prompt. On Arch this also skips paru's PKGBUILD review.
 assume_yes = true
 
+# Failed steps go to the summary and the run continues: two custom steps
+# below fail on purpose as a signal, so the retry prompt would fire every run.
+ask_retry = false
+
 # The binary is cargo-managed; the Cargo step upgrades it with everything else.
 no_self_update = true
 
