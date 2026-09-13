@@ -31,5 +31,10 @@ function topg --description 'Run topgrade, logging the session to ~/Documents/sy
     # damp: print each command before running it, so the log records what was
     # invoked, not just what it printed. Extra args pass through (e.g. --dry-run).
     topgrade -r damp $argv &| tee $log
+    set -l rc $pipestatus[1]
     rm -r $shim
+
+    _log_summary $log 'kernel and Firefox upgrades explicitly; any other \
+major version bump; steps that failed or were skipped.'
+    return $rc
 end
