@@ -34,7 +34,7 @@ function topg --description 'Run topgrade, logging the session to ~/Documents/sy
     set -l rc $pipestatus[1]
     rm -r $shim
 
-    _log_summary $log 'kernel and Firefox upgrades explicitly; any other \
-major version bump; steps that failed or were skipped.'
+    _log_summary $log "kernel and Firefox upgrades explicitly; any other \
+major version bump; steps that failed or were skipped."
     return $rc
 end
