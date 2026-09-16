@@ -70,6 +70,7 @@ def writes_instruction_path(command):
         for target in TARGETED_WRITE.findall(command)
     )
 
+
 BCP_MARKERS = ('"skill":"bcp"', "Launching skill: bcp")
 
 
@@ -82,7 +83,9 @@ def main():
     tool = payload.get("tool_name")
     tool_input = payload.get("tool_input", {})
     if tool in ("Edit", "Write"):
-        if not any(p.search(tool_input.get("file_path", "")) for p in INSTRUCTION_PATHS):
+        if not any(
+            p.search(tool_input.get("file_path", "")) for p in INSTRUCTION_PATHS
+        ):
             return
     elif tool == "Bash":
         command = tool_input.get("command", "")
@@ -102,19 +105,23 @@ def main():
     if any(m in text for m in BCP_MARKERS):
         return
 
-    print(json.dumps({
-        "hookSpecificOutput": {
-            "hookEventName": "PreToolUse",
-            "permissionDecision": "deny",
-            "permissionDecisionReason": (
-                "Instruction-file gate: this edit targets a skill/CLAUDE.md/rule/hook, "
-                "and the bcp skill has not been invoked this session — it carries the "
-                "authoring conventions instruction files are checked against. Invoke Skill(bcp), "
-                "apply its authoring checklist to the change (and to any draft already "
-                "shared in chat), then retry this exact edit."
-            ),
-        }
-    }))
+    print(
+        json.dumps(
+            {
+                "hookSpecificOutput": {
+                    "hookEventName": "PreToolUse",
+                    "permissionDecision": "deny",
+                    "permissionDecisionReason": (
+                        "Instruction-file gate: this edit targets a skill/CLAUDE.md/rule/hook, "
+                        "and the bcp skill has not been invoked this session — it carries the "
+                        "authoring conventions instruction files are checked against. Invoke Skill(bcp), "
+                        "apply its authoring checklist to the change (and to any draft already "
+                        "shared in chat), then retry this exact edit."
+                    ),
+                }
+            }
+        )
+    )
 
 
 if __name__ == "__main__":

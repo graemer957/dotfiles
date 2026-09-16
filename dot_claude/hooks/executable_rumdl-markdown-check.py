@@ -26,7 +26,9 @@ import tempfile
 
 MD_TOKEN = re.compile(r"[\w./~-]+\.md\b")
 CD_PREFIX = re.compile(r"^\s*cd\s+(?P<dir>[^\s;&|]+)\s*(?:&&|;)")
-FINDING = re.compile(r"^.*?:(?P<line>\d+):(?P<col>\d+): \[(?P<rule>MD\d+)\] (?P<msg>.*)$")
+FINDING = re.compile(
+    r"^.*?:(?P<line>\d+):(?P<col>\d+): \[(?P<rule>MD\d+)\] (?P<msg>.*)$"
+)
 
 HOME = os.path.expanduser("~")
 TEAM_ROOT = HOME + "/dev/work/"
@@ -54,9 +56,17 @@ def disables_for(path):
 
 def run_check(path, disables):
     """rumdl's findings for path as (line, col, rule, message); a tool failure with no findings surfaces as one."""
-    r = subprocess.run(["rumdl", "check", "-d", disables, path], capture_output=True, text=True)
-    out = [(int(m["line"]), m["col"], m["rule"], m["msg"])
-           for m in (FINDING.match(l) for l in r.stdout.splitlines()) if m]
+    r = subprocess.run(
+        ["rumdl", "check", "-d", disables, path],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    out = [
+        (int(m["line"]), m["col"], m["rule"], m["msg"])
+        for m in (FINDING.match(l) for l in r.stdout.splitlines())
+        if m
+    ]
     if r.returncode != 0 and not out and r.stderr.strip():
         out.append((0, "0", "RUMDL", r.stderr.strip()))
     return out
@@ -65,11 +75,21 @@ def run_check(path, disables):
 def head_version(path):
     """Committed text of a team-repo file: None outside a team work tree, "" when untracked."""
     d = os.path.dirname(path)
-    top = subprocess.run(["git", "-C", d, "rev-parse", "--show-toplevel"], capture_output=True, text=True)
+    top = subprocess.run(
+        ["git", "-C", d, "rev-parse", "--show-toplevel"],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
     if top.returncode != 0 or not (top.stdout.strip() + "/").startswith(TEAM_ROOT):
         return None
     rel = os.path.relpath(path, top.stdout.strip())
-    shown = subprocess.run(["git", "-C", d, "show", "HEAD:" + rel], capture_output=True, text=True)
+    shown = subprocess.run(
+        ["git", "-C", d, "show", "HEAD:" + rel],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
     return shown.stdout if shown.returncode == 0 else ""
 
 
@@ -140,7 +160,9 @@ def main():
         return
 
     if shutil.which("rumdl") is None:
-        emit("rumdl is not installed; the markdown rule requires it — report this at hand-back.")
+        emit(
+            "rumdl is not installed; the markdown rule requires it — report this at hand-back."
+        )
         return
 
     findings = []
@@ -148,16 +170,23 @@ def main():
         for line, col, rule, msg in new_findings(p, disables_for(p)):
             findings.append(f"{p}:{line}:{col}: [{rule}] {msg}")
     if findings:
-        emit("rumdl findings on Markdown this call touched (team-repo files list only what the working copy adds over HEAD):\n" + "\n".join(findings))
+        emit(
+            "rumdl findings on Markdown this call touched (team-repo files list only what the working copy adds over HEAD):\n"
+            + "\n".join(findings)
+        )
 
 
 def emit(text):
-    print(json.dumps({
-        "hookSpecificOutput": {
-            "hookEventName": "PostToolUse",
-            "additionalContext": text,
-        }
-    }))
+    print(
+        json.dumps(
+            {
+                "hookSpecificOutput": {
+                    "hookEventName": "PostToolUse",
+                    "additionalContext": text,
+                }
+            }
+        )
+    )
 
 
 if __name__ == "__main__":

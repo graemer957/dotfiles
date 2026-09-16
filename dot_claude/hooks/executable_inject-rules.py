@@ -104,7 +104,7 @@ def rule_body(text):
     if lines and lines[0].strip() == "---":
         for i, line in enumerate(lines[1:], start=1):
             if line.strip() == "---":
-                return "\n".join(lines[i + 1:]).strip()
+                return "\n".join(lines[i + 1 :]).strip()
     return text.strip()
 
 
