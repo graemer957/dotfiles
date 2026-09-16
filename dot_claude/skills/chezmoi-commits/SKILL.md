@@ -45,9 +45,11 @@ the log and this list disagree, the log wins.
 3. Hand back the table (Output format) and stop for the go-ahead: the table
    is the review surface, and a subject is cheaper to fix there than after it
    is signed.
-4. On the go, for each row in order: `git -C <src> add <files>`, then
-   `git -C <src> commit -F <file>` with the subject written to `<file>` first
-   (backticks in a `-m` string get command-substituted). Commits are signed
+4. On the go, for each row in order run `commit.sh` (beside this file) with
+   the subject single-quoted (backticks in a double-quoted string get
+   command-substituted) and the row's whole-file source paths; a file split
+   across rows is staged with `git apply --cached` first and its path left
+   off, or `git add` would stage its other hunks too. Commits are signed
    through the 1Password agent, so run each in the foreground and wait for
    its prompt; a failed prompt leaves `HEAD` unchanged, so stop and hand that
    row back.
