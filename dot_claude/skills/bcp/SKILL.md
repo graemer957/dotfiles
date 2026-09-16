@@ -37,3 +37,5 @@ Skills decay. If while running this one you find something that would have sped 
 3. Edit the chezmoi source, then hand to the user to `chezmoi apply` before continuing.
 
 Don't batch corrections across runs — surface each one the moment you spot it.
+
+Before the final hand-back, look back over this run's tool calls for a mechanical sequence: commands with no decision between them. One qualifies for a script when this file prescribes it, when it ran three times this run, or when it did arithmetic or tallying by hand; a script runs identically every time, where prose drifts. Propose a qualifying sequence through the steps above, choosing what to build from `authoring.md`. Record the outcome in this skill's Mechanical cell in the personal skill ledger whenever it changes, a first check that finds nothing included.

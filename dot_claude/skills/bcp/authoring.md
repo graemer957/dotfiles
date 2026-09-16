@@ -6,7 +6,7 @@ Conventions for writing or editing a SKILL.md, CLAUDE.md, path-scoped rule, or h
 
 - Gate auto-invocation with `disable-model-invocation: true` when the skill should fire only on explicit invocation — never via "don't auto-invoke" prose in the body.
 - Description = what + when, action-first, third person: it is the surface the model matches to decide relevance.
-- A new, renamed, or deleted skill updates its row in the personal skill ledger (model, Applied, one-line description) in the same edit; the ledger is the model authority the harness audit reconciles against.
+- A new, renamed, or deleted skill updates its row in the personal skill ledger (model, Applied, Mechanical, one-line description) in the same edit; the ledger is the model authority the harness audit reconciles against.
 
 ## Body
 
@@ -14,7 +14,8 @@ Conventions for writing or editing a SKILL.md, CLAUDE.md, path-scoped rule, or h
 - Standard section order: Scope → Definitions → Workflow → Output format → Boundaries → Improving this skill. Omit sections with nothing to say.
 - Output formats as code-fenced templates so the consumer sees the shape, not prose about it.
 - Boundaries as explicit Don't-X bullets — the one place negative framing belongs.
-- Every co-authored skill ends with the "Improving this skill" loop: copy the numbered steps verbatim from a sibling; adapt only the trigger list to the skill's own failure modes.
+- Every co-authored skill ends with the "Improving this skill" loop: copy the numbered steps and the mechanical-sequence paragraph verbatim from a sibling; adapt only the trigger list to the skill's own failure modes.
+- A qualifying mechanical sequence becomes a script matched to the skill's audience, so it runs wherever the skill does: a team-repo skill gets a `just` recipe, the team's standard entry point; a personal skill gets a bash script beside its SKILL.md for glue, and Rust or Python, weighed per case, once the sequence holds logic.
 
 ## Audit checklist — run before hand-off, naming which sources ran
 
