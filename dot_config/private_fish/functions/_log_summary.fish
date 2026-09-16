@@ -32,11 +32,17 @@ Focus on: $focus"
     else
         echo '_log_summary: mcat not on PATH; printing raw Markdown' >&2
     end
+    # The exchange is appended to the log too, so a later reader sees what
+    # was asked as well as what came back. Header and prompt land before the
+    # call so a crashed run still records the attempt; the response is tee'd
+    # raw and only rendered for the terminal.
     printf '\nSummarising log with Claude 🤖, please wait...\n\n' >&2
+    printf '\nSummary from Claude 🤖\n\n```text\n%s\n```\n\n```markdown\n' $prompt >>$log
     env $profile_env claude -p $prompt --model opus --no-session-persistence \
         --tools Read,Grep --add-dir (path dirname $log) \
-        | $render
+        | tee -a $log | $render
     set -l rc $pipestatus[1]
+    printf '```\n' >>$log
     test $rc -eq 0; or echo "_log_summary: claude exited $rc" >&2
     return 0
 end
