@@ -1,6 +1,15 @@
 function claude --description 'Claude Code, with work profile under ~/dev/work'
     set -l work_root "$HOME/dev/work"
 
+    # --gh-key: run claude under its own ssh-agent, filled lazily by gh_ssh
+    # and gone when the session ends. Without the flag, git reaches GitHub
+    # through 1Password as everywhere else.
+    set -l launcher (command -s claude)
+    if set -l i (contains -i -- --gh-key $argv)
+        set -e argv[$i]
+        set launcher env GIT_SSH_COMMAND=$HOME/.local/bin/gh_ssh ssh-agent $launcher
+    end
+
     # Profile-independent hooks ride a --settings fragment: hooks in a
     # settings file only load for that profile, and the flag layer merges
     # additively with whichever profile launches.
@@ -38,8 +47,8 @@ function claude --description 'Claude Code, with work profile under ~/dev/work'
                 read -l -P 'Enter to launch claude (Ctrl-C to abort) ' _reply
             end
         end
-        CLAUDE_CONFIG_DIR="$cfg" command claude $shared_args $argv
+        CLAUDE_CONFIG_DIR="$cfg" $launcher $shared_args $argv
     else
-        command claude $shared_args $argv
+        $launcher $shared_args $argv
     end
 end
