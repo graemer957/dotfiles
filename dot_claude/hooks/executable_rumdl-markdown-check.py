@@ -10,8 +10,8 @@ them. A file inside a team work tree (a git repo under TEAM_ROOT) reports only
 findings the working copy adds over HEAD, keyed on rule + line text so shifted
 line numbers don't read as new; pre-existing findings there are the team's, not
 the session's. Reads (cat, rg) of a Markdown file also trigger a check; that is
-one redundant lint, cheaper than a missed one. A missing rumdl binary is
-reported, never skipped, matching the markdown rule.
+one redundant lint, cheaper than a missed one. A missing rumdl binary blocks
+until it is installed.
 """
 
 import collections
@@ -160,8 +160,9 @@ def main():
         return
 
     if shutil.which("rumdl") is None:
-        emit(
-            "rumdl is not installed; the markdown rule requires it — report this at hand-back."
+        block(
+            "rumdl is not installed. Stop and ask Graeme to install it (`cic rumdl`), "
+            "then re-run this check once he confirms."
         )
         return
 
@@ -187,6 +188,10 @@ def emit(text):
             }
         )
     )
+
+
+def block(reason):
+    print(json.dumps({"decision": "block", "reason": reason}))
 
 
 if __name__ == "__main__":

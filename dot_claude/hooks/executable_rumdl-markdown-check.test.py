@@ -26,14 +26,17 @@ PASS = FAIL = 0
 
 
 def run_hook(payload, head=None):
-    """additionalContext text the hook emits for payload, or "" when silent; head stubs the committed text."""
+    """Block reason or additionalContext text the hook emits for payload, or "" when silent; head stubs the committed text."""
     hook.head_version = (lambda path: head) if head is not None else (lambda path: None)
     sys.stdin = io.StringIO(json.dumps(payload))
     out = io.StringIO()
     with redirect_stdout(out):
         hook.main()
     text = out.getvalue().strip()
-    return json.loads(text)["hookSpecificOutput"]["additionalContext"] if text else ""
+    if not text:
+        return ""
+    emitted = json.loads(text)
+    return emitted.get("reason") or emitted["hookSpecificOutput"]["additionalContext"]
 
 
 def check(name, got, want):
@@ -99,6 +102,13 @@ with tempfile.TemporaryDirectory(
         "bad.md:2:1: [MD032]",
     )
     check("bash: bare path absent from cwd", run_hook(bash("cat bad.md", "/")), "")
+
+    which = hook.shutil.which
+    hook.shutil.which = lambda name: None
+    try:
+        check("missing rumdl blocks", run_hook(edit(personal)), "cic rumdl")
+    finally:
+        hook.shutil.which = which
 
 with tempfile.NamedTemporaryFile(
     "w", suffix=".md", dir="/tmp", delete=False
