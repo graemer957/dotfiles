@@ -35,6 +35,8 @@ function topg --description 'Run topgrade, logging the session to ~/Documents/sy
     rm -r $shim
 
     _log_summary $log "kernel and Firefox upgrades explicitly; any other \
-major version bump; steps that failed or were skipped."
+major version bump; steps that failed or were skipped. Expected, not a \
+finding: pacman's '/boot' directory-permissions warning (/boot is vfat, \
+mounted with dmask=0027 by design)."
     return $rc
 end
