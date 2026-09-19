@@ -26,9 +26,16 @@ the log and this list disagree, the log wins.
 - The subject is the whole message: the change is small enough for one line
   to carry it, and the diff carries the rest.
 - Imperative mood, the verb first and bare (`Add`, `Drop`, `Fix`, `Require`,
-  `Skip`), under about 60 characters.
-- The why follows a colon when it fits: `Skip the retry prompt: two custom
-  steps fail on purpose as a signal`.
+  `Skip`), then the effect or the tool by its user-facing name (`ruff`,
+  `gh_ssh`, `/le`), under about 60 characters. The diff carries the
+  mechanism, the hook's file name and the files that ride along:
+  ``Add `ruff` to lint Python``, not ``Add `ruff-python-check` to lint
+  Python files on edit``.
+- A colon carries a why only when the diff can't show it — a gotcha, or a
+  choice against the obvious: `Skip the retry prompt: two custom steps fail
+  on purpose as a signal`; ``Double-quote the `topg` focus: `\` is literal in
+  single quotes``. A why the diff or the file's docstring already states stays
+  off: ``Block when `rumdl` is missing``.
 - Backticks around every command, identifier, filename and flag.
 - One concern per commit: a change plus the files that exist only because of
   it (a hook with its test, a skill with its supporting file).
