@@ -1,6 +1,17 @@
 {
   "//": "HOOKS ONLY. This file loads via --settings (claude.fish), which OUTRANKS user/project/local settings for scalar keys — any other setting added here silently pins that value across every profile. List keys (hooks) merge additively, which is the point.",
   "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/home/graemer/.claude/hooks/gh-branch-rename-guard.py"
+          }
+        ]
+      }
+    ],
     "PostToolUse": [
       {
         "matcher": "Edit|Write|Bash",
