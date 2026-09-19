@@ -78,6 +78,15 @@
             "command": "/home/graemer/.claude/hooks/rumdl-markdown-check.py"
           }
         ]
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/home/graemer/.claude/hooks/ruff-python-check.py"
+          }
+        ]
       }
     ]
   },
