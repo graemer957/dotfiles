@@ -76,10 +76,10 @@ Index of every Best Current Practice. Each entry's `Home` is where its adherence
 
 ### absence-needs-positive-verification
 
-- Statement: a single negative signal — a 404, an empty grep, a missing list entry — proves only that the probe saw nothing; many APIs return the same shape for "doesn't exist" and "no permission", and a query can simply be wrong. Assert absent/unused/not-required only when the probe would have shown the thing were it present, or a second independent method agrees; otherwise say "can't see it" and name the limitation, never "it doesn't exist".
+- Statement: a single negative signal — a 404, an empty grep, a missing list entry — proves only that the probe saw nothing; many APIs return the same shape for "doesn't exist" and "no permission", and a query can simply be wrong. Assert absent/unused/not-required only when the probe would have shown the thing were it present, or a second independent method agrees; otherwise say "can't see it" and name the limitation, never "it doesn't exist". The same bar covers the future tense — "this will change nothing", "that's inert", "no PRs will fire" are absence claims resting on no probe at all; where the outcome becomes observable, state the mechanism that decides it and then look, reporting what actually happened, and predict only where observing is impossible, saying that it is a prediction.
 - Home: personal CLAUDE.md § Best Current Practices (final)
-- Trigger: making any absence, unused, or not-required claim
-- Detect: judgement — absence claims resting on a single probe
+- Trigger: making any absence, unused, or not-required claim, or any claim that something will not happen
+- Detect: judgement — absence claims resting on a single probe, or on no probe at all
 
 ## File-scoped — home: path-scoped rules in ~/.claude/rules/
 

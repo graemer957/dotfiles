@@ -217,7 +217,12 @@ in my personal TODO tagged `[BCP]`, then graduate via `/bcp`.
   the probe would return if the thing existed but was invisible to it — if
   the same, it cannot prove absence; confirm with a second independent
   method. With only negative evidence, say "I can't see X from here" and
-  name the limitation, never "X doesn't exist".
+  name the limitation, never "X doesn't exist". The same bar covers the
+  future tense — "this will change nothing", "that's inert", "no PRs will
+  fire" are absence claims resting on no probe at all. Where the outcome
+  becomes observable, state the mechanism that decides it and then look,
+  reporting what actually happened; predict only where observing is
+  impossible, and say that it is a prediction.
 * **Consistency, widening in scope** — three nested checks when changing
   code, the obligation softening as the scope grows:
   * The lines a change adds should be consistent *with each other*.
