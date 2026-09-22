@@ -57,39 +57,6 @@
   },
   "model": "opus",
   "feedbackSurveyRate": 0,
-  "hooks": {
-    "PreToolUse": [
-      {
-        "matcher": "Edit|Write|Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "/home/graemer/.claude/hooks/bcp-instruction-gate.py"
-          }
-        ]
-      }
-    ],
-    "PostToolUse": [
-      {
-        "matcher": "Edit|Write|Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "/home/graemer/.claude/hooks/rumdl-markdown-check.py"
-          }
-        ]
-      },
-      {
-        "matcher": "Edit|Write",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "/home/graemer/.claude/hooks/ruff-python-check.py"
-          }
-        ]
-      }
-    ]
-  },
   "tui": "fullscreen",
   "remoteControlAtStartup": false,
   "inputNeededNotifEnabled": true,

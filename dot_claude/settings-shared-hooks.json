@@ -10,6 +10,15 @@
             "command": "/home/graemer/.claude/hooks/gh-branch-rename-guard.py"
           }
         ]
+      },
+      {
+        "matcher": "Edit|Write|Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/home/graemer/.claude/hooks/bcp-instruction-gate.py"
+          }
+        ]
       }
     ],
     "PostToolUse": [
@@ -21,6 +30,18 @@
             "command": "/home/graemer/.claude/hooks/inject-rules.py",
             "timeout": 10,
             "statusMessage": "Checking path-scoped rules"
+          },
+          {
+            "type": "command",
+            "command": "/home/graemer/.claude/hooks/ruff-python-check.py"
+          },
+          {
+            "type": "command",
+            "command": "/home/graemer/.claude/hooks/rumdl-markdown-check.py"
+          },
+          {
+            "type": "command",
+            "command": "/home/graemer/.claude/hooks/hook-homes-check.py"
           },
           {
             "type": "command",
