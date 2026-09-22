@@ -2,7 +2,7 @@
 # Self-tests for gh-branch-rename-guard.py.
 # Feeds the hook synthetic PreToolUse payloads and checks the decision.
 # Run: ./gh-branch-rename-guard.test.sh
-set -u
+set -uo pipefail
 
 HOOK="$(dirname "$0")/gh-branch-rename-guard.py"
 PASS=0
@@ -11,7 +11,9 @@ FAIL=0
 test_case() {
   local name="$1"; local cmd="$2"; local want="$3"
   local out
-  out=$(printf '%s\n' "$cmd" | jq -Rn '{tool_name:"Bash",tool_input:{command:input}}' | "$HOOK")
+  if ! out=$(printf '%s\n' "$cmd" | jq -Rn '{tool_name:"Bash",tool_input:{command:input}}' | "$HOOK"); then
+    echo "FAIL $name  → hook pipeline exited non-zero"; FAIL=$((FAIL+1)); return
+  fi
   if [[ -z "$out" && "$want" == "fall-through" ]]; then
     echo "OK   $name  → silent (fall through)"; PASS=$((PASS+1))
   elif echo "$out" | jq -e '.hookSpecificOutput.permissionDecision == "deny"' >/dev/null 2>&1 && [[ "$want" == "deny" ]]; then

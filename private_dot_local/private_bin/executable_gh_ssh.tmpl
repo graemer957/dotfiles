@@ -18,7 +18,7 @@ item=''
 {{- end }}
 pub="$HOME/.ssh/claude-{{ .chezmoi.hostname }}.pub"
 
-log() { mkdir -p "${LOG%/*}" && printf '%s %s\n' "$(date -Is)" "$*" >>"$LOG"; }
+log() { local ts; ts=$(date -Is); mkdir -p "${LOG%/*}" && printf '%s %s\n' "$ts" "$*" >>"$LOG"; }
 die() { log "FAIL $* | ${ctx-}"; echo "gh_ssh: $*" >&2; exit 1; }
 
 [[ -n $item ]]             || die "no 1Password item configured for this host"

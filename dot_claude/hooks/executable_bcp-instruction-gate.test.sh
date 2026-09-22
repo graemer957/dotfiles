@@ -2,7 +2,7 @@
 # Self-tests for bcp-instruction-gate.py.
 # Feeds the hook synthetic PreToolUse payloads and checks the decision.
 # Run: ./bcp-instruction-gate.test.sh
-set -u
+set -uo pipefail
 
 HOOK="$(dirname "$0")/bcp-instruction-gate.py"
 PASS=0
@@ -17,8 +17,10 @@ trap 'rm -f "$WITH_BCP" "$WITHOUT_BCP"' EXIT
 test_case() {
   local name="$1" tool="$2" path="$3" transcript="$4" want="$5"
   local out
-  out=$(jq -n --arg t "$tool" --arg p "$path" --arg tr "$transcript" \
-    '{tool_name:$t,tool_input:{file_path:$p},transcript_path:$tr}' | "$HOOK")
+  if ! out=$(jq -n --arg t "$tool" --arg p "$path" --arg tr "$transcript" \
+    '{tool_name:$t,tool_input:{file_path:$p},transcript_path:$tr}' | "$HOOK"); then
+    echo "FAIL $name  → hook pipeline exited non-zero"; FAIL=$((FAIL+1)); return
+  fi
   if [[ -z "$out" && "$want" == "fall-through" ]]; then
     echo "OK   $name  → silent (fall through)"; PASS=$((PASS+1))
   elif echo "$out" | jq -e '.hookSpecificOutput.permissionDecision == "deny"' >/dev/null 2>&1 && [[ "$want" == "deny" ]]; then
@@ -31,8 +33,10 @@ test_case() {
 bash_case() {
   local name="$1" cmd="$2" transcript="$3" want="$4"
   local out
-  out=$(jq -n --arg c "$cmd" --arg tr "$transcript" \
-    '{tool_name:"Bash",tool_input:{command:$c},transcript_path:$tr}' | "$HOOK")
+  if ! out=$(jq -n --arg c "$cmd" --arg tr "$transcript" \
+    '{tool_name:"Bash",tool_input:{command:$c},transcript_path:$tr}' | "$HOOK"); then
+    echo "FAIL $name  → hook pipeline exited non-zero"; FAIL=$((FAIL+1)); return
+  fi
   if [[ -z "$out" && "$want" == "fall-through" ]]; then
     echo "OK   $name  → silent (fall through)"; PASS=$((PASS+1))
   elif echo "$out" | jq -e '.hookSpecificOutput.permissionDecision == "deny"' >/dev/null 2>&1 && [[ "$want" == "deny" ]]; then

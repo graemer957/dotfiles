@@ -3,7 +3,8 @@
 # against HEAD (staged and unstaged), and each untracked file in full.
 set -euo pipefail
 
-cd "$(chezmoi source-path)"
+src=$(chezmoi source-path)
+cd "$src"
 
 git status --short
 echo

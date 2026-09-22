@@ -2,7 +2,7 @@
 # Self-tests for inject-rules.py.
 # Feeds the hook synthetic PostToolUse payloads against fixture rules and
 # checks which rules inject. Run: ./inject-rules.test.sh
-set -u
+set -uo pipefail
 
 HOOK="$(dirname "$0")/inject-rules.py"
 PASS=0
@@ -31,12 +31,13 @@ assert_want() {
         echo "OK   $name → warns"; PASS=$((PASS+1))
       else echo "FAIL $name → got: ${out:-<empty>} | want: systemMessage"; FAIL=$((FAIL+1)); fi ;;
     *)
-      local ok=1 rule
+      local ok=1 rule injected
       IFS=, read -ra rules <<< "$want"
       for rule in "${rules[@]}"; do
         grep -q "<rule name=\"$rule\">" <<< "$ctx" || ok=0
       done
-      [[ $(grep -c '<rule name=' <<< "$ctx") -eq ${#rules[@]} ]] || ok=0
+      injected=$(grep -c '<rule name=' <<< "$ctx" || true)
+      [[ $injected -eq ${#rules[@]} ]] || ok=0
       if [[ $ok -eq 1 ]]; then echo "OK   $name → $want"; PASS=$((PASS+1))
       else echo "FAIL $name → got: ${out:-<empty>} | want: $want"; FAIL=$((FAIL+1)); fi ;;
   esac
@@ -46,8 +47,10 @@ assert_want() {
 test_case() {
   local name="$1" session="$2" tool="$3" path="$4" want="$5"
   local out ctx
-  out=$(jq -n --arg t "$tool" --arg p "$path" --arg s "test-$session" \
-    '{tool_name:$t,tool_input:{file_path:$p},session_id:$s}' | INJECT_RULES_DIR="$FIXTURES" "$HOOK")
+  if ! out=$(jq -n --arg t "$tool" --arg p "$path" --arg s "test-$session" \
+    '{tool_name:$t,tool_input:{file_path:$p},session_id:$s}' | INJECT_RULES_DIR="$FIXTURES" "$HOOK"); then
+    echo "FAIL $name → hook pipeline exited non-zero"; FAIL=$((FAIL+1)); return
+  fi
   ctx=$(echo "$out" | jq -r '.hookSpecificOutput.additionalContext // ""' 2>/dev/null)
   assert_want "$name" "$want" "$out" "$ctx"
 }
@@ -57,8 +60,10 @@ test_case() {
 test_bash() {
   local name="$1" session="$2" cwd="$3" cmd="$4" want="$5"
   local out ctx
-  out=$(jq -n --arg c "$cmd" --arg d "$cwd" --arg s "test-$session" \
-    '{tool_name:"Bash",tool_input:{command:$c},cwd:$d,session_id:$s}' | INJECT_RULES_DIR="$FIXTURES" "$HOOK")
+  if ! out=$(jq -n --arg c "$cmd" --arg d "$cwd" --arg s "test-$session" \
+    '{tool_name:"Bash",tool_input:{command:$c},cwd:$d,session_id:$s}' | INJECT_RULES_DIR="$FIXTURES" "$HOOK"); then
+    echo "FAIL $name → hook pipeline exited non-zero"; FAIL=$((FAIL+1)); return
+  fi
   ctx=$(echo "$out" | jq -r '.hookSpecificOutput.additionalContext // ""' 2>/dev/null)
   assert_want "$name" "$want" "$out" "$ctx"
 }
@@ -103,10 +108,11 @@ test_bash "bash flags skipped"    s20 "/tmp" "git log --pretty=format:%h.%s" "si
 # Smoke test against the real rules dir: catches parser drift from the
 # real frontmatter style. Unique session id each run; no dedupe residue.
 REAL_SESSION="test-real-$$"
-REAL_OUT=$(jq -n --arg s "$REAL_SESSION" \
+if ! REAL_OUT=$(jq -n --arg s "$REAL_SESSION" \
   '{tool_name:"Edit",tool_input:{file_path:"/home/g/dev/work/worktrees/platformed-x/docs/a.md"},session_id:$s}' \
-  | "$HOOK" | jq -r '.hookSpecificOutput.additionalContext // ""')
-if grep -q '<rule name="markdown">' <<< "$REAL_OUT" && grep -q 'rumdl' <<< "$REAL_OUT"; then
+  | "$HOOK" | jq -r '.hookSpecificOutput.additionalContext // ""'); then
+  echo "FAIL real rules smoke → hook pipeline exited non-zero"; FAIL=$((FAIL+1))
+elif grep -q '<rule name="markdown">' <<< "$REAL_OUT" && grep -q 'rumdl' <<< "$REAL_OUT"; then
   echo "OK   real rules smoke → markdown injects with body"; PASS=$((PASS+1))
 else
   echo "FAIL real rules smoke → got: ${REAL_OUT:-<empty>}"; FAIL=$((FAIL+1))

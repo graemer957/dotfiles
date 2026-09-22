@@ -34,10 +34,13 @@ fmt_next() { # minutes (rounded up) above a minute, seconds below
 }
 
 emit() { # $1: countdown | break — lets the bar render the break state
-    printf 'next|string|%s\n' "$(fmt_next)"
+    local next paused_str
+    next=$(fmt_next)
+    if [ "$paused" -eq 1 ]; then paused_str=true; else paused_str=false; fi
+    printf 'next|string|%s\n' "$next"
     printf 'kind|string|%s\n' "$kind"
     printf 'state|string|%s\n' "$1"
-    printf 'paused|bool|%s\n\n' "$([ "$paused" -eq 1 ] && echo true || echo false)"
+    printf 'paused|bool|%s\n\n' "$paused_str"
 }
 
 while :; do

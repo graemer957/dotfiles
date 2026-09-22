@@ -11,7 +11,8 @@ fi
 subject=$1
 shift
 
-cd "$(chezmoi source-path)"
+src=$(chezmoi source-path)
+cd "$src"
 if (( $# > 0 )); then
     git add -- "$@"
 fi

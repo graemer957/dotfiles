@@ -21,6 +21,10 @@
             "command": "/home/graemer/.claude/hooks/inject-rules.py",
             "timeout": 10,
             "statusMessage": "Checking path-scoped rules"
+          },
+          {
+            "type": "command",
+            "command": "/home/graemer/.claude/hooks/shellcheck-shell-check.py"
           }
         ]
       }
