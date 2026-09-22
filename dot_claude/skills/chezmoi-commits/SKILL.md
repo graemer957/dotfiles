@@ -27,8 +27,10 @@ the log and this list disagree, the log wins.
   to carry it, and the diff carries the rest.
 - Imperative mood, the verb first and bare (`Add`, `Drop`, `Fix`, `Require`,
   `Skip`), then the effect or the tool by its user-facing name (`ruff`,
-  `gh_ssh`, `/le`), under about 60 characters. The diff carries the
-  mechanism, the hook's file name and the files that ride along:
+  `gh_ssh`, `/le`), under about 40 characters — the effect named once, with
+  no qualifier the diff can restate (``Default `cic` to `--locked` ``, not
+  ``Require `--locked` for every crate `cic` installs``). The diff carries
+  the mechanism, the hook's file name and the files that ride along:
   ``Add `ruff` to lint Python``, not ``Add `ruff-python-check` to lint
   Python files on edit``.
 - A colon carries a why only when the diff can't show it — a gotcha, or a
@@ -67,13 +69,13 @@ the log and this list disagree, the log wins.
 ```markdown
 | # | Subject | Files |
 | - | ------- | ----- |
-| 1 | Add `cargo_targets` to list Cargo `target/` dirs by size | `functions/cargo_targets.fish` |
-| 2 | Gate `rsync` and download-to-file writes | `hooks/executable_bcp-instruction-gate.py`, `hooks/executable_bcp-instruction-gate.test.sh` |
+| 1 | Add `cargo_targets` to size `target/` dirs | `cargo_targets.fish` |
+| 2 | Gate `rsync` and download-to-file writes | `executable_bcp-instruction-gate.py` + its test |
 
 Commit in this order?
 ```
 
-Each file shows its last two path components — widen only when two would otherwise render alike; `git add` in step 4 still takes the full source path.
+Files by basename — widen to a parent only when two would otherwise render alike; `git add` in step 4 still takes the full source path. A row past four files names the ones the subject is about and counts the rest (`+ 7 scripts it flags`). The question closes the hand-back; an ordering that needs a paragraph after it is a grouping to revisit.
 
 A file split across rows carries `(part)` after its name in each.
 
