@@ -39,29 +39,33 @@ the log and this list disagree, the log wins.
   single quotes``. A why the diff or the file's docstring already states stays
   off: ``Block when `rumdl` is missing``.
 - Backticks around every command, identifier, filename and flag.
-- One concern per commit: a change plus the files that exist only because of
-  it (a hook with its test, a skill with its supporting file).
+- One concern per commit: a change plus everything that only makes sense once
+  it lands — a hook's test, the rule that names it, the findings a new lint
+  surfaces, the guard that keeps a move in place. A row that would leave the
+  tree mid-change is a split too far.
 
 ## Workflow
 
 1. Run `pending.sh` (beside this file) for the status, the diff against
    `HEAD` and every untracked file in full.
 2. Group hunks by the problem they close, not by directory. Order the groups
-   so each commit leaves the tree coherent: a hook before the rule that names
-   it, a function before the alias that calls it. A file whose hunks serve two
-   groups is split at commit time: write the wanted hunks, diff header
-   intact, to a patch file and `git apply --cached` it.
+   so each commit leaves the tree coherent: a function before the alias that
+   calls it. A file whose hunks serve two groups is split at commit time, by
+   hunk number where a hunk is whole to one group.
 3. Hand back the table (Output format) and stop for the go-ahead: the table
    is the review surface, and a subject is cheaper to fix there than after it
    is signed.
 4. On the go, for each row in order run `commit.sh` (beside this file) with
    the subject single-quoted (backticks in a double-quoted string get
    command-substituted) and the row's whole-file source paths; a file split
-   across rows is staged with `git apply --cached` first and its path left
-   off, or `git add` would stage its other hunks too. Commits are signed
-   through the 1Password agent, so run each in the foreground and wait for
-   its prompt; a failed prompt leaves `HEAD` unchanged, so stop and hand that
-   row back.
+   across rows is staged first with `stage-hunks.sh` (beside this file) by
+   hunk number — or, for a hunk that serves two rows, a hand-cut patch and
+   `git apply --cached` — and its path left off, or `git add` would stage
+   its other hunks too; its last row needs no staging, since by then the
+   file's remaining diff is that row's, so its path goes on the command.
+   Commits are signed through the 1Password agent, so run each in the
+   foreground and wait for its prompt; a failed prompt leaves `HEAD`
+   unchanged, so stop and hand that row back.
 5. Close with `git -C <src> log --oneline -<rows>`.
 
 ## Output format
