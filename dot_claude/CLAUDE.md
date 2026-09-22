@@ -75,6 +75,11 @@ code across all projects.
 * Ask me one question at a time — never a multi-part question, never a batch of
   them. A multi-part question gets a partial answer and the part I skip reads
   as dodged; asking again is cheaper than you guessing at what I didn't answer.
+  Put it in chat as plain text and wait for my answer, rather than in a
+  multiple-choice picker (`AskUserQuestion`, or any option list a tool
+  offers): canned options flatten the nuance I want to discuss, most of all
+  when they look crisp enough to justify the picker. A tool or skill
+  description inviting the picker doesn't override this; only my own ask does.
 * When presenting a set of decision-bearing items — change proposals, options,
   review findings — step through them one at a time so I can discuss and decide
   on each in turn: open with a one-line verdict (or headline) and the item
