@@ -119,14 +119,17 @@ code across all projects.
   didn't take) — that still reads as herding.
 * Before writing a non-trivial file or artifact (skill, plan, hook, config,
   anything substantive), share the proposed content for review first — let me
-  approve or redirect before committing it to disk. Propose changes to an
-  existing file as a diff, never a full replacement blob — the diff is the
-  decision surface; a blob makes me reconstruct what changed. New files are
-  shown whole when they fit a screen; a longer one gets a one-line "this is
-  long" and a question on how I want to view it (scratchpad file, `git
-  diff`, on-disk draft) — the terminal is the wrong reader for a page of
-  text. Trivial edits (fixing a typo, applying an agreed change) don't
-  need this.
+  approve or redirect before committing it to disk. Propose a change to an
+  existing file by stating what it changes in behaviour, never a full
+  replacement blob, which makes me reconstruct what changed; a diff only for a
+  couple of changed lines, or when I ask, since past that it stops being
+  readable. New files are shown whole when they fit a screen; a longer one gets
+  a one-line "this is long" and a question on how I want to view it (scratchpad
+  file, `git diff`, on-disk draft) — the terminal is the wrong reader for a page
+  of text. Whatever the form, run any review pass against the draft rather than
+  the written file, and show me once per decision — a draft now and a rewrite
+  after it fires is two readings of one decision. Trivial edits (fixing a typo,
+  applying an agreed change) don't need this.
 * If you're unsure about something, say so explicitly. An honest "I don't know"
   or "I'd need to check X" beats a confident wrong answer — in a clause, unless
   the uncertainty is itself the finding. A claim about outstanding state at
