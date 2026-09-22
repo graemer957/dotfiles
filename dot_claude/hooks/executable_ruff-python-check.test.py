@@ -58,6 +58,10 @@ def edit(path, tool="Edit"):
     return {"tool_name": tool, "tool_input": {"file_path": path}}
 
 
+def bash(command, cwd=None):
+    return {"tool_name": "Bash", "tool_input": {"command": command}, "cwd": cwd}
+
+
 def fixture(root, name, text):
     path = os.path.join(root, name)
     with open(path, "w") as f:
@@ -79,7 +83,30 @@ with tempfile.TemporaryDirectory(
     check("format finding reported", run_hook(edit(messy)), "would be reformatted")
     check("Write is checked too", run_hook(edit(unused, "Write")), "F401")
     check("non-Python file ignored", run_hook(edit(notes)), "")
-    check("Bash call ignored", run_hook(edit(unused, "Bash")), "")
+
+    check(
+        "Bash naming the file is checked", run_hook(bash(f"python3 {unused}")), "F401"
+    )
+    both = run_hook(bash(f"cat {unused} {messy}"))
+    check("Bash naming two files reports both: lint", both, "F401")
+    check("Bash naming two files reports both: format", both, "would be reformatted")
+    check(
+        "bare path resolves against the session cwd",
+        run_hook(bash("cat unused.py", cwd=root)),
+        "F401",
+    )
+    check(
+        "bare path resolves against a leading cd",
+        run_hook(bash(f"cd {root} && cat unused.py", cwd=os.path.expanduser("~"))),
+        "F401",
+    )
+    check(
+        "Bash naming a missing file is silent",
+        run_hook(bash(f"cat {root}/nope.py")),
+        "",
+    )
+    check("Bash with no .py token is silent", run_hook(bash(f"ls {root}")), "")
+    check("Bash naming a .pyc is silent", run_hook(bash(f"cat {unused}c")), "")
 
     check("team file skipped before date", run_hook(edit(unused), team=True), "")
     check(
@@ -107,6 +134,7 @@ with tempfile.NamedTemporaryFile(
     scratch.write("import os\n")
 try:
     check("scratch path skipped", run_hook(edit(scratch.name)), "")
+    check("scratch path skipped via Bash", run_hook(bash(f"cat {scratch.name}")), "")
 finally:
     os.unlink(scratch.name)
 
