@@ -13,6 +13,8 @@ LOG="$HOME/.local/state/gh_ssh/log"   # one line per key load or failure
 
 {{ if eq .chezmoi.hostname "trinity" -}}
 item='op://jfabgjw6euv4xxc2e2oqqlbud4/4g6kyunpxkhaplymmz4ra43tka'
+{{- else if eq .chezmoi.hostname "thearchitect" -}}
+item='op://vmyokdd4hckbpd7lfi64nlawiq/jgxwrydn4qdnnnoom62whsqdu4'
 {{- else -}}
 item=''
 {{- end }}
