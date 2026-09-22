@@ -19,10 +19,9 @@ no_self_update = true
 
 [commands]
 # Replaces the built-in cargo step, which cannot pass --cooldown or choose the
-# installer. The window leaves time for a compromised release to be noticed
-# and yanked; the shim builds via cargo-auditable so the audit below can read
-# each binary's exact dependency tree.
-"Cargo (7d cooldown)" = "cargo install-update --all --cooldown 7d --install-cargo ~/.local/bin/cargo_auditable"
+# installer. The command lives in the `cargo_install_cooldown` fish function;
+# fish_trace expands it into the log, which damp records only as this line.
+"Cargo (7d cooldown)" = "fish -c 'set fish_trace 1; cargo_install_cooldown --all'"
 
 # --deny warnings: a yanked or advisoried dependency fails the step, so it
 # shows as FAILED in the summary rather than scrolling past.
