@@ -85,7 +85,8 @@ A file split across rows carries `(part)` after its name in each.
 
 ## Boundaries
 
-- Don't commit before the go-ahead.
+- Don't commit before the go-ahead: a subject is cheaper to fix in the table
+  than after it's signed.
 - Don't add a body or a trailer.
 - Don't `chezmoi apply` or `chezmoi add`: syncing source and live files is
   the user's step, before or after the commits.
@@ -114,6 +115,6 @@ mechanical sequence: commands with no decision between them. One qualifies
 for a script when this file prescribes it, when it ran three times this run,
 or when it did arithmetic or tallying by hand; a script runs identically
 every time, where prose drifts. Propose a qualifying sequence through the
-steps above, choosing what to build from `authoring.md`. Record the outcome
+steps above, choosing what to build from `bcp`'s `authoring.md`. Record the outcome
 in this skill's Mechanical cell in the personal skill ledger whenever it
 changes, a first check that finds nothing included.

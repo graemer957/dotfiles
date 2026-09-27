@@ -22,4 +22,5 @@ paths:
   copy adds over `HEAD`: fix those before hand-back and leave pre-existing
   ones unmentioned — the linter isn't team-adopted, so they are neither yours
   to fix nor worth the user's attention. A new file passes clean.
-- A repo shipping its own `rumdl` config governs from there.
+- A repo shipping its own `rumdl` config governs from there — its lint choices
+  are the team's, and a personal disable list would report rules they keep.

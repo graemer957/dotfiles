@@ -16,7 +16,7 @@ paths:
 - Correct my terminology when I'm wrong, even on small points.
 - Optimise for **maintainability** — simple, readable solutions; choose imperative vs functional on clarity; avoid over-engineering.
 - Keep an eye on allocations. Feel free to point out where they could be reduced.
-  - Use references when possible
+  - Prefer references over clones; an owned copy needs a reason (an escaping value, or a borrow the checker refuses)
 - Check the project is using the 2024 edition, has a sensible MSRV and configured `rustfmt` correctly for same edition.
 - Make a point of calling out code that panics.
 - When reviewing be comprehensive and allow me time to fix the points you raise iteratively or ask more questions.

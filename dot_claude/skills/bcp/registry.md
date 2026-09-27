@@ -69,7 +69,7 @@ Index of every Best Current Practice. Each entry's `Home` is where its adherence
 
 ### no-private-note-references
 
-- Statement: never reference private personal notes in shared artifacts (PRs, commits, public docs); inline-summarise the concept and link public sources instead.
+- Statement: never reference private personal notes in shared artifacts (PRs, commits, public docs); inline-summarise the concept and link public sources instead — personal notes are private context, not citations.
 - Home: personal CLAUDE.md § Best Current Practices (final)
 - Trigger: writing anything shared
 - Detect: search shared artifacts for private-vault references (e.g. "Obsidian", vault paths)
@@ -164,7 +164,7 @@ Index of every Best Current Practice. Each entry's `Home` is where its adherence
 
 ### skill-authoring-conventions
 
-- Statement: conventions only hold when they live where the work happens and fire by construction, not recall — for skill authoring that mechanism is authoring.md's frontmatter and body conventions, applied at write time.
+- Statement: SKILL.md authoring applies authoring.md's frontmatter and body conventions at write time.
 - Home: authoring.md (final)
 - Trigger: SKILL.md authoring
 - Detect: audit existing SKILL.md files against authoring.md
