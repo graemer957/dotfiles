@@ -1,4 +1,10 @@
 function topg --description 'Run topgrade, logging the session to ~/Documents/system_updates'
+    # A dry run changes nothing, so it needs no log, sudo shim or summary.
+    if contains -- -n $argv; or contains -- --dry-run $argv
+        echo 'topg: for a dry run, use `topgrade -n` directly' >&2
+        return 1
+    end
+
     # topgrade treats an unparseable config as absent: one red line, exit 0,
     # then a full run on built-in defaults. Any mention of the config file in
     # a dry run is a load error; a healthy run never names it (unless -v).
@@ -29,7 +35,7 @@ function topg --description 'Run topgrade, logging the session to ~/Documents/sy
     set -lx PATH $shim $PATH
 
     # damp: print each command before running it, so the log records what was
-    # invoked, not just what it printed. Extra args pass through (e.g. --dry-run).
+    # invoked, not just what it printed. Extra args pass through (e.g. --only).
     topgrade -r damp $argv &| tee $log
     set -l rc $pipestatus[1]
     rm -r $shim
