@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 # Stage the numbered hunks of one file's diff against HEAD in the chezmoi
 # source tree, for a table row that takes part of a file. Hunks count from 1
-# in `git diff HEAD -- <file>` order; a hunk that serves two rows is still
-# split by hand.
+# in `git diff HEAD -- <file>` order.
 set -euo pipefail
 
 if (( $# < 2 )); then

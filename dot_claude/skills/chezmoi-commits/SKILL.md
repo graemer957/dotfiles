@@ -2,7 +2,7 @@
 name: chezmoi-commits
 description: >-
   Split the pending changes in the chezmoi source tree into small, distinct
-  commits with house-style subjects — one concern per commit, subject only —
+  commits with house-style subjects — one theme per commit, subject only —
   and hand back a table of the proposed commits for approval before any
   commit lands. Use on /chezmoi-commits after editing dotfiles, skills,
   rules or hooks that chezmoi manages.
@@ -39,19 +39,24 @@ the log and this list disagree, the log wins.
   single quotes``. A why the diff or the file's docstring already states stays
   off: ``Block when `rumdl` is missing``.
 - Backticks around every command, identifier, filename and flag.
-- One concern per commit: a change plus everything that only makes sense once
-  it lands — a hook's test, the rule that names it, the findings a new lint
-  surfaces, the guard that keeps a move in place. A row that would leave the
-  tree mid-change is a split too far.
+- A row is a theme: one reviewable concern, named by why the edits were made.
+  It holds the change plus everything that only makes sense once it lands — a
+  hook's test, the rule that names it, the findings a new lint surfaces, the
+  guard that keeps a move in place — and every edit made for the same reason,
+  whichever files it falls in: one pass of checklist fixes across seven files
+  is one row. The log is read by reason, and a row per edit leaves the reader
+  to reassemble it. A row that would leave the tree mid-change is a split too
+  far.
 
 ## Workflow
 
 1. Run `pending.sh` (beside this file) for the status, the diff against
    `HEAD` and every untracked file in full.
-2. Group hunks by the problem they close, not by directory. Order the groups
-   so each commit leaves the tree coherent: a function before the alias that
-   calls it. A file whose hunks serve two groups is split at commit time, by
-   hunk number where a hunk is whole to one group.
+2. Group hunks into themes, not by directory or file. Order the themes so
+   each commit leaves the tree coherent: a function before the alias that
+   calls it. A file whose hunks serve two themes is split at commit time, by
+   hunk number; a single hunk serving two themes means they are one theme, so
+   merge them.
 3. Hand back the table (Output format) and stop for the go-ahead: the table
    is the review surface, and a subject is cheaper to fix there than after it
    is signed.
@@ -59,10 +64,14 @@ the log and this list disagree, the log wins.
    the subject single-quoted (backticks in a double-quoted string get
    command-substituted) and the row's whole-file source paths; a file split
    across rows is staged first with `stage-hunks.sh` (beside this file) by
-   hunk number — or, for a hunk that serves two rows, a hand-cut patch and
-   `git apply --cached` — and its path left off, or `git add` would stage
-   its other hunks too; its last row needs no staging, since by then the
-   file's remaining diff is that row's, so its path goes on the command.
+   hunk number and its path left off, or `git add` would stage its other
+   hunks too; its last row needs no staging, since by then the file's
+   remaining diff is that row's, so its path goes on the command.
+   `commit.sh` parse-checks every staged file as the commit will hold it,
+   since a split file's early row commits a state that never existed on
+   disk; a failure commits nothing and leaves the row staged, so unstage it
+   (`git -C <src> restore --staged <paths>`), move the breaking hunk to a
+   later row or merge the two, and re-run.
    Commits are signed through the 1Password agent, so run each in the
    foreground and wait for its prompt; a failed prompt leaves `HEAD`
    unchanged, so stop and hand that row back.
