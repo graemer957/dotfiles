@@ -105,6 +105,22 @@ test_bash "bash rust via sed"     s18 "/tmp" "sed -n '1,10p' /w/rust/lib.rs" "ru
 test_bash "bash no path"          s19 "/tmp" "git status" "silent"
 test_bash "bash flags skipped"    s20 "/tmp" "git log --pretty=format:%h.%s" "silent"
 
+# Profile rules dir: with no INJECT_RULES_DIR override, the hook reads
+# $CLAUDE_CONFIG_DIR/rules, so a work-only rule reaches an out-of-tree plan.
+PROFILE=$(mktemp -d)
+mkdir -p "$PROFILE/rules"
+printf '%s\n' "---" "paths:" '  - "**/Plans/*.md"' "---" "" "body of plans" > "$PROFILE/rules/plans.md"
+if ! PROFILE_OUT=$(jq -n --arg s "test-profile-$$" \
+  '{tool_name:"Write",tool_input:{file_path:"/home/g/notes/Plans/migration.md"},session_id:$s}' \
+  | env -u INJECT_RULES_DIR CLAUDE_CONFIG_DIR="$PROFILE" "$HOOK" | jq -r '.hookSpecificOutput.additionalContext // ""'); then
+  echo "FAIL profile rules dir → hook pipeline exited non-zero"; FAIL=$((FAIL+1))
+elif grep -q '<rule name="plans">' <<< "$PROFILE_OUT"; then
+  echo "OK   profile rules dir → work-only rule injects for an out-of-tree plan"; PASS=$((PASS+1))
+else
+  echo "FAIL profile rules dir → got: ${PROFILE_OUT:-<empty>}"; FAIL=$((FAIL+1))
+fi
+rm -rf "$PROFILE"
+
 # Smoke test against the real rules dir: catches parser drift from the
 # real frontmatter style. Unique session id each run; no dedupe residue.
 REAL_SESSION="test-real-$$"

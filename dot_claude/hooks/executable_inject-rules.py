@@ -22,7 +22,9 @@ plain suffixes, `?`, `[...]`. A rule whose globs need more (braces,
 extglob, flow-style `paths:`) is reported via systemMessage once per
 session rather than silently never matching.
 
-INJECT_RULES_DIR overrides the rules directory (tests only).
+The rules directory is the running profile's: $CLAUDE_CONFIG_DIR/rules when
+the launcher sets one, ~/.claude/rules otherwise, so a work-only rule reaches
+files outside the repo too. INJECT_RULES_DIR overrides it (tests only).
 """
 
 import fnmatch
@@ -131,7 +133,10 @@ def main():
     state = Path(f"/tmp/claude-rule-inject-{os.getuid()}") / session
     state.mkdir(parents=True, exist_ok=True)
 
-    rules_dir = Path(os.environ.get("INJECT_RULES_DIR", Path.home() / ".claude/rules"))
+    rules_dir = Path(
+        os.environ.get("INJECT_RULES_DIR")
+        or Path(os.environ.get("CLAUDE_CONFIG_DIR", Path.home() / ".claude")) / "rules"
+    )
     injected = []
     warnings = []
     for rule in sorted(rules_dir.glob("*.md")):
