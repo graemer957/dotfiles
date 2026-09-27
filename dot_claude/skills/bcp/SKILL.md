@@ -14,7 +14,7 @@ model: opus
 
 ## Registry
 
-`registry.md` indexes every BCP: statement, home, trigger, detection hint. Each entry carries a standalone statement so an audit pass runs from the registry alone — but the registry is not the home: the authoritative adherence text lives at each BCP's home (a CLAUDE.md bullet, a path-scoped rule, or a supporting file in this skill), and on wording drift the home wins. The registry is also the only membership list: a bullet living in a rules file or CLAUDE.md is not a BCP unless indexed here, and homes carry no BCP marker — to check whether something is a BCP, or where its text lives, consult the registry, not the home.
+`registry.md` indexes every BCP: statement, home, trigger, detection hint. Each entry carries a standalone statement so an audit pass runs from the registry alone — but the registry is not the home: the authoritative adherence text lives at each BCP's home (a CLAUDE.md bullet, a path-scoped rule, a supporting file in this skill, or another skill's file), and on wording drift the home wins; an entry whose execution was deliberately dropped names the registry as its home, and its statement is then the whole text. The registry is also the only membership list: a bullet living in a rules file or CLAUDE.md is not a BCP unless indexed here, and homes carry no BCP marker — to check whether something is a BCP, or where its text lives, consult the registry, not the home.
 
 ## Workflow
 

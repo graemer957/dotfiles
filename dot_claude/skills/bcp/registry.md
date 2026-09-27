@@ -83,13 +83,6 @@ Index of every Best Current Practice. Each entry's `Home` is where its adherence
 
 ## File-scoped — home: path-scoped rules in ~/.claude/rules/
 
-### derive-dont-mirror-state
-
-- Statement: if a value can be computed from existing state or props, derive it during render rather than storing a second copy kept in sync by an effect — the mirrored copy buys an extra render, a stale-value window, and a reset obligation. The tell: a state setter inside an effect whose only job is to track another value.
-- Home: ~/.claude/rules/react.md (final)
-- Trigger: React state code
-- Detect: search for effects whose body only sets state derived from other state/props
-
 ### exhaustive-destructuring
 
 - Statement: code whose job is to visit every member of a same-crate closed set — struct fields (manual Debug/serialise impls, mappers, conversion fns: full destructure, no `..` rest pattern) or enum variants (classifier/decision code: exhaustive `match`, no `_` arm, as a method on the enum) — is written so a new field or variant becomes a compile error at every site that must decide about it. Same-crate types only (foreign non-exhaustive types force `..`/`_`, surrendering the guard); not for ordinary field access.
@@ -149,7 +142,7 @@ Index of every Best Current Practice. Each entry's `Home` is where its adherence
 ### rumdl-on-markdown
 
 - Statement: every Markdown file a tool call touches gets `rumdl check` before hand-back, run by the PostToolUse markdown hook with the disable list its `DISABLES` mapping assigns to the path — the mapping is the single home of the per-path lists (MD013 off everywhere: soft wrapping is the convention), and a by-hand run takes its `-d` list from there. New files pass clean; edits fix the findings they introduced or touched and flag pre-existing ones elsewhere. A repo shipping its own config governs from there. The tool is required on the machine: the hook blocks on a missing binary until it is installed.
-- Home: ~/.claude/rules/markdown.md (final)
+- Home: ~/.claude/rules/markdown.md (final); the per-path lists, MD013 included, live in the hook's `DISABLES` mapping
 - Trigger: creating or editing any Markdown file
 - Detect: Markdown-touching hand-backs with no rumdl result reported
 
@@ -183,7 +176,7 @@ Index of every Best Current Practice. Each entry's `Home` is where its adherence
 - Trigger: dependency-maintenance planning
 - Detect: date of the last staleness audit against the intended cadence
 
-## Work-level — home: work CLAUDE.md
+## Work-level — home: the work profile (CLAUDE.md, rules, skills)
 
 ### team-standard-commands
 
@@ -198,3 +191,17 @@ Index of every Best Current Practice. Each entry's `Home` is where its adherence
 - Home: `review-pr` skill in the work profile (final)
 - Trigger: reviewing a pull request
 - Detect: judgement — review-time
+
+### derive-dont-mirror-state
+
+- Statement: if a value can be computed from existing state or props, derive it during render rather than storing a second copy kept in sync by an effect — the mirrored copy buys an extra render, a stale-value window, and a reset obligation. The tell: a state setter inside an effect whose only job is to track another value.
+- Home: `rules/react.md` in the work profile (final)
+- Trigger: React state code
+- Detect: search for effects whose body only sets state derived from other state/props
+
+### data-migrations-move-generators-too
+
+- Statement: a data migration has two layers — the stored rows being moved, and the generators (config rows, autoruns, presets, code branching on the moved column) that keep producing the old shape after the run. A plan lists every writer and reader of the moved shape and decides per site; the go/no-go exercises one generator path or watches its skip signal. A nullable column or optional variant added without a backfill creates rows the product cannot repair: backfill in the same change, or state what unset means for every existing row.
+- Home: `rules/migrations.md` in the work profile (final)
+- Trigger: planning or reviewing a data migration; adding a nullable column or optional variant in a migration
+- Detect: a migration adding a nullable column with no `UPDATE` and no stated meaning for unset; a plan with no writer/reader list for the moved shape; a code branch on the unset value of a column existing rows leave empty
