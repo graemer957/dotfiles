@@ -1,4 +1,4 @@
-function _log_summary --argument-names log focus --description 'Summarise a run log with claude -p'
+function _log_summary --argument-names log focus label --description 'Summarise a run log with claude -p'
     if not command -q claude
         echo '_log_summary: claude not on PATH; skipping summary' >&2
         return 0
@@ -20,6 +20,8 @@ function _log_summary --argument-names log focus --description 'Summarise a run 
     set -l prompt "Summarise the run log at $log. Open with a one-line verdict, \
 then a Markdown table of what ran and its outcome, then anything worth a look. \
 Focus on: $focus"
+    set -l session (uuidgen)
+    set -l name "$label run on "(date +%d/%m/%Y)
 
     # `env` resolves claude from PATH, bypassing the cwd-switching fish
     # wrapper. Read/Grep need no permission inside an --add-dir; no other
@@ -38,11 +40,22 @@ Focus on: $focus"
     # raw and only rendered for the terminal.
     printf '\nSummarising log with Claude 🤖, please wait...\n\n' >&2
     printf '\nSummary from Claude 🤖\n\n```text\n%s\n```\n\n```markdown\n' $prompt >>$log
-    env $profile_env claude -p $prompt --model opus --no-session-persistence \
-        --tools Read,Grep --add-dir (path dirname $log) \
+    env $profile_env claude -p $prompt --model opus --session-id $session \
+        --name $name --tools Read,Grep --add-dir (path dirname $log) \
         | tee -a $log | $render
     set -l rc $pipestatus[1]
     printf '```\n' >>$log
     test $rc -eq 0; or echo "_log_summary: claude exited $rc" >&2
+
+    # The summary session is saved under a readable name, so it can also be
+    # picked up later from /resume. Resuming launches with claude's full tool
+    # set (--tools binds only the launch that passes it). Asked only at an
+    # interactive prompt, and never after a failed summary.
+    if test $rc -eq 0; and isatty stdin
+        read -l -P 'Talk to Claude about this? [y/N] ' reply
+        if string match -qir '^y(es)?$' -- $reply
+            env $profile_env claude -r $session
+        end
+    end
     return 0
 end
