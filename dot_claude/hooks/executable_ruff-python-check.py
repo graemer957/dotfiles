@@ -109,7 +109,7 @@ def main():
     if team and today() >= TEAM_SKIP_UNTIL:
         notes.append(
             f"ruff skips team repos until {TEAM_SKIP_UNTIL.isoformat()}, which has passed. "
-            "Ask Graeme whether to start linting team Python or move the date."
+            "Ask Graeme whether to start linting team Python now."
         )
 
     if personal:
