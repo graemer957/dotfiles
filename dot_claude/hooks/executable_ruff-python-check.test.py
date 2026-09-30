@@ -77,6 +77,16 @@ with tempfile.TemporaryDirectory(
     unused = fixture(root, "unused.py", 'import os\n\nprint("ok")\n')
     messy = fixture(root, "messy.py", "print( 'ok' )\n")
     notes = fixture(root, "notes.md", "import os\n")
+    shebang = fixture(root, "script.py", '#!/usr/bin/env python3\nprint("ok")\n')
+
+    check("findings ask for a fix", run_hook(edit(unused)), "fix every one")
+    check("EXE001 reported outside chezmoi source", run_hook(edit(shebang)), "EXE001")
+    source = hook.CHEZMOI_SOURCE
+    hook.CHEZMOI_SOURCE = root + "/"
+    try:
+        check("EXE001 ignored in chezmoi source", run_hook(edit(shebang)), "")
+    finally:
+        hook.CHEZMOI_SOURCE = source
 
     check("clean file is silent", run_hook(edit(clean)), "")
     check("lint finding reported", run_hook(edit(unused)), "F401")

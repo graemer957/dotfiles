@@ -12,6 +12,10 @@ check; that is one redundant lint, cheaper than a missed one. Files inside a
 team work tree (a git repo under TEAM_ROOT) are skipped until TEAM_SKIP_UNTIL,
 then nudge a decision on linting team Python. A missing ruff binary blocks
 until it is installed.
+
+Every file linted is therefore personal, so the message asks for every finding
+to be fixed, pre-existing included. EXE001 is ignored under CHEZMOI_SOURCE,
+where the `executable_` name prefix, not the file mode, sets the bit on apply.
 """
 
 import datetime
@@ -27,6 +31,7 @@ CD_PREFIX = re.compile(r"^\s*cd\s+(?P<dir>[^\s;&|]+)\s*(?:&&|;)")
 
 HOME = os.path.expanduser("~")
 TEAM_ROOT = HOME + "/dev/work/"
+CHEZMOI_SOURCE = HOME + "/.local/share/chezmoi/"
 TEAM_SKIP_UNTIL = datetime.date(2026, 12, 16)
 
 
@@ -47,8 +52,9 @@ def today():
 def findings(path):
     """ruff's lint findings plus a formatting finding, as report lines; a tool failure with no output surfaces as one."""
     out = []
+    ignore = ["--extend-ignore", "EXE001"] if path.startswith(CHEZMOI_SOURCE) else []
     for args in (
-        ["check", "--no-cache", "--output-format", "concise", "--quiet"],
+        ["check", "--no-cache", "--output-format", "concise", "--quiet", *ignore],
         ["format", "--check", "--no-cache", "--quiet"],
     ):
         r = subprocess.run(
@@ -122,7 +128,8 @@ def main():
         found = [line for p in personal for line in findings(p)]
         if found:
             notes.append(
-                "ruff findings on Python this call touched:\n" + "\n".join(found)
+                "ruff findings on personal Python this call touched — fix every "
+                "one before hand-back, pre-existing included:\n" + "\n".join(found)
             )
 
     if notes:
