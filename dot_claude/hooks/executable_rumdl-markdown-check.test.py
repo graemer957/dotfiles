@@ -70,6 +70,11 @@ with tempfile.TemporaryDirectory(
     team = os.path.join(root, "doc.md")
     with open(team, "w") as f:
         f.write(committed)
+    memory = os.path.join(root, ".claude/projects/p/memory/note.md")
+    os.makedirs(os.path.dirname(memory))
+    with open(memory, "w") as f:
+        f.write("text\n- a\n")  # would be MD032
+    check("memory file skipped", run_hook(edit(memory)), "")
 
     check(
         "personal file: every finding", run_hook(edit(personal)), "bad.md:2:1: [MD032]"
