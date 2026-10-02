@@ -101,7 +101,10 @@ A file split across rows carries `(part)` after its name in each.
   the user's step, before or after the commits.
 - Don't push; the remote moves on an explicit ask.
 - Don't amend or rebase to fix a grouping after the fact: a wrong commit is
-  followed by a correcting one, or reverted by the user.
+  followed by a correcting one, or reverted by the user. When the user asks
+  to fold a change into an unpushed `HEAD`, amend it with `git -C <src>
+  commit --amend --no-edit --only <paths>`; a pushed commit still takes a
+  correcting one, since rewriting it would need a force-push.
 
 ## Improving this skill
 
