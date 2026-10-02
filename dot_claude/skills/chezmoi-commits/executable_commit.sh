@@ -6,19 +6,34 @@
 set -euo pipefail
 
 # parses <source-path> <file>: 0 when <file> parses as <source-path>'s type,
-# or the type has no checker here.
+# or the type has no checker here. A template is checked as the type it
+# renders to, and rendered only when that type has a checker, so a template
+# feeding an unchecked type never triggers its 1Password lookups.
 parses() {
-    case $1 in
-        *.tmpl)      return 0 ;;   # parses only once chezmoi renders it
-        *.fish)      fish -n "$2" ;;
-        *.sh|*.bash) bash -n "$2" ;;
-        *.py)        python3 -c 'import ast, sys; ast.parse(open(sys.argv[1]).read())' "$2" ;;
-        *.json)      jq empty "$2" ;;
-        *.toml)      python3 -c 'import sys, tomllib; tomllib.load(open(sys.argv[1], "rb"))' "$2" ;;
+    local file=$2 render=0
+    if [[ $1 == *.tmpl ]]; then render=1; fi
+    case ${1%.tmpl} in
+        *.fish)      check fish -n ;;
+        *.sh|*.bash) check bash -n ;;
+        *.py)        check python3 -c 'import ast, sys; ast.parse(open(sys.argv[1]).read())' ;;
+        *.json)      check jq empty ;;
+        *.toml)      check python3 -c 'import sys, tomllib; tomllib.load(open(sys.argv[1], "rb"))' ;;
+        *tmux.conf)  check tmux -L commit_sh -f /dev/null start-server \; source-file -n ;;
         *)           local shebang
-                     shebang=$(head -n1 "$2")
-                     if [[ $shebang == '#!'*bash* ]]; then bash -n "$2"; fi ;;
+                     shebang=$(head -n1 "$file")
+                     if [[ $shebang == '#!'*bash* ]]; then check bash -n; fi ;;
     esac
+}
+
+# check <command...>: run <command...> on the file `parses` is checking,
+# rendered first when it is a template.
+check() {
+    if (( render )); then
+        chezmoi execute-template <"$file" >"$rendered" || return
+        "$@" "$rendered"
+    else
+        "$@" "$file"
+    fi
 }
 
 if (( $# < 1 )); then
@@ -36,7 +51,8 @@ fi
 
 staged=$(mktemp)
 paths=$(mktemp)
-trap 'rm -f "$staged" "$paths"' EXIT
+rendered=$(mktemp)
+trap 'rm -f "$staged" "$paths" "$rendered"' EXIT
 git diff --cached --name-only --diff-filter=d -z >"$paths"
 broken=()
 while IFS= read -r -d '' path; do
