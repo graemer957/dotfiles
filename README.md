@@ -23,6 +23,7 @@ Collection of configuration files for Linux and macOS, managed by [chezmoi](http
 ## Firefox
 
 Version 128 has introduced a questionable new 'privacy preserving' Ad API developed alongside meta, see:
+
 - [OSNews article](https://www.osnews.com/story/140247/i-told-you-so-mozilla-working-with-facebook-to-weaken-firefox-privacy-and-anti-tracking-features/)
 - [privacyguides.org](https://blog.privacyguides.org/2024/07/14/mozilla-disappoints-us-yet-again-2/)
 
@@ -56,6 +57,14 @@ Prefix: C-a
 | l | Move focus right a pane |
 | y | Copy the last command and its output to the clipboard |
 | Y | Copy the entire scrollback to the clipboard |
+
+Copy mode (vi):
+
+| Key | Action |
+|-----|--------|
+| H | Move to the start of the line |
+| L | Move to the end of the line |
+| y | Copy the selection and exit copy mode |
 
 ### neovim
 
