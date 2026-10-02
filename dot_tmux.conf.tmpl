@@ -69,3 +69,26 @@ set -g default-shell /opt/homebrew/bin/fish
 bind-key -T copy-mode-vi H send-keys -X start-of-line
 bind-key -T copy-mode-vi L send-keys -X end-of-line
 bind-key -T copy-mode-vi y send-keys -X copy-selection-and-cancel
+
+set -g copy-command {{ if eq .chezmoi.os "darwin" }}pbcopy{{ else }}wl-copy{{ end }}
+
+# Copy the last command and its output into the system clipboard
+bind y {
+  copy-mode
+  send -X previous-prompt
+  send -X begin-selection
+  send -X next-prompt
+  send -X cursor-up
+  send -X end-of-line
+  send -X copy-pipe-and-cancel
+}
+
+# Copy the entire scrollback into the system clipboard
+bind Y {
+  copy-mode
+  send -X cursor-up
+  send -X end-of-line
+  send -X begin-selection
+  send -X history-top
+  send -X copy-pipe-and-cancel
+}

@@ -54,6 +54,8 @@ Prefix: C-a
 | j | Move focus down a pane |
 | k | Move focus up a pane |
 | l | Move focus right a pane |
+| y | Copy the last command and its output to the clipboard |
+| Y | Copy the entire scrollback to the clipboard |
 
 ### neovim
 
