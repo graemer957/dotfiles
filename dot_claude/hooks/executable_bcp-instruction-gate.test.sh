@@ -8,11 +8,25 @@ HOOK="$(dirname "$0")/bcp-instruction-gate.py"
 PASS=0
 FAIL=0
 
+HUMAN='{"type":"user","origin":{"kind":"human"},"message":{"content":"go"}}'
+BCP='{"type":"assistant","message":{"content":[{"type":"tool_use","name":"Skill","input":{"skill":"bcp"}}]}}'
+READ='{"type":"assistant","message":{"content":[{"type":"tool_use","name":"Read","input":{"file_path":"/x"}}]}}'
+NOTIFY='{"type":"user","origin":{"kind":"task-notification"},"message":{"content":"<task-notification>"}}'
+
 WITH_BCP=$(mktemp)
 WITHOUT_BCP=$(mktemp)
-printf '%s\n' '{"name":"Skill","input":{"skill":"bcp","args":""}}' > "$WITH_BCP"
-printf '%s\n' '{"name":"Read","input":{"file_path":"/x"}}' > "$WITHOUT_BCP"
-trap 'rm -f "$WITH_BCP" "$WITHOUT_BCP"' EXIT
+PREV_TURN_BCP=$(mktemp)
+STALE_BCP=$(mktemp)
+NOTIFY_BCP=$(mktemp)
+printf '%s\n' "$HUMAN" "$BCP" > "$WITH_BCP"
+printf '%s\n' "$HUMAN" "$READ" > "$WITHOUT_BCP"
+# bcp in the draft turn, edit in the approval turn.
+printf '%s\n' "$HUMAN" "$BCP" "$HUMAN" "$READ" > "$PREV_TURN_BCP"
+# bcp two human turns back.
+printf '%s\n' "$HUMAN" "$BCP" "$HUMAN" "$READ" "$HUMAN" "$READ" > "$STALE_BCP"
+# Notifications don't open a turn, so bcp before two of them still counts.
+printf '%s\n' "$HUMAN" "$BCP" "$NOTIFY" "$NOTIFY" "$READ" > "$NOTIFY_BCP"
+trap 'rm -f "$WITH_BCP" "$WITHOUT_BCP" "$PREV_TURN_BCP" "$STALE_BCP" "$NOTIFY_BCP"' EXIT
 
 test_case() {
   local name="$1" tool="$2" path="$3" transcript="$4" want="$5"
@@ -60,6 +74,9 @@ test_case "Write of brand-new skill"   Write "/home/g/dev/work/platformed/.claud
 # Same paths with bcp invoked → fall through.
 test_case "personal skill, bcp ran"    Edit  "/home/g/dev/work/.claude/skills/review-pr/SKILL.md" "$WITH_BCP" "fall-through"
 test_case "CLAUDE.md, bcp ran"         Edit  "/home/g/dev/work/.claude/CLAUDE.md" "$WITH_BCP" "fall-through"
+test_case "bcp in the previous turn"   Edit  "/home/g/dev/work/.claude/CLAUDE.md" "$PREV_TURN_BCP" "fall-through"
+test_case "bcp two turns back"         Edit  "/home/g/dev/work/.claude/CLAUDE.md" "$STALE_BCP" "deny"
+test_case "notifications aren't turns" Edit  "/home/g/dev/work/.claude/CLAUDE.md" "$NOTIFY_BCP" "fall-through"
 
 # Non-instruction paths → fall through regardless.
 test_case "ordinary rust file"         Edit  "/home/g/dev/work/platformed/rust/shared/database/src/lib.rs" "$WITHOUT_BCP" "fall-through"
@@ -102,6 +119,53 @@ bash_case "rumdl check (no --fix)"     "rumdl check -d MD013 /home/g/dev/work/.c
 bash_case "curl without -o"            "curl -sSL https://x/y | head -5 # see .claude/skills/x/SKILL.md" "$WITHOUT_BCP" "fall-through"
 bash_case "redirect to scratchpad, skill named" "nu /home/g/dev/work/.claude/skills/x/inventory.nu > /tmp/claude-1000/s/out.json" "$WITHOUT_BCP" "fall-through"
 bash_case "tee to scratchpad, skill named"      "nu /home/g/dev/work/.claude/skills/x/inventory.nu | tee /tmp/claude-1000/s/out.json" "$WITHOUT_BCP" "fall-through"
+
+# Subagent calls: the payload carries the main transcript plus agent_id, and the
+# subagent's own run lives at <main without .jsonl>/subagents/agent-<id>.jsonl.
+agent_case() {
+  local name="$1" own_line="$2" want="$3" main="$TMP_AGENT/s.jsonl" out
+  mkdir -p "$TMP_AGENT/s/subagents"
+  printf '%s\n' "$HUMAN" "$READ" > "$main"
+  printf '%s\n' "$own_line" > "$TMP_AGENT/s/subagents/agent-a1.jsonl"
+  out=$(jq -n --arg tr "$main" \
+    '{tool_name:"Edit",tool_input:{file_path:"/home/g/dev/work/.claude/skills/x/SKILL.md"},transcript_path:$tr,agent_id:"a1"}' | "$HOOK")
+  if [[ -z "$out" && "$want" == "fall-through" ]] || { [[ -n "$out" && "$want" == "deny" ]]; }; then
+    echo "OK   $name  → $want"; PASS=$((PASS+1))
+  else
+    echo "FAIL $name  → got: ${out:-<empty>}  | want: $want"; FAIL=$((FAIL+1))
+  fi
+}
+TMP_AGENT=$(mktemp -d)
+agent_case "subagent ran bcp itself"   "$BCP" "fall-through"
+agent_case "subagent without bcp"      "$READ" "deny"
+rm -rf "$TMP_AGENT"
+
+# The transcript can lag the hook: a marker bcp-mark.py touched since the window
+# opened counts in its place; one older than the window doesn't.
+TMP_MARK=$(mktemp -d)
+H1='{"type":"user","origin":{"kind":"human"},"timestamp":"2026-01-01T01:00:00Z","message":{"content":"go"}}'
+H2='{"type":"user","origin":{"kind":"human"},"timestamp":"2026-01-01T02:00:00Z","message":{"content":"go"}}'
+for s in fresh stale; do
+  printf '%s\n' "$HUMAN" "$READ" "$H1" "$READ" "$H2" "$READ" > "$TMP_MARK/$s.jsonl"
+  mkdir -p "$TMP_MARK/$s"
+done
+touch "$TMP_MARK/fresh/bcp-ran"
+touch -d 2026-01-01T00:30:00Z "$TMP_MARK/stale/bcp-ran"
+test_case "marker, transcript lagging" Edit  "/home/g/dev/work/.claude/CLAUDE.md" "$TMP_MARK/fresh.jsonl" "fall-through"
+test_case "marker before the window"   Edit  "/home/g/dev/work/.claude/CLAUDE.md" "$TMP_MARK/stale.jsonl" "deny"
+# A subagent's marker carries its agent_id.
+mkdir -p "$TMP_MARK/agent/subagents"
+printf '%s\n' "$HUMAN" "$READ" > "$TMP_MARK/agent.jsonl"
+printf '%s\n' "$READ" > "$TMP_MARK/agent/subagents/agent-a1.jsonl"
+touch "$TMP_MARK/agent/bcp-ran-a1"
+out=$(jq -n --arg tr "$TMP_MARK/agent.jsonl" \
+  '{tool_name:"Edit",tool_input:{file_path:"/home/g/dev/work/.claude/skills/x/SKILL.md"},transcript_path:$tr,agent_id:"a1"}' | "$HOOK")
+if [[ -z "$out" ]]; then
+  echo "OK   subagent marker  → fall-through"; PASS=$((PASS+1))
+else
+  echo "FAIL subagent marker  → got: $out  | want: fall-through"; FAIL=$((FAIL+1))
+fi
+rm -rf "$TMP_MARK"
 
 # Non-edit tools → fall through.
 test_case "Read tool ignored"          Read  "/home/g/dev/work/.claude/skills/review-pr/SKILL.md" "$WITHOUT_BCP" "fall-through"

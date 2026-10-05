@@ -1,12 +1,16 @@
 #!/usr/bin/env python3
-"""Gate instruction-file edits on the bcp skill having been invoked this session.
+"""Gate instruction-file edits on the bcp skill having run in this turn or the last.
 
 On an Edit/Write to an instruction file — a SKILL.md, a CLAUDE.md, anything
 under a .claude/{skills,rules,hooks}/ directory, or their chezmoi sources
 (dot_claude/...) — or a Bash command that both names such a path and carries a
 mutating token (sed -i, redirection, tee, an interpreter, cp/mv/rm), checks the
-session transcript for a Skill(bcp) invocation. Absent one, denies the call
-with instructions to invoke the skill and retry; present, stays silent.
+session transcript for a Skill(bcp) invocation within the last two human turns
+(the turn that showed a draft and the one that approved it), or, for a call from
+a subagent, anywhere in that subagent's own transcript, since the hook payload
+carries the main session's. The marker `bcp-mark.py` touches counts the same
+way, since the transcript can lag the hook. Absent both, denies the call with
+instructions to invoke the skill and retry; present, stays silent.
 Non-instruction paths always fall through, as does a Bash command that only
 reads (cat/rg/sed -n) an instruction file, including one that redirects stderr
 or discards output.
@@ -71,13 +75,42 @@ def writes_instruction_path(command):
     )
 
 
-BCP_MARKERS = ('"skill":"bcp"', "Launching skill: bcp")
+def bcp_seen(payload):
+    """bcp in the last two human turns, or anywhere in the calling subagent's own run."""
+    # Imported here so a missing module touches only instruction-path calls.
+    from bcp_window import (
+        bcp_ran,
+        has_origin,
+        invokes_bcp,
+        load,
+        marked_since_window,
+        marker_path,
+    )
+
+    transcript = payload.get("transcript_path") or ""
+    agent_id = payload.get("agent_id")
+    if agent_id:
+        if marker_path(transcript, agent_id).exists():
+            return True
+        own = Path(transcript).with_suffix("") / "subagents" / f"agent-{agent_id}.jsonl"
+        try:
+            entries = load(own)
+        except OSError:
+            entries = []
+        if any(invokes_bcp(e, has_origin(entries)) for e in entries):
+            return True
+    entries = load(transcript)
+    return bcp_ran(entries, 2) or marked_since_window(
+        entries, 2, marker_path(transcript)
+    )
 
 
 def main():
     try:
         payload = json.load(sys.stdin)
     except json.JSONDecodeError:
+        return
+    if not isinstance(payload, dict):
         return
 
     tool = payload.get("tool_name")
@@ -96,13 +129,10 @@ def main():
     else:
         return
 
-    transcript = payload.get("transcript_path", "")
     try:
-        text = Path(transcript).read_text(errors="replace")
+        if bcp_seen(payload):
+            return
     except OSError:
-        return
-
-    if any(m in text for m in BCP_MARKERS):
         return
 
     print(
@@ -113,7 +143,7 @@ def main():
                     "permissionDecision": "deny",
                     "permissionDecisionReason": (
                         "Instruction-file gate: this edit targets a skill/CLAUDE.md/rule/hook, "
-                        "and the bcp skill has not been invoked this session — it carries the "
+                        "and the bcp skill has not run in this turn or the last — it carries the "
                         "authoring conventions instruction files are checked against. Invoke Skill(bcp), "
                         "apply its authoring checklist to the change (and to any draft already "
                         "shared in chat), then retry this exact edit."

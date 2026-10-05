@@ -21,7 +21,26 @@
         ]
       }
     ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/home/graemer/.claude/hooks/bcp-proposal-gate.py"
+          }
+        ]
+      }
+    ],
     "PostToolUse": [
+      {
+        "matcher": "Skill",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/home/graemer/.claude/hooks/bcp-mark.py"
+          }
+        ]
+      },
       {
         "matcher": "Edit|Write|Bash",
         "hooks": [
