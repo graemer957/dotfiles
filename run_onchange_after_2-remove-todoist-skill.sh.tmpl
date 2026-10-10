@@ -1,0 +1,10 @@
+#!/bin/bash
+{{- $expires := "2027-04-08" }}
+{{ if lt (now | date "2006-01-02") $expires -}}
+# Removes the retired todoist skill, which chezmoi leaves behind when its source is deleted.
+rm -rf -- "${HOME:?}/.claude/skills/todoist"
+{{- else -}}
+# The rendered script changes on the expiry date, so each machine runs this branch and fails until the file is deleted.
+echo "remove-todoist-skill expired on {{ $expires }}: delete this script from the chezmoi source" >&2
+exit 1
+{{- end }}
