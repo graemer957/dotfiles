@@ -15,7 +15,7 @@ paths:
 - Highlight idiomatic Rust and expert-level patterns I may not have seen; point out idioms I'm using wrongly.
 - Correct my terminology when I'm wrong, even on small points.
 - Optimise for **maintainability** — simple, readable solutions; choose imperative vs functional on clarity; avoid over-engineering.
-- Keep an eye on allocations. Feel free to point out where they could be reduced.
+- Point out allocations that could be avoided (a clone where a borrow works, a `String` where a `&str` works), naming the alternative.
   - Prefer references over clones; an owned copy needs a reason (an escaping value, or a borrow the checker refuses)
 - Check the project is using the 2024 edition, has a sensible MSRV and configured `rustfmt` correctly for same edition.
 - Make a point of calling out code that panics.
