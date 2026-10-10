@@ -16,25 +16,8 @@ function claude --description 'Claude Code, with work profile under ~/dev/work'
     end
 
     if test "$PWD" = "$work_root"; or string match -q "$work_root/*" -- $PWD
-        # CLAUDE_CONFIG_DIR replaces user scope entirely: skills and rules
-        # under ~/.claude are invisible to work sessions unless linked in.
         set -l cfg "$work_root/.claude"
-        set -l linked
-        mkdir -p $cfg/rules $cfg/skills
-        for src in ~/.claude/rules/*.md
-            set -l dest $cfg/rules/(path basename $src)
-            if not test -L $dest; and not test -e $dest
-                ln -s $src $dest
-                set -a linked rules/(path basename $src)
-            end
-        end
-        for src in ~/.claude/skills/*/
-            set -l dest $cfg/skills/(path basename $src)
-            if not test -L $dest; and not test -e $dest
-                ln -s (path resolve $src) $dest
-                set -a linked skills/(path basename $src)
-            end
-        end
+        set -l linked (_claude_bridge)
         if set -q linked[1]
             echo "claude: bridged new user-scope items into $cfg:"
             printf '  %s\n' $linked
