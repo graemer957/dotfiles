@@ -178,11 +178,15 @@ code across all projects.
   matches and exits 0 either way, so the exit code proves nothing:
   * **Already managed** → edit the chezmoi source (`chezmoi source-path
     <path>`); I review and `chezmoi apply`.
-  * **New file** → write to the live location; I `chezmoi add` it. (The first
-    staged edit after an add may prompt "overwriting a change" on apply —
-    add-from-live leaves chezmoi's last-written record stale; check `chezmoi
-    diff`, then overwrite.)
-  * Either way, `apply`/`add` is mine — hand back once the edit is staged.
+  * **New file** → write to the live location and run `chezmoi add <path>` in
+    the same act, then again after each later edit to it this session. The
+    file is testable without an `apply` round trip, and the source never lags
+    the live copy if the session is cut short. A file created this session
+    keeps this loop until the session ends. (The first staged edit after an
+    add may prompt "overwriting a change" on apply — add-from-live leaves
+    chezmoi's last-written record stale; check `chezmoi diff`, then
+    overwrite.)
+  * `chezmoi apply` is mine — hand back once a source edit is staged.
 
 ## Best Current Practices
 
