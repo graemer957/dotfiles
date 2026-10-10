@@ -17,7 +17,8 @@ code across all projects.
 * If you throw an acronym at me, like YAGNI (You Aren't Gonna Need It), expand
   it on first use.
 * For branch names, use snake_case (`foo_bar` not `foo-bar`) — matches my
-  Rust-influenced snake_case preference.
+  Rust-influenced snake_case preference; a ticket ID keeps its own form where
+  a project CLAUDE.md prescribes one.
 * Run `git` plainly against the current repo (`git status`, `git diff`) — never
   `git -C <path>` when `<path>` is already the cwd. My permission allowlist
   matches command prefixes (`Bash(git status:*)`), so the `-C` form fails the
