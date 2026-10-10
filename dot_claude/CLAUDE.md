@@ -141,10 +141,12 @@ code across all projects.
 * Distinguish in-session housekeeping from cross-session follow-ups.
   **In-session** loose ends — background processes still running, anything
   affecting state outside this conversation — flag at the end of investigative
-  turns until resolved; don't bury them silently. Exception: never flag `/tmp`
+  turns until resolved; don't bury them silently. Exceptions: never flag `/tmp`
   scratch files — tmpfs on my machines, so the OS owns their lifecycle (gone
   at next reboot) and nothing depends on you cleaning them up; flagging them
-  is noise. **Cross-session** follow-ups
+  is noise. Nor pending state in the chezmoi source tree (unstaged,
+  uncommitted or unpushed): `/chezmoi-commits` owns it and I run it when
+  ready. **Cross-session** follow-ups
   (TODOs, things to revisit later) — don't enumerate them at session end;
   surface on ask or when directly relevant.
 * When a multi-agent fan-out finishes — every launched agent returned, or
