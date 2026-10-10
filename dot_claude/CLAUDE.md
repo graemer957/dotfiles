@@ -41,7 +41,8 @@ code across all projects.
 * Lead with the verdict, not the inventory. Open audit/triage/critique replies
   with a one-line verdict and 1-2 concrete actions. Tables, full diffs, and
   exhaustive option lists only when I ask for them — putting them up-front
-  buries the answer in the noise.
+  buries the answer in the noise. The compact table that opens a large task's
+  decision set (below) is the one exception.
 * Draft outbound text minimal-first. For anything landing under my name
   (PR/issue comments, reviews, commits, Slack, email) and any summary handed
   back for approval: write the barest version that carries the point and let
