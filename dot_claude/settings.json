@@ -56,14 +56,18 @@
     "defaultMode": "auto"
   },
   "model": "opus",
+  "enabledPlugins": {
+    "rust-analyzer-lsp@claude-plugins-official": true,
+    "cc-plugin-you-should-know@builtin": true
+  },
   "feedbackSurveyRate": 0,
-  "tui": "fullscreen",
-  "remoteControlAtStartup": false,
-  "inputNeededNotifEnabled": true,
-  "agentPushNotifEnabled": true,
   "modelSettings": {
     "claude-opus-5-5": {
       "effortLevel": "high"
     }
-  }
+  },
+  "tui": "fullscreen",
+  "remoteControlAtStartup": false,
+  "inputNeededNotifEnabled": true,
+  "agentPushNotifEnabled": true
 }
