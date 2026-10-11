@@ -39,8 +39,20 @@ mark_case "subagent leaves session's"    \
   "{\"tool_name\":\"Skill\",\"tool_input\":{\"skill\":\"bcp\"},\"transcript_path\":\"$T\",\"agent_id\":\"a1\"}" bcp-ran absent
 mark_case "another skill"                \
   "{\"tool_name\":\"Skill\",\"tool_input\":{\"skill\":\"i18n\"},\"transcript_path\":\"$T\"}" bcp-ran absent
-mark_case "another tool"                 \
+mark_case "another command"              \
   "{\"tool_name\":\"Bash\",\"tool_input\":{\"command\":\"bcp\"},\"transcript_path\":\"$T\"}" bcp-ran absent
+mark_case "checklist read marks"         \
+  "{\"tool_name\":\"Read\",\"tool_input\":{\"file_path\":\"/home/g/.claude/skills/bcp/authoring.md\"},\"transcript_path\":\"$T\"}" bcp-ran present
+mark_case "checklist cat marks"          \
+  "{\"tool_name\":\"Bash\",\"tool_input\":{\"command\":\"cat /home/g/dev/work/.claude/skills/bcp/authoring.md\"},\"transcript_path\":\"$T\"}" bcp-ran present
+mark_case "subagent's checklist read"    \
+  "{\"tool_name\":\"Read\",\"tool_input\":{\"file_path\":\"/home/g/.claude/skills/bcp/authoring.md\"},\"transcript_path\":\"$T\",\"agent_id\":\"a1\"}" bcp-ran-a1 present
+mark_case "another file read"            \
+  "{\"tool_name\":\"Read\",\"tool_input\":{\"file_path\":\"/home/g/.claude/skills/bcp/registry.md\"},\"transcript_path\":\"$T\"}" bcp-ran absent
+mark_case "checklist counted, not shown" \
+  "{\"tool_name\":\"Bash\",\"tool_input\":{\"command\":\"rg -c Audit /home/g/.claude/skills/bcp/authoring.md\"},\"transcript_path\":\"$T\"}" bcp-ran absent
+mark_case "another tool"                 \
+  "{\"tool_name\":\"Edit\",\"tool_input\":{\"file_path\":\"/home/g/.claude/skills/bcp/authoring.md\"},\"transcript_path\":\"$T\"}" bcp-ran absent
 mark_case "no transcript path"           \
   '{"tool_name":"Skill","tool_input":{"skill":"bcp"}}' bcp-ran absent
 mark_case "malformed payload"            'not json' bcp-ran absent

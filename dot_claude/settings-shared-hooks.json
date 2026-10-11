@@ -21,6 +21,16 @@
         ]
       }
     ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/home/graemer/.claude/hooks/bcp-draft-nudge.py"
+          }
+        ]
+      }
+    ],
     "Stop": [
       {
         "hooks": [
@@ -33,7 +43,7 @@
     ],
     "PostToolUse": [
       {
-        "matcher": "Skill",
+        "matcher": "Skill|Read|Bash",
         "hooks": [
           {
             "type": "command",

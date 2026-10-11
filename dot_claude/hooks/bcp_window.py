@@ -7,21 +7,41 @@ origin, so they never open one. Transcripts written before `origin` existed
 fall back to treating a non-meta `user` entry without a `tool_result` block as
 human.
 
-bcp counts as run at an assistant `Skill` tool_use naming it, or at a human
-message invoking `/bcp`. The transcript can reach disk after the next tool
-call's hooks read it, so `bcp-mark.py` also touches a per-session marker the
-moment a `Skill(bcp)` call completes; a marker newer than the window's opening
-message counts as a run.
+bcp counts as run at an assistant tool_use that loads the skill or reads its
+authoring checklist (`runs_bcp`), or at a human message invoking `/bcp`. The
+skill call loads the workflow only; the checklist is `authoring.md`, so reading
+it is the nearer evidence that the rules were in front of the model. The
+transcript can reach disk after the next tool call's hooks read it, so
+`bcp-mark.py` also touches a per-session marker the moment such a call
+completes; a marker newer than the window's opening message counts as a run.
 
 `load` raises OSError on an unreadable transcript, so each caller picks its own
 fail-open behaviour.
 """
 
 import json
+import re
 from datetime import datetime
 from pathlib import Path
 
 BCP_COMMAND = "<command-name>/bcp</command-name>"
+CHECKLIST = re.compile(r"skills/bcp/authoring\.md$")
+# A Bash read that prints the checklist: `rg -c` or `wc` over it shows none of it.
+CHECKLIST_READ = re.compile(
+    r"(?:\bcat\b|\bsed\s+-n\b)[^|;&\n]*skills/bcp/authoring\.md\b"
+)
+
+
+def runs_bcp(tool, tool_input):
+    """True for a tool call that loads the bcp skill or reads its authoring checklist."""
+    tool_input = tool_input or {}
+    if tool == "Skill":
+        return tool_input.get("skill") == "bcp"
+    if tool == "Read":
+        return bool(CHECKLIST.search(tool_input.get("file_path") or ""))
+    if tool == "Bash":
+        return bool(CHECKLIST_READ.search(tool_input.get("command") or ""))
+    return False
 
 
 def load(transcript_path):
@@ -75,9 +95,7 @@ def _is_human(entry, has_origin):
 def invokes_bcp(entry, has_origin):
     if entry.get("type") == "assistant":
         return any(
-            b.get("type") == "tool_use"
-            and b.get("name") == "Skill"
-            and (b.get("input") or {}).get("skill") == "bcp"
+            b.get("type") == "tool_use" and runs_bcp(b.get("name"), b.get("input"))
             for b in blocks(entry)
         )
     return _is_human(entry, has_origin) and any(

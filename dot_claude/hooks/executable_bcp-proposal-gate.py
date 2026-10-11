@@ -2,16 +2,20 @@
 """Hold back a turn that shows an instruction-file draft the bcp checklist has not seen.
 
 Stop: when the assistant's text since the last prompt holds a diff or markdown
-fence, that text names an instruction file (SKILL.md, CLAUDE.md, a .claude/ or
-dot_claude/ skills/rules/hooks path, or the bare word "skill", since a draft
-can name its target only by role), and bcp has not run between Graeme's last
-message and the last fenced draft, blocks the stop with instructions to run
-the checklist and re-present. A proposal shown for approval is already the
-artifact, so the audit belongs before the draft that shows it.
+fence, that text names an instruction file (SKILL.md, CLAUDE.md, or a .claude/
+or dot_claude/ skills/rules/hooks path), and bcp has not run in the last two
+human turns before the last fenced draft, blocks the stop with instructions to
+run the checklist and re-present. A proposal shown for approval is already the
+artifact, so the audit belongs before the draft that shows it. The window
+matches bcp-instruction-gate.py's, so a diff of an edit that gate let through
+is not blocked here.
 
 The text is already on screen when Stop fires: the block can't hide a
 non-compliant draft, only force the compliant one to follow it unasked.
-Proposals written as prose, with no fence, pass unseen.
+Proposals written as prose, with no fence, pass unseen, as does a draft that
+names its target only by role ("the skill file"): the bare word matches
+ordinary prose about skills, and a false match here costs Graeme a second
+reading.
 
 The scan starts at the last prompt of any origin, so a stop woken by a task
 notification doesn't re-judge a draft its own chain already answered. A
@@ -27,17 +31,18 @@ from bcp_window import blocks, has_origin, human_window, invokes_bcp, last_promp
 
 DRAFT_FENCE = re.compile(r"^\s*```(?:diff|markdown|md)\b", re.MULTILINE)
 INSTRUCTION_TERM = re.compile(
-    r"SKILL\.md|CLAUDE\.md|(?:\.claude|dot_claude)/(?:skills|rules|hooks)/|\bskills?\b",
+    r"SKILL\.md|CLAUDE\.md|(?:\.claude|dot_claude)/(?:skills|rules|hooks)/",
     re.IGNORECASE,
 )
 
 REASON = (
     "Proposal gate: this turn shows a fenced draft naming an instruction file, and "
-    "the bcp skill has not run since Graeme's last message. If the draft targets an "
-    "instruction file: invoke Skill(bcp), run its authoring checklist against the "
-    "draft, and re-present the compliant version, saying it supersedes the one "
-    "above and what the checklist changed. If it targets anything else, say so in "
-    "one line and stop."
+    "the bcp authoring checklist has not been in front of you in this turn or the "
+    "last. If the draft targets an instruction file: read the bcp skill's "
+    "authoring.md (invoke Skill(bcp) first if the skill has not loaded this "
+    "session), run its checklist against the draft, and re-present the compliant "
+    "version, saying it supersedes the one above and what the checklist changed. "
+    "If it targets anything else, say so in one line and stop."
 )
 
 
@@ -75,7 +80,7 @@ def main():
 
     origin = has_origin(entries)
     if any(
-        invokes_bcp(e, origin) for e in entries[human_window(entries, 1) : drafts[-1]]
+        invokes_bcp(e, origin) for e in entries[human_window(entries, 2) : drafts[-1]]
     ):
         return
 

@@ -12,12 +12,23 @@ HUMAN='{"type":"user","origin":{"kind":"human"},"message":{"content":"go"}}'
 BCP='{"type":"assistant","message":{"content":[{"type":"tool_use","name":"Skill","input":{"skill":"bcp"}}]}}'
 READ='{"type":"assistant","message":{"content":[{"type":"tool_use","name":"Read","input":{"file_path":"/x"}}]}}'
 NOTIFY='{"type":"user","origin":{"kind":"task-notification"},"message":{"content":"<task-notification>"}}'
+READ_CHECKLIST='{"type":"assistant","message":{"content":[{"type":"tool_use","name":"Read","input":{"file_path":"/home/g/.claude/skills/bcp/authoring.md"}}]}}'
+CAT_CHECKLIST='{"type":"assistant","message":{"content":[{"type":"tool_use","name":"Bash","input":{"command":"cat /home/g/dev/work/.claude/skills/bcp/authoring.md"}}]}}'
+COUNT_CHECKLIST='{"type":"assistant","message":{"content":[{"type":"tool_use","name":"Bash","input":{"command":"rg -c Audit /home/g/.claude/skills/bcp/authoring.md"}}]}}'
 
 WITH_BCP=$(mktemp)
 WITHOUT_BCP=$(mktemp)
 PREV_TURN_BCP=$(mktemp)
 STALE_BCP=$(mktemp)
 NOTIFY_BCP=$(mktemp)
+CHECKLIST_READ=$(mktemp)
+CHECKLIST_CAT=$(mktemp)
+CHECKLIST_COUNTED=$(mktemp)
+STALE_CHECKLIST=$(mktemp)
+printf '%s\n' "$HUMAN" "$READ_CHECKLIST" > "$CHECKLIST_READ"
+printf '%s\n' "$HUMAN" "$CAT_CHECKLIST" > "$CHECKLIST_CAT"
+printf '%s\n' "$HUMAN" "$COUNT_CHECKLIST" > "$CHECKLIST_COUNTED"
+printf '%s\n' "$HUMAN" "$READ_CHECKLIST" "$HUMAN" "$READ" "$HUMAN" "$READ" > "$STALE_CHECKLIST"
 printf '%s\n' "$HUMAN" "$BCP" > "$WITH_BCP"
 printf '%s\n' "$HUMAN" "$READ" > "$WITHOUT_BCP"
 # bcp in the draft turn, edit in the approval turn.
@@ -26,7 +37,7 @@ printf '%s\n' "$HUMAN" "$BCP" "$HUMAN" "$READ" > "$PREV_TURN_BCP"
 printf '%s\n' "$HUMAN" "$BCP" "$HUMAN" "$READ" "$HUMAN" "$READ" > "$STALE_BCP"
 # Notifications don't open a turn, so bcp before two of them still counts.
 printf '%s\n' "$HUMAN" "$BCP" "$NOTIFY" "$NOTIFY" "$READ" > "$NOTIFY_BCP"
-trap 'rm -f "$WITH_BCP" "$WITHOUT_BCP" "$PREV_TURN_BCP" "$STALE_BCP" "$NOTIFY_BCP"' EXIT
+trap 'rm -f "$WITH_BCP" "$WITHOUT_BCP" "$PREV_TURN_BCP" "$STALE_BCP" "$NOTIFY_BCP" "$CHECKLIST_READ" "$CHECKLIST_CAT" "$CHECKLIST_COUNTED" "$STALE_CHECKLIST"' EXIT
 
 test_case() {
   local name="$1" tool="$2" path="$3" transcript="$4" want="$5"
@@ -78,6 +89,12 @@ test_case "bcp in the previous turn"   Edit  "/home/g/dev/work/.claude/CLAUDE.md
 test_case "bcp two turns back"         Edit  "/home/g/dev/work/.claude/CLAUDE.md" "$STALE_BCP" "deny"
 test_case "notifications aren't turns" Edit  "/home/g/dev/work/.claude/CLAUDE.md" "$NOTIFY_BCP" "fall-through"
 
+# Reading the authoring checklist counts as a run; a command that prints none of it doesn't.
+test_case "checklist read"             Edit  "/home/g/dev/work/.claude/CLAUDE.md" "$CHECKLIST_READ" "fall-through"
+test_case "checklist cat"              Edit  "/home/g/dev/work/.claude/CLAUDE.md" "$CHECKLIST_CAT" "fall-through"
+test_case "checklist counted, not shown" Edit "/home/g/dev/work/.claude/CLAUDE.md" "$CHECKLIST_COUNTED" "deny"
+test_case "checklist read two turns back" Edit "/home/g/dev/work/.claude/CLAUDE.md" "$STALE_CHECKLIST" "deny"
+
 # Non-instruction paths → fall through regardless.
 test_case "ordinary rust file"         Edit  "/home/g/dev/work/platformed/rust/shared/database/src/lib.rs" "$WITHOUT_BCP" "fall-through"
 test_case "memory file"                Write "/home/g/dev/work/.claude/projects/-p/memory/MEMORY.md" "$WITHOUT_BCP" "fall-through"
@@ -119,6 +136,46 @@ bash_case "rumdl check (no --fix)"     "rumdl check -d MD013 /home/g/dev/work/.c
 bash_case "curl without -o"            "curl -sSL https://x/y | head -5 # see .claude/skills/x/SKILL.md" "$WITHOUT_BCP" "fall-through"
 bash_case "redirect to scratchpad, skill named" "nu /home/g/dev/work/.claude/skills/x/inventory.nu > /tmp/claude-1000/s/out.json" "$WITHOUT_BCP" "fall-through"
 bash_case "tee to scratchpad, skill named"      "nu /home/g/dev/work/.claude/skills/x/inventory.nu | tee /tmp/claude-1000/s/out.json" "$WITHOUT_BCP" "fall-through"
+
+# Bash: running a script kept under a skills or hooks folder is not an edit,
+# unless an argument names an instruction path or the script's own text does.
+TMP_RUN=$(mktemp -d)
+RUN="$TMP_RUN/.claude/skills/x"
+mkdir -p "$RUN"
+printf '%s\n' '#!/usr/bin/env python3' '# Step 2 of SKILL.md.' 'print("ok")' > "$RUN/clean.py"
+printf '%s\n' '#!/usr/bin/env bash' '# Step 2 of SKILL.md.' 'echo ok' > "$RUN/clean.sh"
+printf '%s\n' '#!/usr/bin/env python3' 'TARGET = "SKILL.md"' > "$RUN/writer.py"
+printf '%s\n' '#!/usr/bin/env bash' 'echo x >> ~/.claude/rules/ci.md' > "$RUN/writer.sh"
+SKILL="/home/g/dev/work/.claude/skills/y/SKILL.md"
+bash_case "python3 runs a skill script"  "python3 $RUN/clean.py" "$WITHOUT_BCP" "fall-through"
+bash_case "script run with flags"        "python3 -u $RUN/clean.py --write plan.json" "$WITHOUT_BCP" "fall-through"
+bash_case "bash runs a skill script"     "bash $RUN/clean.sh" "$WITHOUT_BCP" "fall-through"
+bash_case "script run directly"          "$RUN/clean.sh --all" "$WITHOUT_BCP" "fall-through"
+bash_case "script run, env prefix"       "DEBUG=1 python3 $RUN/clean.py" "$WITHOUT_BCP" "fall-through"
+bash_case "script run piped"             "python3 $RUN/clean.py | head -4" "$WITHOUT_BCP" "fall-through"
+bash_case "script run to scratch file"   "python3 $RUN/clean.py > /tmp/claude-1000/s/out.json" "$WITHOUT_BCP" "fall-through"
+bash_case "two script runs"              "python3 $RUN/clean.py; bash $RUN/clean.sh" "$WITHOUT_BCP" "fall-through"
+bash_case "script runs on two lines"     "python3 $RUN/clean.py"$'\n'"bash $RUN/clean.sh" "$WITHOUT_BCP" "fall-through"
+bash_case "script handed a skill"        "python3 $RUN/clean.py --replace OLD NEW $SKILL" "$WITHOUT_BCP" "deny"
+bash_case "bash script handed a skill"   "bash $RUN/clean.sh $SKILL" "$WITHOUT_BCP" "deny"
+bash_case "direct script handed a skill" "$RUN/clean.sh $SKILL" "$WITHOUT_BCP" "deny"
+bash_case "script redirected into skill" "python3 $RUN/clean.py > $SKILL" "$WITHOUT_BCP" "deny"
+bash_case "script naming an instruction file" "python3 $RUN/writer.py" "$WITHOUT_BCP" "deny"
+bash_case "bash script naming a rule"    "bash $RUN/writer.sh" "$WITHOUT_BCP" "deny"
+bash_case "script run, then an edit"     "python3 $RUN/clean.py && sed -i 's/a/b/' $SKILL" "$WITHOUT_BCP" "deny"
+bash_case "script fed a here-document"   "python3 $RUN/clean.py <<'EOF'"$'\n'"see $SKILL"$'\n'"EOF" "$WITHOUT_BCP" "deny"
+bash_case "inline code beside a script path" "python3 -c 'import sys' $RUN/clean.py" "$WITHOUT_BCP" "deny"
+bash_case "unreadable python script"     "python3 $RUN/missing.py" "$WITHOUT_BCP" "deny"
+bash_case "script handed a skill, bcp ran" "python3 $RUN/clean.py --replace OLD NEW $SKILL" "$WITH_BCP" "fall-through"
+# A relative script path resolves against the payload's cwd.
+out=$(jq -n --arg tr "$WITHOUT_BCP" --arg cwd "$TMP_RUN" \
+  '{tool_name:"Bash",tool_input:{command:"python3 .claude/skills/x/clean.py"},transcript_path:$tr,cwd:$cwd}' | "$HOOK")
+if [[ -z "$out" ]]; then
+  echo "OK   relative script path  → fall-through"; PASS=$((PASS+1))
+else
+  echo "FAIL relative script path  → got: $out  | want: fall-through"; FAIL=$((FAIL+1))
+fi
+rm -rf "$TMP_RUN"
 
 # Subagent calls: the payload carries the main transcript plus agent_id, and the
 # subagent's own run lives at <main without .jsonl>/subagents/agent-<id>.jsonl.

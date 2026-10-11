@@ -174,7 +174,7 @@ Index of every Best Current Practice. Each entry's `Home` is where its adherence
 - Statement: run the authoring.md audit checklist on every instruction-file edit, naming which sources ran, then self-check: "did I apply the principles I just checked against?"
 - Home: authoring.md (final)
 - Trigger: writing or editing a SKILL.md, CLAUDE.md, rule, or hook
-- Detect: the checklist is the detector; enforced mechanically by the `bcp-instruction-gate` PreToolUse hook (`~/.claude/hooks/`), which blocks instruction-file edits in sessions that have not invoked this skill
+- Detect: the checklist is the detector; backed by three hooks in `~/.claude/hooks/`: `bcp-instruction-gate` (PreToolUse) blocks an instruction-file edit unless this skill loaded or `authoring.md` was read in this turn or the last, `bcp-proposal-gate` (Stop) forces a redo of a fenced draft shown without that, and `bcp-draft-nudge` (UserPromptSubmit) asks for the checklist when a prompt names an instruction file
 
 ### skill-authoring-conventions
 
