@@ -233,9 +233,38 @@ hl.bind(mainMod .. " + period", hl.dsp.exec_cmd("rofi -modi emoji -show emoji"))
 hl.bind(mainMod .. " + F", hl.dsp.window.fullscreen())
 hl.bind(mainMod .. " + SHIFT + A", hl.dsp.exec_cmd(browser .. " & " .. terminal))
 
--- Screenshots
-hl.bind("Print", hl.dsp.exec_cmd("grim"))
-hl.bind("SHIFT + Print", hl.dsp.exec_cmd([[grim -g "$(slurp)"]]))
+-- Screenshots (added by 🤖 Claude Opus 5.5)
+-- Each capture is saved to ~/Pictures and copied to the clipboard, ready to paste.
+--
+-- Run grim with `grimArgs`, then copy the PNG and notify (with it as a
+-- thumbnail) only if grim succeeded: cancelling a slurp selection (Esc) makes
+-- grim fail, so nothing is saved, copied or announced.
+local function screenshot(grimArgs)
+    local file = [["$(xdg-user-dir PICTURES)/$(date +%Y%m%d_%Hh%Mm%Ss)_grim.png"]]
+    return hl.dsp.exec_cmd(
+        "f=" .. file .. "; "
+            .. "grim " .. grimArgs .. [[ "$f" && wl-copy --type image/png < "$f"]]
+            .. [[ && notify-send -a screenshot -i "$f" "Screenshot copied" "${f##*/}"]]
+    )
+end
+
+-- Window picker: hand slurp one "x,y WxH" rectangle per window visible on any
+-- monitor. `slurp -r` highlights the window under the pointer and only accepts
+-- a click on one of them; -B faintly tints the rest.
+local activeWorkspaceIds = [[hyprctl -j monitors | jq '[.[].activeWorkspace.id]']]
+local visibleWindowRects = [[
+    .[]
+    | select(.workspace.id as $w | $ws | index($w))
+    | select(.hidden | not)
+    | "\(.at[0]),\(.at[1]) \(.size[0])x\(.size[1])"
+]]
+local pickWindow = "hyprctl -j clients"
+    .. [[ | jq -r --argjson ws "$(]] .. activeWorkspaceIds .. [[)" ']] .. visibleWindowRects .. "'"
+    .. [[ | slurp -r -B '#ffffff22']]
+
+hl.bind("Print", screenshot(""))                                    -- whole screen
+hl.bind("SHIFT + Print", screenshot([[-g "$(slurp)"]]))             -- dragged region
+hl.bind("CTRL + Print", screenshot('-g "$(' .. pickWindow .. ')"')) -- picked window
 
 -- Handy audio control
 hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd("pactl set-sink-mute @DEFAULT_SINK@ false ; pactl set-sink-volume @DEFAULT_SINK@ -3%"))
