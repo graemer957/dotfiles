@@ -15,7 +15,7 @@ model: opus
 ## Scope
 
 Everything pending in the chezmoi source tree: staged, unstaged and
-untracked. The source tree is rarely the session cwd, so every git command
+untracked. When the source tree is not the session cwd, every git command
 runs as `git -C <src>` with `<src>` from `chezmoi source-path`.
 
 ## Definitions
@@ -60,21 +60,25 @@ the log and this list disagree, the log wins.
 3. Hand back the table (Output format) and stop for the go-ahead: the table
    is the review surface, and a subject is cheaper to fix there than after it
    is signed.
-4. On the go, for each row in order run `commit.sh` (beside this file) with
-   the subject single-quoted (backticks in a double-quoted string get
-   command-substituted) and the row's whole-file source paths; a file split
-   across rows is staged first with `stage-hunks.sh` (beside this file) by
-   hunk number and its path left off, or `git add` would stage its other
-   hunks too; its last row needs no staging, since by then the file's
-   remaining diff is that row's, so its path goes on the command.
-   `commit.sh` parse-checks every staged file as the commit will hold it,
-   since a split file's early row commits a state that never existed on
-   disk; a failure commits nothing and leaves the row staged, so unstage it
-   (`git -C <src> restore --staged <paths>`), move the breaking hunk to a
-   later row or merge the two, and re-run.
-   Commits are signed through the 1Password agent, so run each in the
-   foreground and wait for its prompt; a failed prompt leaves `HEAD`
-   unchanged, so stop and hand that row back.
+4. On the go, invoke `Skill(bcp)` once if any row names a hook, rule or
+   skill file: the instruction-file gate holds `commit.sh` on such a path
+   until `bcp` has loaded. Then, for each row in order:
+   1. For a file split across rows, stage this row's hunks with
+      `stage-hunks.sh` (beside this file) by hunk number and leave its path
+      off the commit, or `git add` would stage its other hunks too. Its last
+      row needs no staging, since by then the file's remaining diff is that
+      row's, so its path goes on the command.
+   2. Run `commit.sh` (beside this file) with the subject single-quoted
+      (backticks in a double-quoted string get command-substituted) and the
+      row's whole-file source paths. It parse-checks every staged file as
+      the commit will hold it, since a split file's early row commits a
+      state that never existed on disk.
+   3. On a parse failure nothing is committed and the row stays staged:
+      unstage it (`git -C <src> restore --staged <paths>`), move the
+      breaking hunk to a later row or merge the two, and re-run.
+   4. Commits are signed through the 1Password agent, so run each in the
+      foreground and wait for its prompt; a failed prompt leaves `HEAD`
+      unchanged, so stop and hand that row back.
 5. Close with `git -C <src> log --oneline -<rows>`.
 
 ## Output format
@@ -94,8 +98,7 @@ A file split across rows carries `(part)` after its name in each.
 
 ## Boundaries
 
-- Don't commit before the go-ahead: a subject is cheaper to fix in the table
-  than after it's signed.
+- Don't commit before the go-ahead on the table.
 - Don't add a body or a trailer.
 - Don't `chezmoi apply` or `chezmoi add`: syncing source and live files is
   the user's step, before or after the commits.
