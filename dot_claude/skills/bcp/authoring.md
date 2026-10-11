@@ -6,13 +6,27 @@ Conventions for writing or editing a SKILL.md, CLAUDE.md, path-scoped rule, or h
 
 - Gate auto-invocation with `disable-model-invocation: true` when the skill should fire only on explicit invocation — never via "don't auto-invoke" prose in the body.
 - Description = what + when, action-first, third person: it is the surface the model matches to decide relevance.
-- A new, renamed, or deleted skill updates its row in the personal skill ledger (model, Applied, Mechanical, one-line description) in the same edit; the ledger is the model authority the harness audit reconciles against.
+- A new, renamed, or deleted skill updates its row in the personal skill ledger (model, Mechanical, Headlines, one-line description) in the same edit; the ledger is the model authority the harness audit reconciles against.
 
 ## Body
 
 - Lean: instructions, not rationale — don't restate the description, narrate why, or prescribe tooling the reader's machine may lack.
 - Standard section order: Scope → Definitions → Workflow → Output format → Boundaries → Improving this skill. Omit sections with nothing to say.
 - Output formats as code-fenced templates so the consumer sees the shape, not prose about it.
+- An output template carries only what its reader acts on: the outcome and the pending decisions. What a run produces for its own record (costs, tallies, applied bookkeeping) goes to a file the template names, shown on ask — a block the template lists is produced on every run, whatever a general brevity rule says.
+- A template for the message a run stops on to hand its reader an outcome and decisions (a review, a triage, an audit), read in chat, has three parts in this order, and a part with nothing in it is left out. The reader skims it in a terminal, and a table is looked up by label where prose is read from start to finish, so the first table alone gives the outcome. A row or a footnote states something only the run knows and the reader may act on. Once the message has been through a real run, the skill keeps that filled message beside its SKILL.md as `headlines-exemplar.md` and the template points at it, since an example settles how brief the message is where an adjective cannot.
+
+  ```markdown
+  | | Headlines |
+  |---|---|
+  | <one emoji> <label> | <a few words> |
+
+  <the table of what the reader decides>
+
+  **Footnotes**
+  - **<label>:** <one line>
+  ```
+
 - Boundaries as explicit Don't-X bullets — the one place negative framing belongs.
 - A rule that names a command or flag ("never `X`", "don't run `Y`") gets a hook or lint beside it, or states why tooling can't enforce it — a deterministic match left as prose is a fortnightly audit catch instead of a same-day one.
 - Every co-authored skill ends with the "Improving this skill" loop: copy the numbered steps and the mechanical-sequence paragraph verbatim from a sibling; adapt only the trigger list to the skill's own failure modes.
