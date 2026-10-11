@@ -46,11 +46,25 @@ Index of every Best Current Practice. Each entry's `Home` is where its adherence
 - Trigger: citing codebase precedent
 - Detect: judgement — conversational claim, not mechanically screenable
 
+### separation-of-concerns
+
+- Statement: each lifecycle step of durable state (creation, change, cleanup) has exactly one owner; steps may belong to different owners. Before writing something that creates, changes or removes such state, check for an existing owner of that step and use or extend it — fixing or flagging it where it falls short — so the step keeps one owner. Two owners drift apart and leave gaps neither covers.
+- Home: personal CLAUDE.md § Best Current Practices (final)
+- Trigger: writing or designing something that creates, changes or removes durable state
+- Detect: judgement — a second component creating or cleaning up state another already handles
+
+### kiss
+
+- Statement: build or recommend the simplest option that meets the present need; extra machinery earns its place against a need nameable today (an explicit request counts). Simplicity is counted across the whole system, so reusing an existing owner or pattern beats a lighter new copy. Where only real use will show the need, ship simple and decide when it bites. A guard against a silent or costly failure (gate, lint, hook, security control) is a nameable need. A cheap choice that keeps a later option open is fine when it names the option.
+- Home: personal CLAUDE.md § Best Current Practices (final)
+- Trigger: proposing options, designs or changes
+- Detect: judgement — settings, abstractions or fallbacks with no named need
+
 ### consistency-widening-in-scope
 
-- Statement: three nested checks when changing code, the obligation softening as scope grows — added lines consistent with each other; ideally consistent with the file (reuse its patterns over a locally-nicer bespoke variant); highlight drift from the broader project and let the owner decide convergence.
+- Statement: three nested checks when changing code or designing a tool or workflow, the obligation softening as scope grows — added lines consistent with each other; ideally consistent with the file (reuse its patterns over a locally-nicer bespoke variant); highlight drift from the broader project (for a design, from how neighbouring tools handle naming, layout and lifecycle) and let the owner decide convergence.
 - Home: personal CLAUDE.md § Best Current Practices (final)
-- Trigger: any code change
+- Trigger: any code change or design
 - Detect: judgement — review-time
 
 ### re-read-nearby-comments

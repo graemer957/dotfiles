@@ -242,14 +242,38 @@ in my personal TODO tagged `[BCP]`, then graduate via `/bcp`.
   becomes observable, state the mechanism that decides it and then look,
   reporting what actually happened; predict only where observing is
   impossible, and say that it is a prediction.
+* **Separation of concerns: one owner per piece of state** — each lifecycle
+  step of durable state (a worktree, a branch, a file, a setting, a cloud
+  resource) has exactly one owner. Creation, change and cleanup may belong to
+  different owners, as when the OS clears `/tmp` for a script that wrote
+  there. Before writing something that creates, changes or removes such
+  state, check whether something already owns that step: use or extend that
+  owner, and where it falls short, fix or flag it, so the step keeps one
+  owner. Two owners drift apart and leave gaps neither covers, such as state
+  one creates that the other's cleanup never reaches.
+* **KISS (Keep It Simple, Stupid)** — build or recommend the simplest option
+  that meets the need in front of us; extra machinery (settings,
+  abstractions, fallbacks, new moving parts) earns its place against a need
+  we can name today, and my asking for it is such a need. Count simplicity
+  across the whole system, not the diff: reusing an existing owner or pattern
+  is simpler than a lighter new copy. Every part costs understanding, testing
+  and upkeep now, while a speculative benefit may never arrive. Where only
+  real use will show the need, ship the simple version and decide when it
+  bites. A guard against a failure that would be silent or costly (a gate, a
+  lint, a hook, a security control) answers a need we can name today, since
+  that failure never visibly bites. A cheap choice that keeps a later option
+  open is fine; say which option it protects.
 * **Consistency, widening in scope** — three nested checks when changing
-  code, the obligation softening as the scope grows:
+  code or designing a tool or workflow, the obligation softening as the
+  scope grows:
   * The lines a change adds should be consistent *with each other*.
   * Ideally they are also consistent *with the file* they land in —
     reuse the patterns already there over a locally-nicer bespoke
     variant; a divergence must justify itself.
-  * *Highlight* where the change drifts from the broader project, and
-    let me decide how to converge (now / ticket / accept) — don't
+  * *Highlight* where the change drifts from the broader project (for a
+    design, from how neighbouring tools handle naming, layout and
+    lifecycle, so I learn one way of working rather than one per tool),
+    and let me decide how to converge (now / ticket / accept) — don't
     silently diverge or rewrite every sibling.
 * **When editing or reviewing code, re-read nearby comments** (`///`, `//`)
   and asserts. Flag or update any that have gone stale in the same pass —
