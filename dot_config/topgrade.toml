@@ -1,10 +1,11 @@
 [misc]
-# pnpm, yarn: no global stores; Node exists only for per-project Yarn Berry.
-# cargo:      replaced by the custom command below.
-# gcloud:     distro package (paru/dnf); the step would write into its files.
-# chezmoi:    applies unseen; reviewed by hand (`chezmoi update -vn`, apply).
-# vim:        would `Lazy! sync` and rewrite lazy-lock.json; see the restore command below.
-disable = ["pnpm", "yarn", "cargo", "gcloud", "chezmoi", "vim"]
+# node, pnpm, yarn: no global stores; Node exists only for per-project Yarn Berry.
+#                   (`node` is topgrade's npm-globals step; global npm CLIs are mise `npm:` tools.)
+# cargo:            replaced by the custom command below.
+# gcloud:           distro package (paru/dnf); the step would write into its files.
+# chezmoi:          applies unseen; reviewed by hand (`chezmoi update -vn`, apply).
+# vim:              would `Lazy! sync` and rewrite lazy-lock.json; see the restore command below.
+disable = ["node", "pnpm", "yarn", "cargo", "gcloud", "chezmoi", "vim"]
 
 # Every package-manager prompt gets its -y / --noconfirm: the log is the
 # review, not the prompt. On Arch this also skips paru's PKGBUILD review.
