@@ -64,7 +64,8 @@ the log and this list disagree, the log wins.
    skill file: the instruction-file gate holds `commit.sh` on such a path
    until `bcp` has loaded. Then, for each row in order:
    1. For a file split across rows, stage this row's hunks with
-      `stage-hunks.sh` (beside this file) by hunk number and leave its path
+      `stage-hunks.sh` (beside this file) by the hunk numbers `pending.sh`
+      printed, which hold after earlier rows commit, and leave its path
       off the commit, or `git add` would stage its other hunks too. Its last
       row needs no staging, since by then the file's remaining diff is that
       row's, so its path goes on the command.
