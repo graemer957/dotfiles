@@ -37,8 +37,9 @@ TEAM_ROOT = HOME + "/dev/work/"
 # here. MD013 is off everywhere: soft wrapping is the convention, viewers
 # handle line length. fnmatch's * crosses /, so patterns match at any depth.
 DISABLES = [
-    # Obsidian vault notes: H1 section headings; lists flush under headings
-    (HOME + "/Documents/Obsidian/*.md", "MD013,MD025,MD032"),
+    # Obsidian vault notes: H1 section headings; lists flush under headings;
+    # Obsidian shows the filename as the title, so a note need not open with one
+    (HOME + "/Documents/Obsidian/*.md", "MD013,MD025,MD032,MD041"),
 ]
 DEFAULT_DISABLE = "MD013"
 # Paths never linted.
