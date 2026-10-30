@@ -357,9 +357,8 @@ in my personal TODO tagged `[BCP]`, then graduate via `/bcp`.
   memories in that same session, unprompted: refresh stale status, delete
   entries now duplicated in config/skill/CLAUDE.md, delete superseded files
   (salvaging unique rationale first, fixing inbound links). Sweep too when
-  the index nears its size cap (a project CLAUDE.md may replace this trigger
-  with a flag-only nudge). Memory only fills by default; nothing else
-  drains it. Keep index entries lean — detail lives in topic files; the
+  the index nears its size cap (a project CLAUDE.md may replace this
+  trigger). Memory only fills by default; nothing else drains it. Keep index entries lean — detail lives in topic files; the
   index is a recall trigger.
 
 ## Growth Areas
