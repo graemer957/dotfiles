@@ -5,10 +5,25 @@
 set -uo pipefail
 
 HOOK="$(dirname "$0")/bcp-instruction-gate.py"
+REFUTE_LOG="$(dirname "$0")/../skills/refute/refute_log.py"
 PASS=0
 FAIL=0
 
+# The CLAUDE.md paths the bcp cases edit carry a logged review, so those cases
+# turn on bcp alone; the refute cases further down use paths the log lacks.
+CONFIG=$(mktemp -d)
+export CLAUDE_CONFIG_DIR="$CONFIG"
+python3 "$REFUTE_LOG" record --verdict reviewed --note "seeded for the bcp cases" \
+  --target /home/g/dev/work/.claude/CLAUDE.md \
+  --target /home/g/.local/share/chezmoi/dot_claude/CLAUDE.md \
+  --target /home/g/dev/work/platformed/CLAUDE.md >/dev/null
+python3 "$REFUTE_LOG" record --verdict skipped --note "link fix" \
+  --target /home/g/dev/skipped/CLAUDE.md >/dev/null
+
 HUMAN='{"type":"user","origin":{"kind":"human"},"message":{"content":"go"}}'
+# Every fixture opens with the refute skill loaded, so the bcp cases turn on bcp alone.
+REFUTE='{"type":"assistant","message":{"content":[{"type":"tool_use","name":"Skill","input":{"skill":"refute"}}]}}'
+TYPED_REFUTE='{"type":"user","origin":{"kind":"human"},"message":{"content":"<command-name>/refute</command-name>"}}'
 BCP='{"type":"assistant","message":{"content":[{"type":"tool_use","name":"Skill","input":{"skill":"bcp"}}]}}'
 READ='{"type":"assistant","message":{"content":[{"type":"tool_use","name":"Read","input":{"file_path":"/x"}}]}}'
 NOTIFY='{"type":"user","origin":{"kind":"task-notification"},"message":{"content":"<task-notification>"}}'
@@ -25,18 +40,18 @@ CHECKLIST_READ=$(mktemp)
 CHECKLIST_CAT=$(mktemp)
 CHECKLIST_COUNTED=$(mktemp)
 STALE_CHECKLIST=$(mktemp)
-printf '%s\n' "$HUMAN" "$READ_CHECKLIST" > "$CHECKLIST_READ"
-printf '%s\n' "$HUMAN" "$CAT_CHECKLIST" > "$CHECKLIST_CAT"
-printf '%s\n' "$HUMAN" "$COUNT_CHECKLIST" > "$CHECKLIST_COUNTED"
-printf '%s\n' "$HUMAN" "$READ_CHECKLIST" "$HUMAN" "$READ" "$HUMAN" "$READ" > "$STALE_CHECKLIST"
-printf '%s\n' "$HUMAN" "$BCP" > "$WITH_BCP"
-printf '%s\n' "$HUMAN" "$READ" > "$WITHOUT_BCP"
+printf '%s\n' "$REFUTE" "$HUMAN" "$READ_CHECKLIST" > "$CHECKLIST_READ"
+printf '%s\n' "$REFUTE" "$HUMAN" "$CAT_CHECKLIST" > "$CHECKLIST_CAT"
+printf '%s\n' "$REFUTE" "$HUMAN" "$COUNT_CHECKLIST" > "$CHECKLIST_COUNTED"
+printf '%s\n' "$REFUTE" "$HUMAN" "$READ_CHECKLIST" "$HUMAN" "$READ" "$HUMAN" "$READ" > "$STALE_CHECKLIST"
+printf '%s\n' "$REFUTE" "$HUMAN" "$BCP" > "$WITH_BCP"
+printf '%s\n' "$REFUTE" "$HUMAN" "$READ" > "$WITHOUT_BCP"
 # bcp in the draft turn, edit in the approval turn.
-printf '%s\n' "$HUMAN" "$BCP" "$HUMAN" "$READ" > "$PREV_TURN_BCP"
+printf '%s\n' "$REFUTE" "$HUMAN" "$BCP" "$HUMAN" "$READ" > "$PREV_TURN_BCP"
 # bcp two human turns back.
-printf '%s\n' "$HUMAN" "$BCP" "$HUMAN" "$READ" "$HUMAN" "$READ" > "$STALE_BCP"
+printf '%s\n' "$REFUTE" "$HUMAN" "$BCP" "$HUMAN" "$READ" "$HUMAN" "$READ" > "$STALE_BCP"
 # Notifications don't open a turn, so bcp before two of them still counts.
-printf '%s\n' "$HUMAN" "$BCP" "$NOTIFY" "$NOTIFY" "$READ" > "$NOTIFY_BCP"
+printf '%s\n' "$REFUTE" "$HUMAN" "$BCP" "$NOTIFY" "$NOTIFY" "$READ" > "$NOTIFY_BCP"
 trap 'rm -f "$WITH_BCP" "$WITHOUT_BCP" "$PREV_TURN_BCP" "$STALE_BCP" "$NOTIFY_BCP" "$CHECKLIST_READ" "$CHECKLIST_CAT" "$CHECKLIST_COUNTED" "$STALE_CHECKLIST"' EXIT
 
 test_case() {
@@ -182,7 +197,7 @@ rm -rf "$TMP_RUN"
 agent_case() {
   local name="$1" own_line="$2" want="$3" main="$TMP_AGENT/s.jsonl" out
   mkdir -p "$TMP_AGENT/s/subagents"
-  printf '%s\n' "$HUMAN" "$READ" > "$main"
+  printf '%s\n' "$REFUTE" "$HUMAN" "$READ" > "$main"
   printf '%s\n' "$own_line" > "$TMP_AGENT/s/subagents/agent-a1.jsonl"
   out=$(jq -n --arg tr "$main" \
     '{tool_name:"Edit",tool_input:{file_path:"/home/g/dev/work/.claude/skills/x/SKILL.md"},transcript_path:$tr,agent_id:"a1"}' | "$HOOK")
@@ -203,7 +218,7 @@ TMP_MARK=$(mktemp -d)
 H1='{"type":"user","origin":{"kind":"human"},"timestamp":"2026-01-01T01:00:00Z","message":{"content":"go"}}'
 H2='{"type":"user","origin":{"kind":"human"},"timestamp":"2026-01-01T02:00:00Z","message":{"content":"go"}}'
 for s in fresh stale; do
-  printf '%s\n' "$HUMAN" "$READ" "$H1" "$READ" "$H2" "$READ" > "$TMP_MARK/$s.jsonl"
+  printf '%s\n' "$REFUTE" "$HUMAN" "$READ" "$H1" "$READ" "$H2" "$READ" > "$TMP_MARK/$s.jsonl"
   mkdir -p "$TMP_MARK/$s"
 done
 touch "$TMP_MARK/fresh/bcp-ran"
@@ -212,7 +227,7 @@ test_case "marker, transcript lagging" Edit  "/home/g/dev/work/.claude/CLAUDE.md
 test_case "marker before the window"   Edit  "/home/g/dev/work/.claude/CLAUDE.md" "$TMP_MARK/stale.jsonl" "deny"
 # A subagent's marker carries its agent_id.
 mkdir -p "$TMP_MARK/agent/subagents"
-printf '%s\n' "$HUMAN" "$READ" > "$TMP_MARK/agent.jsonl"
+printf '%s\n' "$REFUTE" "$HUMAN" "$READ" > "$TMP_MARK/agent.jsonl"
 printf '%s\n' "$READ" > "$TMP_MARK/agent/subagents/agent-a1.jsonl"
 touch "$TMP_MARK/agent/bcp-ran-a1"
 out=$(jq -n --arg tr "$TMP_MARK/agent.jsonl" \
@@ -224,8 +239,75 @@ else
 fi
 rm -rf "$TMP_MARK"
 
+# A CLAUDE.md edit also needs the refute log to name the file; other
+# instruction files and Bash commands turn on bcp alone.
+test_case "CLAUDE.md, no review logged" Edit "/home/g/dev/unreviewed/CLAUDE.md" "$WITH_BCP" "deny"
+test_case "new CLAUDE.md, no review"   Write "/home/g/dev/unreviewed/CLAUDE.md" "$WITH_BCP" "deny"
+test_case "CLAUDE.md, skip recorded"   Edit  "/home/g/dev/skipped/CLAUDE.md" "$WITH_BCP" "fall-through"
+if rg -q '"verdict": "edit"' "$CONFIG/refute-log.jsonl"; then
+  echo "OK   an edit let through is logged"; PASS=$((PASS+1))
+else
+  echo "FAIL an edit let through is logged"; FAIL=$((FAIL+1))
+fi
+NEVER_INVOKED=$(mktemp)
+TYPED=$(mktemp)
+printf '%s\n' "$TYPED_REFUTE" "$BCP" > "$TYPED"
+sed 1d "$WITH_BCP" > "$NEVER_INVOKED"
+test_case "reviewed file, skill never invoked" Edit "/home/g/dev/work/.claude/CLAUDE.md" "$NEVER_INVOKED" "deny"
+test_case "reviewed file, /refute typed" Edit "/home/g/dev/work/.claude/CLAUDE.md" "$TYPED" "fall-through"
+rm -f "$NEVER_INVOKED" "$TYPED"
+test_case "skill beside it, no review" Edit  "/home/g/dev/unreviewed/.claude/skills/x/SKILL.md" "$WITH_BCP" "fall-through"
+# A Bash command is held only for a CLAUDE.md it plainly writes.
+bash_case "sed -i on CLAUDE.md, no review" "sed -i s/a/b/ /home/g/dev/unreviewed/CLAUDE.md" "$WITH_BCP" "deny"
+bash_case "redirect into CLAUDE.md, no review" "cat /tmp/x > /home/g/dev/unreviewed/CLAUDE.md" "$WITH_BCP" "deny"
+bash_case "cp over CLAUDE.md, no review" "cp /tmp/x /home/g/dev/unreviewed/CLAUDE.md" "$WITH_BCP" "deny"
+bash_case "sed -i on a reviewed CLAUDE.md" "sed -i s/a/b/ /home/g/dev/work/.claude/CLAUDE.md" "$WITH_BCP" "fall-through"
+bash_case "Bash naming CLAUDE.md in text only" "python3 /tmp/x.py --note 'the work CLAUDE.md' && rm /tmp/y" "$WITH_BCP" "fall-through"
+bash_case "sed -n reads CLAUDE.md" "sed -n 1,5p /home/g/dev/unreviewed/CLAUDE.md > /tmp/out" "$WITH_BCP" "fall-through"
+# A skip clears one edit.
+test_case "second edit on one skip"    Edit  "/home/g/dev/skipped/CLAUDE.md" "$WITH_BCP" "deny"
+# A subagent's own invocation of the skill counts.
+SUB=$(mktemp -d)
+printf '%s\n' "$HUMAN" "$BCP" > "$SUB/main.jsonl"
+mkdir -p "$SUB/main/subagents"
+printf '%s\n' "$REFUTE" "$BCP" > "$SUB/main/subagents/agent-a2.jsonl"
+out=$(jq -n --arg tr "$SUB/main.jsonl" \
+  '{tool_name:"Edit",tool_input:{file_path:"/home/g/dev/work/.claude/CLAUDE.md"},transcript_path:$tr,agent_id:"a2"}' | "$HOOK")
+if [[ -z "$out" ]]; then
+  echo "OK   subagent invoked the skill  → fall-through"; PASS=$((PASS+1))
+else
+  echo "FAIL subagent invoked the skill  → got: $out  | want: fall-through"; FAIL=$((FAIL+1))
+fi
+rm -rf "$SUB"
+out=$(jq -n --arg tr "$WITH_BCP" \
+  '{tool_name:"Edit",tool_input:{file_path:"/home/g/dev/unreviewed/CLAUDE.md"},transcript_path:$tr}' | "$HOOK")
+if echo "$out" | jq -e '.hookSpecificOutput.permissionDecisionReason | test("refute skill") and test("/home/g/dev/unreviewed/CLAUDE.md")' >/dev/null 2>&1; then
+  echo "OK   refute denial names its remedy and the path"; PASS=$((PASS+1))
+else
+  echo "FAIL refute denial names its remedy and the path  → got: ${out:-<empty>}"; FAIL=$((FAIL+1))
+fi
+out=$(jq -n --arg tr "$WITHOUT_BCP" \
+  '{tool_name:"Edit",tool_input:{file_path:"/home/g/dev/unreviewed/CLAUDE.md"},transcript_path:$tr}' | "$HOOK")
+if echo "$out" | jq -e '.hookSpecificOutput.permissionDecisionReason | test("authoring checklist")' >/dev/null 2>&1; then
+  echo "OK   bcp is asked for before a review"; PASS=$((PASS+1))
+else
+  echo "FAIL bcp is asked for before a review  → got: ${out:-<empty>}"; FAIL=$((FAIL+1))
+fi
+# A hook installed without the refute skill beside it lets the edit through.
+ALONE=$(mktemp -d)
+mkdir -p "$ALONE/hooks"
+cp "$HOOK" "$(dirname "$0")/bcp_window.py" "$ALONE/hooks/"
+out=$(jq -n --arg tr "$WITH_BCP" \
+  '{tool_name:"Edit",tool_input:{file_path:"/home/g/dev/unreviewed/CLAUDE.md"},transcript_path:$tr}' | "$ALONE/hooks/bcp-instruction-gate.py")
+if [[ -z "$out" ]]; then
+  echo "OK   refute log module missing  → fall-through"; PASS=$((PASS+1))
+else
+  echo "FAIL refute log module missing  → got: $out  | want: fall-through"; FAIL=$((FAIL+1))
+fi
+rm -rf "$ALONE" "$CONFIG"
+
 # Non-edit tools → fall through.
-test_case "Read tool ignored"          Read  "/home/g/dev/work/.claude/skills/review-pr/SKILL.md" "$WITHOUT_BCP" "fall-through"
+test_case "Read tool ignored"         Read  "/home/g/dev/work/.claude/skills/review-pr/SKILL.md" "$WITHOUT_BCP" "fall-through"
 
 echo
 echo "Pass: $PASS  Fail: $FAIL"

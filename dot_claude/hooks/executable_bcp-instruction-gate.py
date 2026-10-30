@@ -36,17 +36,36 @@ such a script may write it unasked. The gate reads the script to tell; one it
 cannot read, one fed a here-document, and a command the shell-word parser
 rejects are judged on the command text alone.
 
-Fail-open on a missing or unreadable transcript: the gate backstops recall,
-and locking out every instruction edit on a harness quirk costs more than one
-missed audit — the rule and memory layers still stand.
+An Edit/Write to a CLAUDE.md has a second condition once bcp is seen: the
+refute skill must have been invoked somewhere in the session, and its log must
+name that file within its window, as a review or a recorded skip. Those files
+steer every session that loads them and their author reads the review in place
+of the prose, so the edit waits for one. The invocation is looked for across the
+whole session because the edit can land many turns after the review, once its
+findings have been walked. The log clears a file for its window, since nothing
+here can tell two changes to one file apart, so each edit let through is added
+to the log, where edits per review can be counted. A Bash command meets the same
+condition only for a CLAUDE.md it plainly writes: the target of a redirection or
+`tee`, or an argument of `sed -i`, `cp` or `mv`. Its text names CLAUDE.md far
+more often than it edits one, and a false positive here costs a review.
+
+Fail-open on a missing or unreadable transcript, and on a refute log module
+that cannot be loaded: the gate backstops recall, and locking out every
+instruction edit on a harness quirk costs more than one missed audit — the
+rule and memory layers still stand.
 """
 
+import importlib.util
 import json
 import os
 import re
 import shlex
 import sys
 from pathlib import Path
+
+CLAUDE_MD = re.compile(r"/CLAUDE\.md$")
+REFUTE_COMMAND = "<command-name>/refute</command-name>"
+REFUTE_LOG = Path(__file__).resolve().parent.parent / "skills/refute/refute_log.py"
 
 INSTRUCTION_PATHS = (
     re.compile(r"/SKILL\.md$"),
@@ -208,6 +227,110 @@ def bcp_seen(payload):
     )
 
 
+def refute_log():
+    """The refute skill's log module, or None when it won't load."""
+    try:
+        spec = importlib.util.spec_from_file_location("refute_log", REFUTE_LOG)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        return module
+    except Exception:  # noqa: BLE001 - any fault in another skill's script fails open
+        return None
+
+
+def claude_md_writes(command, cwd):
+    """The CLAUDE.md paths a Bash command plainly writes."""
+    words = [t.strip("'\"") for t in TARGETED_WRITE.findall(command)]
+    try:
+        parts = segments(command)
+    except ValueError:
+        parts = []
+    for part in parts:
+        name = os.path.basename(part[0])
+        in_place = name == "sed" and any(
+            w == "--in-place" or re.fullmatch(r"-[a-zA-Z]*i\S*", w) for w in part[1:]
+        )
+        if in_place or name in ("cp", "mv"):
+            words += part[1:]
+    paths = []
+    for word in words:
+        if word == "CLAUDE.md" or CLAUDE_MD.search(word):
+            path = Path(os.path.expandvars(os.path.expanduser(word)))
+            paths.append(str(path if path.is_absolute() else Path(cwd or ".") / path))
+    return list(dict.fromkeys(paths))
+
+
+def session_entries(payload):
+    """The session's transcript, with the calling subagent's own after it."""
+    from bcp_window import load
+
+    transcript = payload.get("transcript_path") or ""
+    found = load(transcript)
+    agent_id = payload.get("agent_id")
+    if agent_id:
+        own = Path(transcript).with_suffix("") / "subagents" / f"agent-{agent_id}.jsonl"
+        try:
+            found += load(own)
+        except OSError:
+            pass
+    return found
+
+
+def refute_invoked(payload):
+    """Whether the refute skill was loaded, or typed as a command, in this session."""
+    from bcp_window import blocks
+
+    for entry in session_entries(payload):
+        for block in blocks(entry):
+            if entry.get("type") == "assistant":
+                if (
+                    block.get("type") == "tool_use"
+                    and block.get("name") == "Skill"
+                    and (block.get("input") or {}).get("skill") == "refute"
+                ):
+                    return True
+            elif block.get("type") == "text" and REFUTE_COMMAND in block["text"]:
+                return True
+    return False
+
+
+def refute_missing(path, payload):
+    """What a CLAUDE.md edit still lacks: a phrase for the denial, or None."""
+    log = refute_log()
+    if log is None:
+        return None
+    try:
+        invoked = refute_invoked(payload)
+    except OSError:
+        return None
+    if not invoked:
+        return "the refute skill has not been invoked in this session"
+    if not log.cleared(path):
+        return (
+            "the refute skill's log holds no review or open skip for "
+            f"{log.canonical(path)} in the last day"
+        )
+    try:
+        log.passed(path)
+    except OSError:
+        pass
+    return None
+
+
+def deny(reason):
+    print(
+        json.dumps(
+            {
+                "hookSpecificOutput": {
+                    "hookEventName": "PreToolUse",
+                    "permissionDecision": "deny",
+                    "permissionDecisionReason": reason,
+                }
+            }
+        )
+    )
+
+
 def main():
     try:
         payload = json.load(sys.stdin)
@@ -237,29 +360,37 @@ def main():
         return
 
     try:
-        if bcp_seen(payload):
-            return
+        seen = bcp_seen(payload)
     except OSError:
         return
 
-    print(
-        json.dumps(
-            {
-                "hookSpecificOutput": {
-                    "hookEventName": "PreToolUse",
-                    "permissionDecision": "deny",
-                    "permissionDecisionReason": (
-                        "Instruction-file gate: this edit targets a skill/CLAUDE.md/rule/hook, "
-                        "and the bcp authoring checklist, which instruction files are checked "
-                        "against, has not been in front of you in this turn or the last. "
-                        "Read the bcp skill's authoring.md (invoke Skill(bcp) first if "
-                        "the skill has not loaded this session), apply its checklist to the change "
-                        "(and to any draft already shared in chat), then retry this exact edit."
-                    ),
-                }
-            }
+    if not seen:
+        deny(
+            "Instruction-file gate: this edit targets a skill/CLAUDE.md/rule/hook, "
+            "and the bcp authoring checklist, which instruction files are checked "
+            "against, has not been in front of you in this turn or the last. "
+            "Read the bcp skill's authoring.md (invoke Skill(bcp) first if "
+            "the skill has not loaded this session), apply its checklist to the change "
+            "(and to any draft already shared in chat), then retry this exact edit."
         )
-    )
+        return
+
+    if tool == "Bash":
+        paths = claude_md_writes(tool_input.get("command", ""), payload.get("cwd"))
+    else:
+        path = tool_input.get("file_path", "")
+        paths = [path] if CLAUDE_MD.search(path) else []
+    for path in paths:
+        missing = refute_missing(path, payload)
+        if missing:
+            deny(
+                f"Refute gate: this edit changes a CLAUDE.md, and {missing}. Invoke "
+                "the refute skill on the change, then retry this exact edit: its "
+                "first step records a skip for an edit that alters no instruction, "
+                "and carries forward a review of this change that an earlier session "
+                "logged. The log is keyed on the path the edit lands on."
+            )
+            return
 
 
 if __name__ == "__main__":
