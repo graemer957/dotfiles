@@ -1,0 +1,70 @@
+#!/usr/bin/env bash
+# yambar script module: publishes Hyprland's numbered workspaces as tags.
+#
+# Workspaces with no numeric id (special, named) are skipped: Hyprland omits
+# `id` from their IPC JSON. Gaps up to each monitor's highest id are filled with
+# empty workspaces so the numbers on the bar stay put.
+set -euo pipefail
+
+die() {
+  echo "yambar_workspaces: $*" >&2
+  exit 1
+}
+
+for dep in hyprctl jq nc; do
+  command -v "$dep" >/dev/null || die "missing dependency: $dep"
+done
+
+# GNU netcat has no -U. Read the help into a variable: piping it into `grep -q`
+# can kill nc with SIGPIPE, which pipefail would report as a failed match.
+nc_help=$(nc -h 2>&1 || true)
+[[ $nc_help == *'-U'* ]] || die "nc lacks Unix socket support (needs openbsd-netcat)"
+
+[[ -n ${HYPRLAND_INSTANCE_SIGNATURE:-} ]] || die "HYPRLAND_INSTANCE_SIGNATURE is unset"
+[[ -n ${XDG_RUNTIME_DIR:-} ]] || die "XDG_RUNTIME_DIR is unset"
+
+readonly EVENT_SOCKET="$XDG_RUNTIME_DIR/hypr/$HYPRLAND_INSTANCE_SIGNATURE/.socket2.sock"
+[[ -S $EVENT_SOCKET ]] || die "no Hyprland event socket at $EVENT_SOCKET"
+
+# shellcheck disable=SC2016  # $vars below belong to jq
+readonly TAGS='
+  map(select(.id > 0)) as $wses
+  | [ $monitors | sort_by([.x, .y])[] as $m
+      | [ $wses[] | select(.monitor == $m.name) ] as $on
+      | [ range(1; (($on | map(.id) | max) // 0) + 1) as $id
+          | (($on[] | select(.id == $id)) // {id: $id, name: "\($id)", windows: 0})
+          | . + {
+              monitor: $m.name,
+              active: (.id == $m.activeWorkspace.id),
+              focused: (.id == $m.activeWorkspace.id and $m.focused)
+            }
+        ]
+      | to_entries[] | .value + {index: .key}
+    ] as $slots
+  | ( $slots | to_entries[] | (.key + 1) as $i | .value
+      | "workspace_\($i)|string|\(.name)",
+        "workspace_\($i)_windows|int|\(.windows)",
+        "workspace_\($i)_index_on_monitor|int|\(.index)",
+        "workspace_\($i)_monitor|string|\(.monitor)",
+        "workspace_\($i)_active|bool|\(.active)",
+        "workspace_\($i)_focused|bool|\(.focused)"
+    ),
+    "workspace_count|int|\(($slots | length) + 1)",
+    ""
+'
+
+report() {
+  local monitors
+  monitors=$(hyprctl -j monitors)
+  hyprctl -j workspaces | jq -r --argjson monitors "$monitors" "$TAGS"
+}
+
+report
+
+nc -dU "$EVENT_SOCKET" |
+  while IFS= read -r event; do
+    case $event in
+      'workspace>>'* | 'movewindow>>'* | 'openwindow>>'* | 'closewindow>>'*) report ;;
+      *) ;;
+    esac
+  done

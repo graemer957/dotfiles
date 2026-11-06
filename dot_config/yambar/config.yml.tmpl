@@ -24,7 +24,7 @@ bar:
         content:
           - string: {text: " \uf073  {date}  \uf017  {time} ", deco: { stack: [underline: { size: 2, color: 0a6cf5ff }] }}
     - script:
-        path: /usr/bin/yambar-hyprland-wses
+        path: {{ .chezmoi.homeDir }}/.local/bin/yambar_workspaces
         anchors:
           ws_focused: &ws_focused fba922ff
           ws_active: &ws_active ffaa00ff
