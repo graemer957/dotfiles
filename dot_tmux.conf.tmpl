@@ -43,6 +43,14 @@ bind j select-pane -D
 bind k select-pane -U
 bind l select-pane -R
 
+# Split keys draw the divider they create; the new pane opens in the current
+# pane's directory
+bind | split-window -h -c "#{pane_current_path}"
+bind - split-window -v -c "#{pane_current_path}"
+
+# New window in the current pane's directory (c keeps the default)
+bind C new-window -c "#{pane_current_path}"
+
 # vim-like switching between sessions
 bind C-h prev
 bind C-l next
