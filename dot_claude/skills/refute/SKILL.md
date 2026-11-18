@@ -31,6 +31,7 @@ An adversarial review of a change that is drafted and not yet made: an instructi
 4. **Check.** Refuters are told to object when unsure, so their reports overstate. Re-read the quoted text for each objection and keep it only when the text really produces the situation and the situation is one that comes up. Where several object to one change, keep the strongest.
 5. **Log.** Run `refute_log.py record` beside this file with a `--target` for each file the change edits, given as the path the edit will land on (the chezmoi source for a managed file, the worktree's copy for a repository file; for a design or a plan, the file holding the draft), `--verdict reviewed`, a `--note` naming the change labels, `--changes`, `--changed` (how many drew an objection that held) and `--tokens` (the refuters' summed spend). A skip or a carried review from step 1 takes `--verdict skipped` or `--verdict carried` and its reason as the note. The instruction-file gate lets an edit to a `CLAUDE.md` through only when this skill has been invoked in the session and the log clears that path: a review or a carried review clears it for a day, a skip for one edit. The gate adds each edit it lets through to the log.
 6. **Report** in the format below, strongest objection first, and stop: each fix is the reader's decision. When another skill invoked this run, the report goes to that skill in place of the user, and that skill says who decides the fixes. A change that later goes to its reader for approval carries the strongest objection it faced, including one that fell, since the reader is trusting the review in place of reading the prose.
+7. **Re-read, once.** Text rewritten from the report has had no reviewer. Whenever such text is about to land, start here rather than at step 1: spawn one fresh reviewer with the Apply-it-cold lens over the rewritten text, read against the file it will land in, report the fixes that survive step 4's check, unapplied and in the reviewer's words, to whoever step 6 reports to, and log it as step 5 does with `--verdict reread`, which `summary` counts apart. An objection with no fix short of a redesign blocks the change: it is not applied, and goes back with that finding; only a redesign starts a new run.
 
 ## Output format
 
@@ -53,7 +54,8 @@ The second table lists the changes where an objection held; the rest are counted
 
 ## Boundaries
 
-- Don't make the change, or a fix to it, during the run — the run ends on the report, and whoever called it applies what is decided.
+- Don't make the change, or a fix to it, during the run — the run ends on the report, and whoever called it applies what is decided. A re-read (step 7) is a run of its own.
+- Don't re-read a re-read — each further round keeps the reader waiting on patches to the same hole.
 - Don't report an objection you have not checked against the text it quotes — an unchecked objection hands the reader the refuter's guess as a finding.
 - Don't treat one review as covering a later change to the same file — the log clears a file for a day because it cannot tell two changes apart, so each change that alters an instruction still gets its own run.
 - Don't spawn refuters on a verdict of no — the verdict step exists so that a review is spent only where a wrong change would cost more than the review does.

@@ -19,7 +19,7 @@ spec = importlib.util.spec_from_file_location(
 refute_log = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(refute_log)
 
-NOW = datetime.datetime(2026, 10, 12, 9, 0, tzinfo=datetime.timezone.utc)
+NOW = datetime.datetime(2026, 10, 12, 9, 0, tzinfo=datetime.UTC)
 
 
 def hours(n):
@@ -145,6 +145,7 @@ class Summary(LogCase):
                 "changes      4 of 14 drew an objection that held",
                 "tokens       500,000 over 2 costed reviews (250,000 a review, 35,714 a change)",
                 "edits        3 let through, against 14 changes reviewed",
+                "rereads      0",
                 "skips        1",
                 f"  2026-10-12  {self.file}: link fix",
                 "carried      1",
@@ -170,12 +171,37 @@ class Summary(LogCase):
         self.assertEqual([e["note"] for e in kept], ["on the day", "after"])
         self.assertEqual(refute_log.since(found, ""), found)
 
+    def test_a_reread_is_listed_apart_and_is_not_a_review(self):
+        self.record(changes=3, changed=1, tokens=300000, note="R1 to R3")
+        self.record(
+            verdict="reread",
+            changes=3,
+            changed=0,
+            tokens=140000,
+            at=hours(1),
+            note="re-read R1 to R3",
+        )
+        lines = self.summary()
+        self.assertIn("reviews      1", lines)
+        self.assertIn("rereads      1", lines)
+        self.assertIn(f"  2026-10-12  {self.file}: re-read R1 to R3", lines)
+        self.assertIn("reread cost  140,000 tokens", lines)
+        self.assertIn(
+            "tokens       300,000 over 1 costed reviews (300,000 a review, 100,000 a change)",
+            lines,
+        )
+
+    def test_a_reread_alone_clears_nothing(self):
+        self.record(verdict="reread", note="re-read")
+        self.assertFalse(self.cleared())
+
     def test_an_empty_log_reports_zeroes(self):
         self.assertEqual(
             refute_log.summary([]),
             [
                 "reviews      0",
                 "edits        0 let through, against 0 changes reviewed",
+                "rereads      0",
                 "skips        0",
                 "carried      0",
             ],

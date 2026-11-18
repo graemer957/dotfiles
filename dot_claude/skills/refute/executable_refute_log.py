@@ -10,9 +10,11 @@ each edit it lets through. A review clears its files for the whole window,
 since nothing here can tell two changes to one file apart; a skip clears one
 edit. `summary` gives the figures the practice is judged on: what reviews cost,
 how many edits they cleared, and every skip and carried review with its note.
+A re-read (one reviewer over text folded after a review) is listed apart, so
+it neither counts as a review nor clears a file.
 
   refute_log.py record --target FILE [--target FILE ...] --note TEXT
-                       --verdict reviewed|skipped|carried
+                       --verdict reviewed|skipped|carried|reread
                        [--changes N] [--changed N] [--tokens N]
   refute_log.py summary
 """
@@ -31,7 +33,8 @@ SKIPPED = "skipped"
 # A review from an earlier session, re-recorded so a walk that outlasts the
 # window can still land its edits.
 CARRIED = "carried"
-VERDICTS = (REVIEWED, SKIPPED, CARRIED)
+REREAD = "reread"
+VERDICTS = (REVIEWED, SKIPPED, CARRIED, REREAD)
 EDIT = "edit"
 
 
@@ -155,9 +158,18 @@ def summary(found):
     lines.append(
         f"edits        {edits} let through, against {changes} changes reviewed"
     )
-    for label, verdict in (("skips", SKIPPED), ("carried", CARRIED)):
+    for label, verdict in (
+        ("rereads", REREAD),
+        ("skips", SKIPPED),
+        ("carried", CARRIED),
+    ):
         rows = listed(found, verdict)
         lines += [f"{label:<12} {len(rows)}", *rows]
+    reread_tokens = sum(
+        e.get("tokens") or 0 for e in found if e.get("verdict") == REREAD
+    )
+    if reread_tokens:
+        lines.append(f"reread cost  {reread_tokens:,} tokens")
     if found:
         lines.append(f"since        {min(e.get('at', '') for e in found)[:10]}")
     return lines
