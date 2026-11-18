@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # Print everything pending in the chezmoi source tree: status, the diff
 # against HEAD (staged and unstaged) with each file's hunks numbered as
-# `git diff HEAD -- <file>` counts them, and each untracked file in full.
+# `git diff HEAD -- <file>` counts them, and each untracked file in full,
+# or its size when it is binary.
 # Records HEAD as the run's base, so `stage-hunks.sh` keeps these numbers
 # after earlier rows commit.
 set -euo pipefail
@@ -16,5 +17,10 @@ git diff HEAD | awk '/^diff --git/ { n = 0 } /^@@/ { n++; printf "[hunk %d] ", n
 
 git ls-files --others --exclude-standard | while IFS= read -r file; do
     printf '\n=== untracked: %s ===\n' "$file"
-    cat -- "$file"
+    if [[ -s $file ]] && ! grep -qI '' -- "$file"; then
+        size=$(stat -c %s -- "$file")
+        printf '(binary, %s bytes)\n' "$size"
+    else
+        cat -- "$file"
+    fi
 done

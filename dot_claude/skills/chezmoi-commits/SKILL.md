@@ -51,7 +51,7 @@ the log and this list disagree, the log wins.
 ## Workflow
 
 1. Run `pending.sh` (beside this file) for the status, the diff against
-   `HEAD` and every untracked file in full.
+   `HEAD` and every untracked file in full (a binary by its size).
 2. Group hunks into themes, not by directory or file. Order the themes so
    each commit leaves the tree coherent: a function before the alias that
    calls it. A file whose hunks serve two themes is split at commit time, by
