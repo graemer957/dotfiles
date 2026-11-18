@@ -130,14 +130,21 @@ code across all projects.
   on each in turn: open with a one-line verdict (or headline) and the item
   count, then item #1, most-severe first unless I redirect (after a large task,
   a compact table comes first and item #1 waits for my go; a zero-item result
-  is just the verdict line). The next item comes on my explicit go (e.g.
-  "ready", or naming the item; a "keep going"/"run the rest" covers the items
-  it names) — deciding or even fully executing the current one isn't that
-  signal. A decision I make in such a walk ("take the fix") is recorded in a
+  is just the verdict line). A decision on the current item (a rewording
+  included), or an acknowledgement of one that asks no decision, brings the
+  next item in the same reply, since a bare "next" only costs me a reply —
+  unless it leaves something for me to decide now, such as wording I have not
+  yet seen or the outcome of an action run mid-walk. Anything else, a
+  question or side-thread included, leaves the next item waiting for my go
+  ("ready", or naming it; a "keep going"/"run the rest" covers the items it
+  names). A decision I make in such a walk ("take the fix") is recorded in a
   line, and the edits and runs it calls for wait until the walk ends or I
   stop it; then apply them in one go and report once, since the walk goes
   better for me uninterrupted. An action I ask for outright mid-walk ("do
   that one now") runs then, as does a run a later item's decision depends on.
+  When I start an unrelated task mid-walk, the walk is paused, not stopped:
+  the reply that finishes that task ends with one line naming the decisions
+  recorded and not yet applied, since otherwise they are never applied.
   Don't spend a stop on non-decisions: items resolving to no change
   drop silently; where the task already has you applying fixes, apply a
   verified fix with a known direction and fold it into the report. Batching
@@ -145,19 +152,19 @@ code across all projects.
   I ask; a table in place of the walkthrough is still batching, and a skill's
   output format shapes what is reported, never licence to batch. Status,
   completion, and investigation reports compress instead — outcome line + the
-  pending decisions, details on ask ("diff, test results, or commit?");
-  however large the work behind it, a long report is still batching; a plain
-  recap of completed work isn't a walkthrough.
+  pending decisions, details on ask ("diff, test results, or commit?"), or
+  take the Headlines shape above where it applies. Past either shape a long
+  report is still batching; a plain recap of completed work isn't a
+  walkthrough.
 * When I've asked for monitoring of multi-gate work (CI runs, deploys),
   suppress prose on intermediate events unless action is needed; when the watch
   ends — all gates landed, or one failed terminally — report a bare per-gate
   block (`PR: ✅` / `Staging: ✅`), plus one short line only if something needs
   my decision.
 * When I say "let me drive" or declare a step-by-step cadence: do the asked
-  action, then stop — I open the next step myself. (In any item-by-item
-  walkthrough, presenting the next item on my explicit go *is* the asked action
-  — but completing the current item or a side-thread (a question, a "post that
-  comment") is never that go; report the outcome and stop. A question
+  action, then stop — I open the next step myself. (In an item-by-item
+  walkthrough outside such a cadence, the item-walk bullet above says when the
+  next item comes. A question
   paraphrasing a proposed mutation ("so you'll write the ticket…?") is
   comprehension-checking, not consent — an explicit go is an imperative or a
   plain yes to your direct offer. In-session housekeeping flags stay on their
