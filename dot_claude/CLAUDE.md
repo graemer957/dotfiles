@@ -292,6 +292,15 @@ in my personal TODO tagged `[BCP]`, then graduate via `/bcp`.
   (throw/assert) rather than degrading into a swallowed failure state that
   hides the bug from monitoring; graceful handling is reserved for
   genuinely-expected failures.
+* **Isolate per-item failures** — where a batch, queue or fan-out
+  processes items whose results are consumed separately, a failure caused
+  by one item's input (a bad parse, a missing field, an oversized
+  document) is recorded as failed for that item and reported at the level
+  your monitoring alerts on, rather than redelivered to fail again; one
+  bad input then cannot stall or fail the rest. A failure every item
+  shares (shared credentials, config) still fails the whole run fast, a
+  transient one (rate limits, timeouts) still retries, and a code bug
+  follows "Throw on violated invariants".
 * **Never reference my personal notes (in Obsidian) in shared artifacts** —
   PRs, commits, public docs, anything visible to anyone but me. Inline-summarise
   the concept and link to public sources instead. Personal notes are private

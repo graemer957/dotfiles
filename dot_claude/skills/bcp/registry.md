@@ -39,6 +39,13 @@ Index of every Best Current Practice. Each entry's `Home` is where its adherence
 - Trigger: writing error handling
 - Detect: judgement — new error paths that map impossible states to default values or UI flags
 
+### isolate-per-item-failures
+
+- Statement: where a batch, queue or fan-out processes items whose results are consumed separately, a failure caused by one item's input (a bad parse, a missing field, an oversized document) is recorded as failed for that item and reported at the level your monitoring alerts on, rather than redelivered to fail again; one bad input then cannot stall or fail the rest. A failure every item shares (shared credentials, config) still fails the whole run fast, a transient one (rate limits, timeouts) still retries, and a code bug follows "Throw on violated invariants".
+- Home: personal CLAUDE.md § Best Current Practices (final)
+- Trigger: writing or reviewing code that processes a batch, queue or fan-out whose items' results are consumed separately
+- Detect: judgement — an input error (bad parse, missing field, oversized input) propagated out of its item's scope, e.g. by `?`, so other items fail or the batch is redelivered
+
 ### verify-pattern-precedent
 
 - Statement: before recommending a pattern as "established in the codebase", search for it; sparse usage or single-file confinement is weak precedent — flag it as such rather than presenting it as the convention.
