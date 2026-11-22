@@ -1,4 +1,4 @@
-function _log_summary --argument-names log focus label --description 'Summarise a run log with claude -p'
+function _log_summary --argument-names log focus label token --description 'Summarise a run log with claude -p'
     if not command -q claude
         echo '_log_summary: claude not on PATH; skipping summary' >&2
         return 0
@@ -12,6 +12,8 @@ function _log_summary --argument-names log focus label --description 'Summarise 
         # personal: default config dir
     else if test -r $work_cfg/.credentials.json
         set profile_env CLAUDE_CONFIG_DIR=$work_cfg
+        # The token belongs to the personal profile.
+        set token
     else
         echo '_log_summary: no logged-in claude profile; skipping summary' >&2
         return 0
@@ -40,7 +42,8 @@ Focus on: $focus"
     # raw and only rendered for the terminal.
     printf '\nSummarising log with Claude 🤖, please wait...\n\n' >&2
     printf '\nSummary from Claude 🤖\n\n```text\n%s\n```\n\n```markdown\n' $prompt >>$log
-    env $profile_env claude -p $prompt --model opus --session-id $session \
+    # Only this call gets the token; an empty one means the sign-in.
+    CLAUDE_CODE_OAUTH_TOKEN=$token env $profile_env claude -p $prompt --model opus --session-id $session \
         --name $name --tools Read,Grep --add-dir (path dirname $log) \
         | tee -a $log | $render
     set -l rc $pipestatus[1]

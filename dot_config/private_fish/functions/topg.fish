@@ -24,6 +24,9 @@ function topg --description 'Run topgrade, logging the session to ~/Documents/sy
         string match -qi y $answer; or return 1
     end
 
+    # Fetch now, while someone is likely here to unlock 1Password.
+    set -l token (_claude_token)
+
     # topgrade resolves `sudo` on PATH (no config for an arbitrary path), so
     # a throwaway dir puts sudo-rs ahead of the system sudo for this run only.
     set -l shim (mktemp -d)
@@ -43,6 +46,6 @@ function topg --description 'Run topgrade, logging the session to ~/Documents/sy
     _log_summary $log "kernel and Firefox upgrades and Rust toolchain bumps \
 explicitly; any other major version bump; steps that failed or were skipped. Expected, not a \
 finding: pacman's '/boot' directory-permissions warning (/boot is vfat, \
-mounted with dmask=0027 by design)." topg
+mounted with dmask=0027 by design)." topg $token
     return $rc
 end
