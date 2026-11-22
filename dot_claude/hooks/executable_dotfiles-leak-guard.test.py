@@ -214,6 +214,37 @@ check(
     run_hook(bash(f"echo Zanzibar > {PRIVATE}/notes.md")),
     "",
 )
+REFUTE_LOG = CLAUDE + "/skills/refute/refute_log.py"
+write(REFUTE_LOG, "# writes under $CLAUDE_CONFIG_DIR\n")
+write(CLAUDE + "/skills/pub/tally.py", "# writes beside itself\n")
+os.symlink(CLAUDE + "/skills/refute", PRIVATE + "/skills/refute")
+check(
+    "a profile writer run through python3 with a term in its arguments",
+    run_hook(bash(f'python3 {REFUTE_LOG} record --note "acme review"')),
+    "",
+)
+check(
+    "a profile writer run through the work profile's symlink",
+    run_hook(
+        bash(f"python3 -I {PRIVATE}/skills/refute/refute_log.py --target /x/acme")
+    ),
+    "",
+)
+check(
+    "a profile writer whose output is redirected into a public file",
+    run_hook(bash(f"python3 {REFUTE_LOG} acme > {CLAUDE}/skills/pub/SKILL.md")),
+    "`acme`",
+)
+check(
+    "another public script run with a term in its arguments",
+    run_hook(bash(f'python3 {CLAUDE}/skills/pub/tally.py "acme"')),
+    "`acme`",
+)
+check(
+    "a profile writer overwritten rather than run",
+    run_hook(bash(f"cp {TMP}/msg.txt {REFUTE_LOG}")),
+    "`ZED-12`",
+)
 write(CLAUDE + "/skills/pub/SKILL.md", "Public skill for Zanzibar.\n")
 check(
     "chezmoi add of a live file adding a term",

@@ -26,6 +26,10 @@ mention goes through.
   often in each named live file than in its source copy.
 
 The hook's own files are exempt, since they must name the built-in pattern.
+So is the script a command runs when it is in PROFILE_WRITERS: it writes only
+under the active profile ($CLAUDE_CONFIG_DIR), which is private in the work
+profile, so its arguments never reach the public tree. Every other path the
+command names is still judged.
 """
 
 import json
@@ -44,6 +48,8 @@ TERMS_FILE = HOME + "/dev/work/.claude/hooks/dotfiles-private-terms.txt"
 NOTES_VAULT = re.compile(r"(?i)\bobsidian\b")
 SELF = re.compile(r"(?:^|/)(?:executable_)?dotfiles-leak-guard(?:\.test)?\.py$")
 MAX_READ = 1 << 20
+PROFILE_WRITERS = ("skills/refute/refute_log.py",)
+INTERPRETERS = ("python", "python3", "bash", "sh")
 
 WRITE_TOKEN = re.compile(
     r"sed\s+(?:-[a-zA-Z]*i|--in-place)|\bperl\s+-[a-zA-Z]*i|\btee\b"
@@ -140,6 +146,18 @@ def files_under(path):
         yield path
 
 
+def profile_writer(command, cwd):
+    """The resolved script the command's first word runs, when in PROFILE_WRITERS."""
+    head = words(command)
+    if head and os.path.basename(head[0]) in INTERPRETERS:
+        head = [w for w in head[1:] if not w.startswith("-")]
+    if not head:
+        return None
+    script = os.path.realpath(os.path.join(cwd, os.path.expanduser(head[0])))
+    writers = {os.path.realpath(f"{CLAUDE_HOME}/{p}") for p in PROFILE_WRITERS}
+    return script if script in writers else None
+
+
 def check_bash(patterns, command, cwd):
     hits = []
     for match in CHEZMOI_ADD.finditer(command):
@@ -151,7 +169,8 @@ def check_bash(patterns, command, cwd):
                         read(path),
                         read(source_path(os.path.realpath(path)) or ""),
                     )
-    paths = path_tokens(command, cwd)
+    runs = profile_writer(command, cwd)
+    paths = [p for p in path_tokens(command, cwd) if os.path.realpath(p) != runs]
     touches = guarded(cwd) or any(guarded(p) for p in paths)
     if touches and WRITE_TOKEN.search(command):
         hits += added(patterns, command)

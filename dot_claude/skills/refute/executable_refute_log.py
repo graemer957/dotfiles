@@ -101,6 +101,8 @@ def cleared(path, now=None, candidates=None):
 def append(entry, now=None, log=None):
     now = now or datetime.datetime.now().astimezone()
     entry = {"at": now.isoformat(timespec="seconds"), **entry}
+    # The dotfiles leak guard exempts this script (PROFILE_WRITERS) because it
+    # writes only under the active profile; a write anywhere else must come off that list.
     with open(Path(log or logs()[0]), "a", encoding="utf-8") as fh:
         fh.write(json.dumps(entry, ensure_ascii=False) + "\n")
     return entry
