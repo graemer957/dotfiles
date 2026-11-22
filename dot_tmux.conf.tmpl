@@ -13,7 +13,9 @@ set -ga terminal-overrides ",alacritty:Tc"
 # burned into my brain!
 unbind C-b
 set -g prefix C-a
-bind C-a send-prefix
+# Ctrl-a a sends a Ctrl-a through to a tmux nested inside, or one over SSH:
+# Ctrl-a Ctrl-a is last-window (below)
+bind a send-prefix
 
 # The time tmux waits after receiving an Escape key to see if it is part of a longer key sequence
 set -s escape-time 0
