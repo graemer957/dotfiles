@@ -14,6 +14,7 @@ A run on one drafted change, a new bullet for a quiz skill, with its real values
 | 🧪 Refuted | 1 change, 1 with an objection that held |
 | 🤔 For you | 1 decision: I'd drop the bullet |
 | 🪙 Tokens | 358.8k |
+| 👉 Next | Keep or drop the bullet; then I apply it |
 
 | # | Change | Strongest objection | Fix |
 |---|---|---|---|
@@ -30,6 +31,7 @@ A run on one drafted change, a new bullet for a quiz skill, with its real values
 ## Why it looks like this
 
 - **The For you row carries the lean.** The run ends on the reader's decision, so the row counts the decisions waiting and says which way the run leans where it has a view: a reader who trusts the review in place of reading the prose needs the recommendation before the evidence.
+- **Next closes the Headlines.** An outcome alone leaves the reader to work out their part, so the last row says what they do now and what follows it.
 - **Each row holds one change and its strongest objection.** Further objections that held are counted in one footnote, since they matter only if the reader keeps the change against the strongest one.
 - **A footnote passes the "so what?" test: the reader would decide differently for knowing it.** The three here each bear on the one decision: what already does the job, how often the change would matter, and what keeping it would take. Which refuter said what, what each read and what survived all fail it.
 - **The values follow the run.** A run on several changes has a row for each that drew an objection that held, a fix is as often a reword or a move as a drop, and a run where every change survived is the Headlines table alone.

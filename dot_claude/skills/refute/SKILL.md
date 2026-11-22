@@ -41,6 +41,7 @@ An adversarial review of a change that is drafted and not yet made: an instructi
 | 🧪 Refuted | <N> changes, <M> with an objection that held |
 | 🤔 For you | <N> decisions, and the lean where the run has one |
 | 🪙 Tokens | <summed spend> |
+| 👉 Next | <the reader's step now; what follows> |
 
 | # | Change | Strongest objection | Fix |
 |---|---|---|---|
