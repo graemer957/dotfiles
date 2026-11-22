@@ -1,6 +1,6 @@
 # BCP registry
 
-Index of every Best Current Practice. Each entry's `Home` is where its adherence text currently lives (updated whenever a BCP migrates); `Detect` is the hint a violation-detection pass uses — "judgement" marks entries that can't be mechanically screened.
+Index of every Best Current Practice. Each entry's `Home` is where its adherence text currently lives (updated whenever a BCP migrates; `(final)` marks a home the migration into this registry settled); `Detect` is the hint a violation-detection pass uses — "judgement" marks entries that can't be mechanically screened.
 
 ## Ambient — home: CLAUDE.md bullets
 
@@ -101,6 +101,13 @@ Index of every Best Current Practice. Each entry's `Home` is where its adherence
 - Home: personal CLAUDE.md § Best Current Practices (final)
 - Trigger: making any absence, unused, or not-required claim, or any claim that something will not happen
 - Detect: judgement — absence claims resting on a single probe, or on no probe at all
+
+### memory-lifecycle
+
+- Statement: memory only fills by default and nothing else drains it, so when tracked work completes, or is noticed to have completed, the related memories are swept in that same session: stale status refreshed, entries now carried by config or an instruction file deleted, superseded files deleted after their unique rationale is salvaged and inbound links fixed. Index entries stay lean; detail lives in the topic files.
+- Home: personal CLAUDE.md § Best Current Practices (final)
+- Trigger: tracked work completing, or noticing that it has
+- Detect: judgement — memory notes describing merged or shipped work as pending
 
 ## File-scoped — home: path-scoped rules in ~/.claude/rules/
 
