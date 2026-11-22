@@ -47,10 +47,14 @@ Focus on: $focus"
     printf '```\n' >>$log
     test $rc -eq 0; or echo "_log_summary: claude exited $rc" >&2
 
-    # The summary session is saved under a readable name, so it can also be
-    # picked up later from /resume. Resuming launches with claude's full tool
-    # set (--tools binds only the launch that passes it). Asked only at an
-    # interactive prompt, and never after a failed summary.
+    # /resume never lists a session started by `claude -p`, even after it has
+    # been resumed interactively, so the log carries the command to reopen it
+    # (it outlives the scrollback across a reboot). Resuming launches with
+    # claude's full tool set (--tools binds only the launch that passes it).
+    test $rc -eq 0
+    and printf '\nResume: %s\n' (string join ' ' -- env $profile_env claude -r $session) >>$log
+
+    # Asked only at an interactive prompt, and never after a failed summary.
     if test $rc -eq 0; and isatty stdin
         read -l -P 'Talk to Claude about this? [y/N] ' reply
         if string match -qir '^y(es)?$' -- $reply
