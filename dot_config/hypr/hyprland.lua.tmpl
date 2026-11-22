@@ -274,9 +274,8 @@ hl.bind(mainMod .. " + P", hl.dsp.exec_cmd("playerctl play-pause"))
 hl.bind(mainMod .. " + I", hl.dsp.exec_cmd("playerctl next"))
 hl.bind(mainMod .. " + U", hl.dsp.exec_cmd("playerctl previous"))
 
-local btHeadset = "AC:80:0A:7B:00:87"
-hl.bind(mainMod .. " + XF86AudioMute", hl.dsp.exec_cmd("bluetoothctl connect " .. btHeadset))
-hl.bind(mainMod .. " + SHIFT + XF86AudioMute", hl.dsp.exec_cmd("bluetoothctl disconnect " .. btHeadset))
+hl.bind(mainMod .. " + XF86AudioMute", hl.dsp.exec_cmd("~/.local/bin/headphones connect"))
+hl.bind(mainMod .. " + SHIFT + XF86AudioMute", hl.dsp.exec_cmd("~/.local/bin/headphones disconnect"))
 
 -- Move focus with alt + vim arrow keys
 hl.bind("ALT + h", hl.dsp.focus({ direction = "left" }))

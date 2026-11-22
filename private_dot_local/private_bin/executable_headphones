@@ -1,0 +1,34 @@
+#!/bin/sh
+# Connect the headphones used last, falling back to the other pair;
+# or disconnect whichever is connected. "Used last" is recorded on
+# every successful connect and before every disconnect.
+set -u
+XM6=58:18:62:9F:DD:52
+XM5=AC:80:0A:7B:00:87
+state="${XDG_STATE_HOME:-$HOME/.local/state}/headphones_last"
+
+remember() { mkdir -p "$(dirname "$state")"; echo "$1" >"$state"; }
+
+case "${1:-connect}" in
+  connect)
+    if [ "$(cat "$state" 2>/dev/null)" = "$XM5" ]; then
+      first=$XM5 second=$XM6
+    else
+      first=$XM6 second=$XM5
+    fi
+    for mac in "$first" "$second"; do
+      if bluetoothctl connect "$mac"; then
+        remember "$mac"
+        exit 0
+      fi
+    done
+    exit 1 ;;
+  disconnect)
+    for mac in "$XM6" "$XM5"; do
+      if bluetoothctl info "$mac" | grep -q 'Connected: yes'; then
+        remember "$mac"
+        bluetoothctl disconnect "$mac"
+      fi
+    done ;;
+  *) echo "usage: headphones [connect|disconnect]" >&2; exit 2 ;;
+esac
