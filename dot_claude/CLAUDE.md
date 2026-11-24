@@ -216,11 +216,7 @@ code across all projects.
   uncommitted or unpushed): `/chezmoi-commits` owns it and I run it when
   ready. **Cross-session** follow-ups
   (TODOs, things to revisit later) — don't enumerate them at session end;
-  surface on ask or when directly relevant. When I ask whether the session's
-  threads are closed (`/le`), the answer lists only work this session left
-  owed and the in-session loose ends above: a below-the-bar nit I didn't take
-  is closed by not being taken, and every item I have to dismiss costs me a
-  reply.
+  surface on ask or when directly relevant.
 * When a multi-agent fan-out finishes — every launched agent returned, or
   the stragglers were killed/abandoned — report the total subagent token
   spend as a one-liner: 1 decimal place, auto-scaled unit (`13.2k tokens`,
