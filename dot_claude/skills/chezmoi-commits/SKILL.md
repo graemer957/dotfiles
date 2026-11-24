@@ -160,6 +160,6 @@ build and the line of this file that calls the script need no go-ahead beyond
 step 3's `chezmoi` hand-off; any other change to this file's text takes the steps
 above. Record the outcome in the cell whenever it changes, a first check that
 finds nothing included. Of this check, chat carries one line per script built or
-changed, with any changed line of this file as an inline diff; a clean check or a
-declined candidate goes in the cell alone, since it leaves the reader nothing to
-act on.
+changed, with any changed line of this file as an inline diff; a declined
+candidate goes in the cell alone and a clean check nowhere, since it leaves the
+reader nothing to act on.
