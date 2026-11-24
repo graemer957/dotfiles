@@ -5,7 +5,8 @@ description: >-
   commits with house-style subjects — one theme per commit, subject only —
   and hand back a table of the proposed commits for approval before any
   commit lands. Use on /chezmoi-commits after editing dotfiles, skills,
-  rules or hooks that chezmoi manages.
+  rules or hooks that chezmoi manages, or from /le for the files the
+  session wrote.
 disable-model-invocation: true
 model: opus
 ---
@@ -14,9 +15,23 @@ model: opus
 
 ## Scope
 
-Everything pending in the chezmoi source tree: staged, unstaged and
-untracked. When the source tree is not the session cwd, every git command
-runs as `git -C <src>` with `<src>` from `chezmoi source-path`.
+Everything pending in the chezmoi source tree, unstaged and untracked;
+anything already staged stops the run at step 1. When the source tree is
+not the session cwd, every git command runs as `git -C <src>` with `<src>`
+from `chezmoi source-path`.
+
+A session-scoped run, which `/le` starts, covers only the source files this
+session wrote, moved or removed, by any route (an Edit or Write, a shell
+write or `mv`, `chezmoi add`; both paths of a rename), since the sign-off
+reviews this session's work alone. A file `chezmoi add` copied counts as
+wholly this session's, and a rename it staged with `git mv` is unstaged
+(`git -C <src> restore --staged <paths>`) before step 1, since that staging
+is its own. A file whose diff also holds a change this session didn't make,
+or a change it can't attribute, is left out and named in one line above the
+table, for a full run to commit, since its row would present another
+session's change as this one's; with no file left, that line is the run's
+whole output. The run skips Improving this skill, which would add text
+after the table's question or leave fresh changes at sign-off.
 
 ## Definitions
 
@@ -51,7 +66,12 @@ the log and this list disagree, the log wins.
 ## Workflow
 
 1. Run `pending.sh` (beside this file) for the status, the diff against
-   `HEAD` and every untracked file in full (a binary by its size).
+   `HEAD` and every untracked file in full (a binary by its size). A
+   session-scoped run passes as arguments those of its source paths that
+   `git status` shows pending (`chezmoi source-path <target>` for a file
+   written at its live path). On the staged refusal (exit 1), stop and hand
+   its message back, since the staged rows may be another run's awaiting
+   commit; on a path error (exit 2), drop that path and re-run.
 2. Group hunks into themes, not by directory or file. Order the themes so
    each commit leaves the tree coherent: a function before the alias that
    calls it. A file whose hunks serve two themes is split at commit time, by

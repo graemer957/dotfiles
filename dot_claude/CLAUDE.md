@@ -213,8 +213,8 @@ code across all projects.
   scratch files — tmpfs on my machines, so the OS owns their lifecycle (gone
   at next reboot) and nothing depends on you cleaning them up; flagging them
   is noise. Nor pending state in the chezmoi source tree (unstaged,
-  uncommitted or unpushed): `/chezmoi-commits` owns it and I run it when
-  ready. **Cross-session** follow-ups
+  uncommitted or unpushed): `/chezmoi-commits` owns it and I start it when
+  ready, directly or through `/le`. **Cross-session** follow-ups
   (TODOs, things to revisit later) — don't enumerate them at session end;
   surface on ask or when directly relevant.
 * When a multi-agent fan-out finishes — every launched agent returned, or

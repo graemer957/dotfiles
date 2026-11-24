@@ -80,6 +80,56 @@ out=$("$SCRIPT")
 check "an empty file prints nothing" "" "$(section "$out" empty.txt)"
 check "an empty file still gets its header" "1" "$(grep -c 'untracked: empty.txt' <<<"$out")"
 
+new_case
+echo changed >"$CASE_REPO/base.txt"
+git -C "$CASE_REPO" add base.txt
+out=$("$SCRIPT" 2>&1); status=$?
+check "a staged file refuses the run" "1" "$status"
+check "the refusal names the staged file" "1" "$(grep -c '^base.txt$' <<<"$out")"
+check "a refused run records no base" "" "$(cat "$(git -C "$CASE_REPO" rev-parse --absolute-git-dir)/chezmoi-commits-base" 2>/dev/null)"
+
+new_case
+echo changed >"$CASE_REPO/base.txt"
+"$SCRIPT" >/dev/null; status=$?
+check "an unstaged change runs" "0" "$status"
+
+new_case
+echo changed >"$CASE_REPO/base.txt"
+echo mine >"$CASE_REPO/mine.txt"
+echo theirs >"$CASE_REPO/theirs.txt"
+out=$("$SCRIPT" "$CASE_REPO/mine.txt")
+check "a named untracked file is listed" "mine" "$(section "$out" mine.txt)"
+check "an unnamed untracked file is left out" "0" "$(grep -c 'theirs' <<<"$out")"
+check "an unnamed tracked change is left out" "0" "$(grep -c 'base.txt' <<<"$out")"
+out=$("$SCRIPT" base.txt)
+check "a named tracked change is diffed" "1" "$(grep -c '^diff --git a/base.txt' <<<"$out")"
+out=$("$SCRIPT")
+check "no arguments lists everything" "3" "$(grep -cE '^( M base|\?\? mine|\?\? theirs)\.txt$' <<<"$out")"
+
+base_file() { cat "$(git -C "$CASE_REPO" rev-parse --absolute-git-dir)/chezmoi-commits-base" 2>/dev/null; }
+
+new_case
+echo live >"$TMP/live.txt"
+"$SCRIPT" "$TMP/live.txt" >/dev/null 2>&1; status=$?
+check "a path outside the source tree refuses" "2" "$status"
+check "a refused path records no base" "" "$(base_file)"
+mkdir "$CASE_REPO/dir"
+"$SCRIPT" dir >/dev/null 2>&1; status=$?
+check "a directory refuses" "2" "$status"
+"$SCRIPT" missing.txt >/dev/null 2>&1; status=$?
+check "a path naming nothing refuses" "2" "$status"
+
+new_case
+err=$("$SCRIPT" base.txt 2>&1 >/dev/null); status=$?
+check "a clean file runs" "0" "$status"
+check "a clean file is noted" "nothing pending: base.txt" "$err"
+
+new_case
+rm "$CASE_REPO/base.txt"
+out=$("$SCRIPT" base.txt); status=$?
+check "a deleted file runs" "0" "$status"
+check "a deleted file is listed" "1" "$(grep -c '^ D base.txt$' <<<"$out")"
+
 echo
 echo "$PASS passed, $FAIL failed"
 (( FAIL == 0 ))
