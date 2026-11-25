@@ -43,9 +43,13 @@ function topg --description 'Run topgrade, logging the session to ~/Documents/sy
     set -l rc $pipestatus[1]
     rm -r $shim
 
-    _log_summary $log "kernel and Firefox upgrades and Rust toolchain bumps \
-explicitly; any other major version bump; steps that failed or were skipped. Expected, not a \
-finding: pacman's '/boot' directory-permissions warning (/boot is vfat, \
-mounted with dmask=0027 by design)." topg $token
+    set -l focus "kernel and Firefox upgrades and Rust toolchain bumps \
+explicitly; any other major version bump; steps that failed or were skipped."
+    # Elsewhere the summary would report on a warning that can't occur.
+    command -q pacman
+    and set -a focus "Expected, not a finding: pacman's '/boot' \
+directory-permissions warning (/boot is vfat, mounted with dmask=0027 by design)."
+
+    _log_summary $log "$focus" topg $token
     return $rc
 end
