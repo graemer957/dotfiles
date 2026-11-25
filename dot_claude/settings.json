@@ -1,11 +1,11 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "cleanupPeriodDays": 365,
   "attribution": {
     "commit": "",
     "pr": "",
     "sessionUrl": false
   },
-  "cleanupPeriodDays": 365,
   "permissions": {
     "allow": [
       "Bash(eza:*)",
@@ -70,5 +70,6 @@
   "tui": "fullscreen",
   "remoteControlAtStartup": false,
   "inputNeededNotifEnabled": true,
-  "agentPushNotifEnabled": true
+  "agentPushNotifEnabled": true,
+  "feedbackDrafts": "off"
 }
